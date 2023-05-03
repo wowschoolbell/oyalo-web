@@ -7,8 +7,8 @@ import {useNavigate} from 'react-router-dom';
 import apis from '../../../api/masterApi';
 import {useLocation} from 'react-router-dom';
 import ConfirmOnExit from '../../../components/confirmOnExit/ConfirmOnExit';
-const {Panel} = Collapse;
 import {lightFormat} from 'date-fns';
+const {Panel} = Collapse;
 
 function AuditPointMarksForm() {
   const {state} = useLocation();

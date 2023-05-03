@@ -17,7 +17,7 @@ import {includes} from 'ramda';
 
 const {TextArea} = Input;
 
-function claimsubmission() {
+function Claimsubmission() {
   // const dispatch = useDispatch();
 
   const data = [
@@ -184,4 +184,4 @@ function claimsubmission() {
   );
 }
 
-export default claimsubmission;
+export default Claimsubmission;

@@ -17,7 +17,7 @@ import {includes} from 'ramda';
 
 const {TextArea} = Input;
 
-function pclcimapprovalah() {
+function Pclcimapprovalah() {
   // const dispatch = useDispatch();
 
   const data = [
@@ -193,4 +193,4 @@ function pclcimapprovalah() {
   );
 }
 
-export default pclcimapprovalah;
+export default Pclcimapprovalah;

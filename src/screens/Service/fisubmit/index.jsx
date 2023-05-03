@@ -17,7 +17,7 @@ import {includes} from 'ramda';
 
 const {TextArea} = Input;
 
-function fisubmit() {
+function Fisubmit() {
   // const dispatch = useDispatch();
 
   const data = [
@@ -175,4 +175,4 @@ function fisubmit() {
   );
 }
 
-export default fisubmit;
+export default Fisubmit;
