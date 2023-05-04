@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {differenceInDays, format} from 'date-fns';
 import {flatten} from 'ramda';
 import React, {useEffect} from 'react';

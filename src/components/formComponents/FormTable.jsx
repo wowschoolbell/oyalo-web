@@ -126,7 +126,7 @@ const FormTable = (props) => {
               defaultValue={editMode ? Number(record?.actual_Score) : record?.actual_Score}
               render={({field: {onChange, value}}) => (
                 <Input
-                  disabled={mode === 'CAPA' || mode == 'entryView' || (mode === 'Approval' && record.status_capa === '1')}
+                  disabled={mode === 'CAPA' || mode === 'entryView' || (mode === 'Approval' && record.status_capa === '1')}
                   {...register(
                     mode === 'Approval' || (mode === 'entry' && editMode) ? `mark[${record.pointsID}].actual_Score` : `category[${index}].[${record?.sno - 1}].actual_Score`,
                     {

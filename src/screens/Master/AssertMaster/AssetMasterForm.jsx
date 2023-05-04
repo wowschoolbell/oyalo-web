@@ -260,7 +260,7 @@ function AssetMasterForm() {
                           filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
                           {map(
                             (assetSpare) => {
-                              if (assetSpare.asset_group_id == assetGroup) {
+                              if (assetSpare.asset_group_id === assetGroup) {
                                 // assetSpare.assetspares.map(
                                 //   (data) => {
                                 //     console.log("spare list",data)

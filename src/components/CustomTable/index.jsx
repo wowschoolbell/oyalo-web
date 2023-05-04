@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useState} from 'react';
 import {Card, Modal} from 'antd';
 import Container from 'react-bootstrap/Container';
@@ -111,7 +112,7 @@ export default function CustomTable({dataSource, column, onClickAdd, title, load
              ) : (
               <></>
              ) }
-            {title !== 'Role Master' && title !== 'Audit Report' && title !== 'CAPA Submission List' && title !== 'Approval List' && title != 'Create Ticket List' ? (
+            {title !== 'Role Master' && title !== 'Audit Report' && title !== 'CAPA Submission List' && title !== 'Approval List' && title !== 'Create Ticket List' ? (
               <Tooltip placement='bottom' title={'Edit'}>
                 <Button variant='outlined' onClick={() => handleEditClick(params.row)} color='error' style={{backgroundColor: '#ffaf00', width: '50px'}} size='sm'>
                   <FaUserEdit color='#fff' />
@@ -120,7 +121,7 @@ export default function CustomTable({dataSource, column, onClickAdd, title, load
             ) : (
               <></>
             )}
-            {title == 'Create Ticket List'  ? (
+            {title === 'Create Ticket List'  ? (
                 <>
                   <div dangerouslySetInnerHTML={{__html: params.value}}></div>
                   <button className='orangeFactory btn' onClick={() => handleEditClick(params.row)}>

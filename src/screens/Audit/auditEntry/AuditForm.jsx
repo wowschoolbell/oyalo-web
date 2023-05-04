@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-labels */
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useState} from 'react';
 import {Card, Select, Col, Row, Form, Button, Popover} from 'antd';
 import {Tabs} from 'antd';
