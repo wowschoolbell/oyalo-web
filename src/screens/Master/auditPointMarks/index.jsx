@@ -51,7 +51,7 @@ export default function AuditPointMarks({setTopTitle}) {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getAuditPointListMark());
-  }, []);
+  }, [dispatch]);
 
   return (
     <CustomTable

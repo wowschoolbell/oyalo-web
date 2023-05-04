@@ -29,7 +29,7 @@ function OutletMaster({setTopTitle}) {
 
   useEffect(() => {
     dispatch(getOutletMaster());
-  }, []);
+  }, [dispatch]);
   let column = [
     {key: '1', headerName: 'S.No', field: 'S.No', hide: false, width: 70},
     {key: '8', headerName: 'Name', field: 'name', hide: false, width: 180},

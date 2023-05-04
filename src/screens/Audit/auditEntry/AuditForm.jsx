@@ -127,7 +127,7 @@ function AuditEntryForm({mode}) {
     dispatch(getAuditType({data: {type: 1}}));
     dispatch(getZonal());
     setTotal_mark(entryData?.total_mark ?? 0);
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(getSubZonal(zone_id));

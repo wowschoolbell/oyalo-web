@@ -31,7 +31,7 @@ function AssetGroupForm() {
 
   useEffect(() => {
     dispatch(getServiceFor());
-  }, []);
+  }, [dispatch]);
 
   const {savingEmployeeLevel} = useSelector((state) => {
     return state.subMaster;
@@ -41,7 +41,7 @@ function AssetGroupForm() {
     setShowDialog(false);
     dispatch(defaultValue?.id ? updateAssetGroup({data: {...data, status: transStatus({status}), id: defaultValue.id}}) : saveAssetGroup({data, status: transStatus({status})}))
     .then(({message, status, statusText}) => {
-      if(status == 200){
+      if(status === 200){
         form.resetFields();
         navigate('/assetGroup');
       }

@@ -32,7 +32,7 @@ export default function VendorMaster() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getVendorMaster());
-  }, []);
+  }, [dispatch]);
 
   // eslint-disable-next-line no-unused-vars
 

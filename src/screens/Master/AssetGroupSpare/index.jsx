@@ -44,7 +44,7 @@ export default function AssetGroupSpare() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getAssetGroupSpare());
-  }, []);
+  }, [dispatch]);
 
   return (
     <CustomTable handleEditClick={handleEditClick} loading={gettingAssetGroupSpare} dataSource={gridData} column={column} onClickAdd={onClickAdd} title={'Asset Group Spare'} />

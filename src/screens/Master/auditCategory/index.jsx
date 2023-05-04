@@ -31,7 +31,7 @@ export default function AuditCategory({setTopTitle}) {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getAuditCategory());
-  }, []);
+  }, [dispatch]);
 
   // eslint-disable-next-line no-unused-vars
 

@@ -32,7 +32,7 @@ export default function CreateTicket() {
 
   useEffect(() => {
     dispatch(getTickets());
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className='h-screen'>

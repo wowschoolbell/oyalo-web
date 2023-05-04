@@ -30,7 +30,7 @@ export default function TypeOfService() {
 
   useEffect(() => {
     dispatch(getTypeOfService());
-  }, []);
+  }, [dispatch]);
 
   return <CustomTable handleEditClick={handleEditClick} loading={gettingTypeOfService} dataSource={dataSource} column={column} onClickAdd={onClickAdd} title={'Type Of Service'} />;
 }

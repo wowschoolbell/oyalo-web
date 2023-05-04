@@ -50,7 +50,7 @@ export default function AuditPointList({setTopTitle}) {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getAuditPointList());
-  }, []);
+  }, [dispatch]);
 
   return <CustomTable dataSource={gridData} loading={gettingAuditPointList} handleEditClick={handleEditClick} column={column} onClickAdd={onClickAdd} title={'Audit Point List'} />;
 }

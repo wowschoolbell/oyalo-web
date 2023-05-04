@@ -31,7 +31,7 @@ export default function ServiceCategory() {
 
   useEffect(() => {
     dispatch(getServiceCategory());
-  }, []);
+  }, [dispatch]);
 
   return (
     <CustomTable handleEditClick={handleEditClick} loading={gettingServiceCategory} dataSource={dataSource} column={column} onClickAdd={onClickAdd} title={'Service Category'} />

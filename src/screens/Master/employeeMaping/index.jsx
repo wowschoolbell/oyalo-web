@@ -82,7 +82,7 @@ export default function EmployeeMaping({setTopTitle}) {
 
   useEffect(() => {
     dispatch(getEmployeeMapping());
-  }, []);
+  }, [dispatch]);
 
   return (
     <CustomTable handleEditClick={handleEditClick} loading={gettingEmployeeMapping} dataSource={gritData} column={column} onClickAdd={onClickAdd} title={'Employee Mapping'} />

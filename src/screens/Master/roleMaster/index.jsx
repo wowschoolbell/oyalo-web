@@ -35,7 +35,7 @@ export default function RoleMaster({setTopTitle}) {
 
   useEffect(() => {
     dispatch(getRoleMaster());
-  }, []);
+  }, [dispatch]);
 
   return <CustomTable loading={gettingRoleMaster} dataSource={gridData} column={column} onClickAdd={onClickAdd} title={'Role Master'} />;
 }

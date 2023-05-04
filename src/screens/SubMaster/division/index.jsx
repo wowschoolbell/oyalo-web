@@ -32,7 +32,7 @@ export default function Division({setTopTitle}) {
 
   useEffect(() => {
     dispatch(getDivision());
-  }, []);
+  }, [dispatch]);
 
   return <CustomTable handleEditClick={handleEditClick} loading={gettingDivision} dataSource={dataSource} column={column} onClickAdd={onClickAdd} title={'Division'} />;
 }

@@ -30,7 +30,7 @@ export default function ServiceFor() {
 
   useEffect(() => {
     dispatch(getServiceFor());
-  }, []);
+  }, [dispatch]);
 
   return <CustomTable handleEditClick={handleEditClick} loading={gettingServiceFor} dataSource={dataSource} column={column} onClickAdd={onClickAdd} title={'Service For'} />;
 }

@@ -30,7 +30,7 @@ export default function WorkDone() {
 
   useEffect(() => {
     dispatch(getWorkDone());
-  }, []);
+  }, [dispatch]);
 
   return <CustomTable handleEditClick={handleEditClick} loading={gettingWorkDone} dataSource={dataSource} column={column} onClickAdd={onClickAdd} title={'Work Done'} />;
 }

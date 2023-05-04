@@ -22,7 +22,7 @@ export default function EmployeeMaster({setTopTitle}) {
 
   useEffect(() => {
     dispatch(getEmployeeMaster());
-  }, []);
+  }, [dispatch]);
 
   const {
     gettingEmployeMaster,

@@ -30,7 +30,7 @@ export default function Priority() {
 
   useEffect(() => {
     dispatch(getPriority());
-  }, []);
+  }, [dispatch]);
 
   return <CustomTable handleEditClick={handleEditClick} loading={gettingPriority} dataSource={dataSource} column={column} onClickAdd={onClickAdd} title={'Priority'} />;
 }

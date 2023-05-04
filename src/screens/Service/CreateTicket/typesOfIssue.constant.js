@@ -1,4 +1,4 @@
-export default [{
+const issueTypes = [{
   id: '1',
   name: 'Combo issue'
 },
@@ -38,3 +38,5 @@ export default [{
 
 
 
+
+export default issueTypes;

@@ -44,7 +44,7 @@ export default function AssetMaster() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getAssetMaster());
-  }, []);
+  }, [dispatch]);
 
   return <CustomTable handleEditClick={handleEditClick} loading={gettingAssetMaster} dataSource={gridData} column={column} onClickAdd={onClickAdd} title={'Asset Master'} />;
 }

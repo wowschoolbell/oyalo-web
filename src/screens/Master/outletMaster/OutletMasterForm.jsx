@@ -124,7 +124,7 @@ function OutletMasterForm() {
   useEffect(() => {
     dispatch(getStates());
     dispatch(getORLName());
-  }, [submitted]);
+  }, [dispatch, submitted]);
 
   useEffect(() => {
     dispatch(getZonal(stateID));

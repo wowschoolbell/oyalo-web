@@ -211,7 +211,7 @@ const CreateTicketForm = () => {
                           filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
                           {map(
                             (assetGroup) => {
-                              if (assetGroup.servicefor_id == serviceFor){
+                              if (assetGroup.servicefor_id === serviceFor){
                               return (
                                 <Option key={assetGroup?.id} value={assetGroup?.id}>
                                   {assetGroup?.name}
@@ -234,7 +234,7 @@ const CreateTicketForm = () => {
                           {map(
                             (assetMaster) => {
                                console.log(assetMaster,"assetMaster")
-                              if (assetMaster.asset_group_id == assetGroup) {
+                              if (assetMaster.asset_group_id === assetGroup) {
                               return (
                                 <Option key={assetMaster?.asset_group_id} value={assetMaster?.asset_group_id}>
                                   {assetMaster?.asset_name_sap}

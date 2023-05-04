@@ -30,7 +30,7 @@ export default function Glaccount() {
 
   useEffect(() => {
     dispatch(getGlAccount());
-  }, []);
+  }, [dispatch]);
 
 
   return <CustomTable handleEditClick={handleEditClick} loading={gettingGlAccount} dataSource={dataSource} column={column} onClickAdd={onClickAdd} title={'Type Of Service'} />;

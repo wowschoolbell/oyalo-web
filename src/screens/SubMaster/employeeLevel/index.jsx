@@ -31,7 +31,7 @@ export default function EmployeeLevel({setTopTitle}) {
 
   useEffect(() => {
     dispatch(getEmployeeLevel());
-  }, []);
+  }, [dispatch]);
 
   return <CustomTable handleEditClick={handleEditClick} loading={gettingEmployeeLevel} dataSource={dataSource} column={column} onClickAdd={onClickAdd} title={'EmployeeLevel'} />;
 }

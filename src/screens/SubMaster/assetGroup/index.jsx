@@ -30,7 +30,7 @@ export default function AssetGroup() {
 
   useEffect(() => {
     dispatch(getAssetGroup());
-  }, []);
+  }, [dispatch]);
 
   return <CustomTable handleEditClick={handleEditClick} loading={gettingAssetGroup} dataSource={dataSource} column={column} onClickAdd={onClickAdd} title={'Asset Group'} />;
 }

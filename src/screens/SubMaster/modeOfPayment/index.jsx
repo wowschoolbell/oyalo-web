@@ -30,7 +30,7 @@ export default function ModeOfPayment() {
 
   useEffect(() => {
     dispatch(getModeOfPayment());
-  }, []);
+  }, [dispatch]);
 
   return <CustomTable handleEditClick={handleEditClick} loading={gettingModeOfPayment} dataSource={dataSource} column={column} onClickAdd={onClickAdd} title={'Mode of Payment'} />;
 }

@@ -30,7 +30,7 @@ export default function NewAssetMaster() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getNewAssetMaster());
-  }, []);
+  }, [dispatch]);
 
   return <CustomTable handleEditClick={handleEditClick} loading={gettingNewAssetMaster} dataSource={dataSource} column={column} onClickAdd={onClickAdd} title={'Asset Master'} />;
 }
