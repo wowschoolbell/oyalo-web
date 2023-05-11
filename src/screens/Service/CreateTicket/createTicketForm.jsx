@@ -62,7 +62,7 @@ const CreateTicketForm = () => {
     getAssetMasterResponse: {data: assetMasters},
     gettingTypeOfService,
     getTypeOfServiceResponse: {data: typeOfServices},
-    //getAssetGroupIssueResponse: {data: typesOfIssue}
+    getAssetGroupIssueResponse: {data: typesOfAssetGroupIssue}
   } = useSelector((state) => {
     return state.service;
   });
@@ -201,6 +201,46 @@ const CreateTicketForm = () => {
                     </Select>
                   </Form.Item>
                 </Col>
+                {['POS'].includes(service) && (
+                <Col md={{span: 6}} xs={{span: 24}}>
+                  <Form.Item name='types_of_issue' label='Types of Issue-s' rules={[{required: true , message: 'Please select Types of Issue'}]}>
+                    <Select
+                      placeholder='Select'
+                      //   loading={gettingState}
+                      showSearch
+                      filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
+                      {map(
+                            (typesOfIssue) => {
+                              console.log(typesOfIssue)
+                              // if (typesOfIssue.asset_group_id === assetGroup) {
+                              //  // console.log(typesOfIssue)
+                              // let issues=typesOfIssue.groupissues;
+                              // // console.log(j)
+                              // console.log(issues)
+                              // // console.log(assetGroup)
+                              // issues.map((data,i)=>{
+                              //   console.log("i",data)
+                              //   return (
+                              //     <Option key={i} value={i}>
+                              //       {data?.name}
+                              //     </Option>
+                              //   );
+                              // })
+                              
+                              // }
+                              return (
+                                <Option key={typesOfIssue?.id} value={typesOfIssue?.id}>
+                                  {typesOfIssue?.name}
+                                </Option>
+                              );
+
+                            },
+                            typesOfIssue ? typesOfIssue : []
+                          )}
+                    </Select>
+                  </Form.Item>
+                </Col>
+              )}
                 {['Equipment', 'IT'].includes(service) && (
                   <>
                     <Col md={{span: 6}} xs={{span: 24}}>
@@ -234,7 +274,6 @@ const CreateTicketForm = () => {
                           filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
                           {map(
                             (assetMaster) => {
-                               console.log(assetMaster,"assetMaster")
                               if (assetMaster.asset_group_id === assetGroup) {
                               return (
                                 <Option key={assetMaster?.asset_group_id} value={assetMaster?.asset_group_id}>
@@ -248,16 +287,33 @@ const CreateTicketForm = () => {
                         </Select>
                       </Form.Item>
                     </Col>
-                    <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='types_of_issue' label='Types of Issue-s' rules={[{required: true, message: 'Please select Types of Issue'}]}>
+               
+                 <Col md={{span: 6}} xs={{span: 24}}>
+                  <Form.Item name='types_of_issue' label='Types of Issue-s' rules={[{required: true , message: 'Please select Types of Issue'}]}>
                     <Select
                       placeholder='Select'
                       //   loading={gettingState}
                       showSearch
                       filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
                       {map(
-                            (typesOfIssue) => {
-                              // if (typesOfIssue.asset_group_id === assetGroup) {
+                            (typesOfAssetGroupIssue) => {
+                              if(assetGroup){
+                              let selectedName=assetGroups.filter(el=>el.id===assetGroup)[0].name
+                              if(typesOfAssetGroupIssue.asset_group_name===selectedName){
+                                return typesOfAssetGroupIssue.groupissues.map((data,i)=>{
+                                  console.log(data)
+                                  return (
+                                       <Option key={i} value={i}>
+                                         {data?.name}
+                                       </Option>
+                                     );
+                                 
+                              })
+                              }
+                            //   let selectSpare=  typesOfAssetGroupIssue.filter(el=>el.asset_group_name===selectedName)
+
+                              //console.log("heell",typesOfAssetGroupIssue)
+                              // if (typesOfAssetGroupIssue.asset_group_id === assetGroup) {
                               //  // console.log(typesOfIssue)
                               // let issues=typesOfIssue.groupissues;
                               // // console.log(j)
@@ -272,20 +328,21 @@ const CreateTicketForm = () => {
                               //   );
                               // })
                               
-                              // }
-                              return (
-                                <Option key={typesOfIssue?.id} value={typesOfIssue?.id}>
-                                  {typesOfIssue?.name}
-                                </Option>
-                              );
+                               }
+
+                              // return (
+                              //   <Option key={typesOfAssetGroupIssue?.id} value={typesOfAssetGroupIssue?.id}>
+                              //     {typesOfAssetGroupIssue?.name}
+                              //   </Option>
+                              // );
 
                             },
-                            typesOfIssue ? typesOfIssue : []
+                            typesOfAssetGroupIssue ? typesOfAssetGroupIssue : []
                           )}
                     </Select>
                   </Form.Item>
                 </Col>
-
+                    
                     <Col md={{span: 6}} xs={{span: 24}}>
                       <Form.Item
                         name='service_type'
