@@ -194,7 +194,7 @@ function AssetMasterForm() {
                 </Col>
 
                 <Col span={24}>
-                  <Form.Item name='status' label='Status ' rules={[{ required: true, message: 'Please slect your status' }]}>
+                  <Form.Item name='status' label='Status '>
                     <Col span={24}>
                       <Radio.Group
                         buttonStyle='solid'
@@ -202,7 +202,7 @@ function AssetMasterForm() {
                           setStatus(e?.target?.value);
                         }}
                         size='small'
-                        defaultValue={defaultValue?.status === 'In Active' ? 0 : 1}>
+                        defaultValue={defaultValue?.status === 1 ? 0 : 1}>
                         <Radio.Button className='active' value={1}>
                           Active
                         </Radio.Button>
