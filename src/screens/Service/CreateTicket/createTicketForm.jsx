@@ -94,7 +94,6 @@ const CreateTicketForm = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    console.log("DATA", outletData)
     form.setFieldsValue({
       orl_name: (outletData ?? []).find((outletData) => outletData?.id === selectedOutlet)?.orl_name,
       contact_no: (outletData ?? []).find((outletData) => outletData?.id === selectedOutlet)?.orl_cug_no
@@ -211,7 +210,7 @@ const CreateTicketForm = () => {
                       filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
                       {map(
                             (typesOfIssue) => {
-                              console.log(typesOfIssue)
+                              
                               // if (typesOfIssue.asset_group_id === assetGroup) {
                               //  // console.log(typesOfIssue)
                               // let issues=typesOfIssue.groupissues;
@@ -274,7 +273,7 @@ const CreateTicketForm = () => {
                           filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
                           {map(
                             (assetMaster) => {
-                              if (assetMaster.asset_group_id === assetGroup) {
+                              if (assetMaster.asset_group_id == assetGroup) {
                               return (
                                 <Option key={assetMaster?.asset_group_id} value={assetMaster?.asset_group_id}>
                                   {assetMaster?.asset_name_sap}
@@ -301,7 +300,6 @@ const CreateTicketForm = () => {
                               let selectedName=assetGroups.filter(el=>el.id===assetGroup)[0].name
                               if(typesOfAssetGroupIssue.asset_group_name===selectedName){
                                 return typesOfAssetGroupIssue.groupissues.map((data,i)=>{
-                                  console.log(data)
                                   return (
                                        <Option key={i} value={i}>
                                          {data?.name}
