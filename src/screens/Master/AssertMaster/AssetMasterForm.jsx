@@ -180,7 +180,6 @@ function AssetMasterForm() {
                     rules={[{ required: true, message: 'Please select AG AMC' }]} >
                     <Select
                       placeholder='select AG AMC'
-                      onSelect={(e) => setSelectedOutlet(e)}
                       showSearch
                       filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
                       <Option key="1" value="yes">

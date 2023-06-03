@@ -180,7 +180,7 @@ function NewAssetMasterForm() {
                 </Col>
 
                 <Col span={24}>
-                  <Form.Item name='status' label='Status ' rules={[{required: true, message: 'Please slect your status'}]}>
+                  <Form.Item name='status' label='Status '>
                     <Col span={24}>
                       <Radio.Group
                         buttonStyle='solid'
