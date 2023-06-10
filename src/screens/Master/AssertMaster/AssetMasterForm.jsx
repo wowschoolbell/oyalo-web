@@ -257,16 +257,17 @@ function AssetMasterForm() {
                                         // loading={gettingState}
                                         showSearch
                                         filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
+                                        {/* eslint-disable-next-line */}
                                         {assetSpares && assetSpares.map((assetSpare, assetGroupSpareIndex) => {
-                                           if (assetSpare.asset_group_id === assetGroup) {
-                                          return assetSpare.assetspares.map((data, index) => {
-                                            return (
-                                              <Option key={`${assetGroupSpareIndex}-${data.name}-${index}`} value={data?.name}>
-                                                {data?.name}
-                                              </Option>
-                                            );
-                                          });
-                                        }
+                                          if (assetSpare.asset_group_id === assetGroup) {
+                                            return assetSpare.assetspares.map((data, index) => {
+                                              return (
+                                                <Option key={`${assetGroupSpareIndex}-${data.name}-${index}`} value={data?.name}>
+                                                  {data?.name}
+                                                </Option>
+                                              );
+                                            });
+                                          }
                                         })}
                                       </Select>
                                     </Form.Item>

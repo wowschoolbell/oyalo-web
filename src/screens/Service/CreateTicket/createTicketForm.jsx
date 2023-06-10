@@ -1,49 +1,43 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useEffect, useState} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-import {Input, Card, DatePicker, Button, Col, Row, Form, Select} from 'antd';
+import { Button, Card, Col, Form, Input, Row, Select, Image, Modal } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
-  saveOutletMaster,
-  getStates,
-  getSubZonal,
-  getZonal,
-  updateOutletMaster,
-  getCity,
-  getOutletMaster,
+  getEmployeeMapping,
   getEmployeeMaster,
-  getEmployeeMapping
+  getOutletMaster
 } from '../../../@app/master/masterSlice';
 // import {map} from 'ramda';
-import {useLocation, useNavigate} from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 // import dayjs from 'dayjs';
 import messageToast from '../../../components/messageToast/messageToast';
-import {transStatus} from '../../../util/transStatus';
 // import { Input } from 'antd';
-import {getFormData, CREATE_TICKET_FORM_DATA} from './createTicket.constants';
-import {includes, map} from 'ramda';
-import {getAssetGroup, getAssetMaster, getPriority, getServiceFor, getTypeOfService, saveTickets, updateTickets, getAssetGroupIssue} from '../../../@app/service/serviceSlice';
+import { map } from 'ramda';
+import { getAssetGroup, getAssetGroupIssue, getAssetMaster, getPriority, getServiceFor, getTypeOfService, saveTickets, updateTickets, closeTickets } from '../../../@app/service/serviceSlice';
+import { MultiUploadButton } from '../../../components/multiUploadButton/MultiUploadButton';
 import typesOfIssue from './typesOfIssue.constant';
-import {MultiUploadButton} from '../../../components/multiUploadButton/MultiUploadButton';
-const {TextArea} = Input;
+const { TextArea } = Input;
 
-const {Option} = Select;
-const CreateTicketForm = () => {
+const { Option } = Select;
+const CreateTicketForm = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const {
-    state: {data: defaultValue}
+    state: { data: defaultValue, isEdit }
   } = useLocation();
 
   const {
-    getOutletMasterResponse: {data: outletData},
-    gettingEmployeeMapping,
-    getEmployeeMappingResponse: {data: employeeMapping = []},
-    getEmployeeMasterResponse: {data: Employees}
+    getOutletMasterResponse: { data: outletData },
+    getEmployeeMappingResponse: { data: employeeMapping = [] },
+    getEmployeeMasterResponse: { data: Employees }
   } = useSelector((state) => {
     return state.master;
   });
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [cancelReason, updateCancelReason] = useState("")
 
   const outletList = outletData?.map((o) => ({
     ...o,
@@ -53,26 +47,29 @@ const CreateTicketForm = () => {
   const {
     savingTickets,
     gettingPriority,
-    getPriorityResponse: {data: priorityData},
+    getPriorityResponse: { data: priorityData },
     gettingServiceFor,
-    getServiceForResponse: {data: getServiceForData},
-    gettingAssetGroup,
-    getAssetGroupResponse: {data: assetGroups},
-    gettingNewAssetMaster,
-    getAssetMasterResponse: {data: assetMasters},
-    gettingTypeOfService,
-    getTypeOfServiceResponse: {data: typeOfServices},
-    getAssetGroupIssueResponse: {data: typesOfAssetGroupIssue}
+    getServiceForResponse: { data: getServiceForData },
+    getAssetGroupResponse: { data: assetGroups },
+    getAssetMasterResponse: { data: assetMasters },
+    getTypeOfServiceResponse: { data: typeOfServices },
+    getAssetGroupIssueResponse: { data: typesOfAssetGroupIssue }
   } = useSelector((state) => {
     return state.service;
   });
 
-  const serviceFor = Form.useWatch('service_for', form);
-  const assetGroup = Form.useWatch('asset_group', form);
-  const selectedOutlet = Form.useWatch('outlet_code', form);
-  const selectedAssignedTo = Form.useWatch('assigned_to', form);
+  let serviceFor = Form.useWatch('service_for', form);
+  let assetGroup = Form.useWatch('asset_group', form);
+  let selectedOutlet = Form.useWatch('outlet_code', form);
+  let selectedAssignedTo = Form.useWatch('assigned_to', form);
 
-  const service = (getServiceForData ?? []).find((ServiceFor) => ServiceFor?.id === serviceFor)?.name;
+  if (isEdit) {
+    serviceFor = parseInt(defaultValue.service_for_id);
+    assetGroup = parseInt(defaultValue.asset_group_id);
+  }
+
+  const service = isEdit ? defaultValue.service_for : (getServiceForData ?? []).find((ServiceFor) => ServiceFor?.id === serviceFor)?.name;
+
 
   const assignedTo = employeeMapping?.filter((e) => {
     if (service === 'POS' || service === 'Equipment' || service === 'IT') {
@@ -94,29 +91,40 @@ const CreateTicketForm = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    form.setFieldsValue({
-      orl_name: (outletData ?? []).find((outletData) => outletData?.id === selectedOutlet)?.orl_name,
-      contact_no: (outletData ?? []).find((outletData) => outletData?.id === selectedOutlet)?.orl_cug_no
-    });
+    if (!isEdit) {
+      form.setFieldsValue({
+        orl_name: (outletData ?? []).find((outletData) => outletData?.id === selectedOutlet)?.orl_name,
+        contact_no: (outletData ?? []).find((outletData) => outletData?.id === selectedOutlet)?.orl_cug_no
+      });
+    }
   }, [selectedOutlet]);
 
   useEffect(() => {
-    // console.log((Employees ?? []).find((eM) => eM?.id === selectedAssignedTo)?.contact);
-    form.setFieldsValue({
-      phone_no: (Employees ?? []).find((eM) => eM?.id === selectedAssignedTo)?.contact ?? ''
-    });
+    if (!isEdit) {
+      form.setFieldsValue({
+        phone_no: (Employees ?? []).find((eM) => eM?.id === selectedAssignedTo)?.contact ?? ''
+      });
+    }
   }, [selectedAssignedTo]);
 
   const handleClickBack = () => {
     navigate('/createTicket');
   };
 
+  const handleDeleteBtn = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+    updateCancelReason("");
+  };
+
   const onFinish = (data) => {
     const outletCode = defaultValue?.id ? defaultValue.outlet_code : (outletData ?? []).find((outletData) => outletData?.id === selectedOutlet)?.outlet_code;
-    // setShowDialog(false);
-    dispatch(defaultValue?.mode === 'edit' ? updateTickets({data, id: defaultValue?.id}) : saveTickets({data: {...data, outlet_code: outletCode}})).then(
-      ({message, status, statusText}) => {
-        messageToast({message: message ?? statusText, status, title: 'Ticket creation'});
+    dispatch(isEdit ? updateTickets({ data: { asset: data.asset, id: defaultValue?.id } }) : saveTickets({ data: { ...data, outlet_code: outletCode } })).then(
+      ({ message, status, statusText }) => {
+        messageToast({ message: message ?? statusText, status, title: isEdit ? 'Ticket Updated' : 'Ticket creation' });
         if (status === 200) {
           form.resetFields();
           navigate('/createTicket');
@@ -125,6 +133,36 @@ const CreateTicketForm = () => {
     );
   };
 
+  const onCloseTickets = () => {
+    dispatch(closeTickets({ data: { reason: cancelReason, id: defaultValue?.id } })).then(
+      ({ message, status, statusText }) => {
+        messageToast({ message: message ?? statusText, status, title: 'Ticket Closed' });
+        if (status === 200) {
+          form.resetFields();
+          navigate('/createTicket');
+        }
+      }
+    );
+  }
+
+  useEffect(() => {
+    if (isEdit) {
+      form.setFieldsValue({
+        orl_name: defaultValue.orl_name,
+        contact_no: defaultValue.contact_no,
+        phone_no: defaultValue.phone_no,
+        service_for: defaultValue.service_for,
+        asset_group: defaultValue.asset_group,
+        outlet_code: defaultValue.outlet_code,
+        assigned_to: defaultValue.assigned_to,
+      });
+
+      props.setTopTitle('Edit Ticket')
+    } else {
+      props.setTopTitle('Create Ticket')
+    }
+  }, [isEdit])
+
   const dateFormat = ['DD/MM/YYYY', 'DD/MM/YY'];
 
   return (
@@ -132,14 +170,14 @@ const CreateTicketForm = () => {
       <Card>
         <Row>
           <Col span={24}>
-            <Form disabled={savingTickets} name='basic' labelCol={{span: 24}} wrapperCol={{span: 24}} onFinish={onFinish} autoComplete='off' form={form}
-            initialValues={{
-              ...defaultValue
-            }}>
+            <Form disabled={savingTickets} name='basic' labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} onFinish={onFinish} autoComplete='off' form={form}
+              initialValues={{
+                ...defaultValue
+              }}>
               <Row gutter={[15, 0]}>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='outlet_code' label='Outlet Name' rules={[{required: true, message: 'Please select Outlet code'}]}>
-                    <Select placeholder='select Outlet Name' showSearch filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
+                <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                  <Form.Item name='outlet_code' label='Outlet Name' rules={[{ required: !isEdit, message: 'Please select Outlet code' }]}>
+                    <Select disabled={isEdit} placeholder='select Outlet Name' showSearch filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
                       {map(
                         (outlet) => {
                           return (
@@ -153,19 +191,19 @@ const CreateTicketForm = () => {
                     </Select>
                   </Form.Item>
                 </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='orl_name' label='ORL Name'>
+                <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                  <Form.Item name='orl_name' label='ORL Name' >
                     <Input disabled placeholder='Enter ORL Name' name='orl_name' />
                   </Form.Item>
                 </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
+                <Col md={{ span: 6 }} xs={{ span: 24 }}>
                   <Form.Item name='contact_no' label='Contact No'>
                     <Input disabled placeholder='Enter Contact No' name='contact_no' />
                   </Form.Item>
                 </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='priority' label='Priority' rules={[{required: true, message: 'Please select Priority'}]}>
-                    <Select placeholder='Select' loading={gettingPriority} showSearch>
+                <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                  <Form.Item name='priority' label='Priority' rules={[{ required: !isEdit, message: 'Please select Priority' }]}>
+                    <Select disabled={isEdit} placeholder='Select' loading={gettingPriority} showSearch>
                       filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                       {map(
                         (priority) => {
@@ -180,9 +218,10 @@ const CreateTicketForm = () => {
                     </Select>
                   </Form.Item>
                 </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='service_for' label='Service For' rules={[{required: true, message: 'Please select Service for'}]}>
+                <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                  <Form.Item name='service_for' label='Service For' rules={[{ required: !isEdit, message: 'Please select Service for' }]}>
                     <Select
+                      disabled={isEdit}
                       placeholder='Select'
                       loading={gettingServiceFor}
                       showSearch
@@ -201,70 +240,72 @@ const CreateTicketForm = () => {
                   </Form.Item>
                 </Col>
                 {['POS'].includes(service) && (
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='types_of_issue' label='Types of Issue-s' rules={[{required: true , message: 'Please select Types of Issue'}]}>
-                    <Select
-                      placeholder='Select'
-                      //   loading={gettingState}
-                      showSearch
-                      filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
-                      {map(
-                            (typesOfIssue) => {
-                              
-                              // if (typesOfIssue.asset_group_id === assetGroup) {
-                              //  // console.log(typesOfIssue)
-                              // let issues=typesOfIssue.groupissues;
-                              // // console.log(j)
-                              // console.log(issues)
-                              // // console.log(assetGroup)
-                              // issues.map((data,i)=>{
-                              //   console.log("i",data)
-                              //   return (
-                              //     <Option key={i} value={i}>
-                              //       {data?.name}
-                              //     </Option>
-                              //   );
-                              // })
-                              
-                              // }
-                              return (
-                                <Option key={typesOfIssue?.id} value={typesOfIssue?.id}>
-                                  {typesOfIssue?.name}
-                                </Option>
-                              );
+                  <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                    <Form.Item name='types_of_issue' label='Types of Issue-s' rules={[{ required: !isEdit, message: 'Please select Types of Issue' }]}>
+                      <Select
+                        disabled={isEdit}
+                        placeholder='Select'
+                        //   loading={gettingState}
+                        showSearch
+                        filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
+                        {map(
+                          (typesOfIssue) => {
 
-                            },
-                            typesOfIssue ? typesOfIssue : []
-                          )}
-                    </Select>
-                  </Form.Item>
-                </Col>
-              )}
+                            // if (typesOfIssue.asset_group_id === assetGroup) {
+                            //  // console.log(typesOfIssue)
+                            // let issues=typesOfIssue.groupissues;
+                            // // console.log(j)
+                            // console.log(issues)
+                            // // console.log(assetGroup)
+                            // issues.map((data,i)=>{
+                            //   console.log("i",data)
+                            //   return (
+                            //     <Option key={i} value={i}>
+                            //       {data?.name}
+                            //     </Option>
+                            //   );
+                            // })
+
+                            // }
+                            return (
+                              <Option key={typesOfIssue?.id} value={typesOfIssue?.id}>
+                                {typesOfIssue?.name}
+                              </Option>
+                            );
+
+                          },
+                          typesOfIssue ? typesOfIssue : []
+                        )}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                )}
                 {['Equipment', 'IT'].includes(service) && (
                   <>
-                    <Col md={{span: 6}} xs={{span: 24}}>
+                    <Col md={{ span: 6 }} xs={{ span: 24 }}>
                       <Form.Item name='asset_group' label='Asset Group'>
                         <Select
                           placeholder='Select'
+                          disabled={isEdit}
                           //   loading={gettingState}
                           showSearch
                           filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
                           {map(
                             (assetGroup) => {
-                              if (assetGroup.servicefor_id === serviceFor){
-                              return (
-                                <Option key={assetGroup?.id} value={assetGroup?.id}>
-                                  {assetGroup?.name}
-                                </Option>
-                              );
-                            }
+                              if (assetGroup.servicefor_id === serviceFor) {
+                                return (
+                                  <Option key={assetGroup?.id} value={assetGroup?.id}>
+                                    {assetGroup?.name}
+                                  </Option>
+                                );
+                              }
                             },
                             assetGroups ? assetGroups : []
                           )}
                         </Select>
                       </Form.Item>
                     </Col>
-                    <Col md={{span: 6}} xs={{span: 24}}>
+                    <Col md={{ span: 6 }} xs={{ span: 24 }}>
                       <Form.Item name='asset' label='Asset'>
                         <Select
                           placeholder='Select'
@@ -273,60 +314,61 @@ const CreateTicketForm = () => {
                           filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
                           {map(
                             (assetMaster) => {
-                              if (assetMaster.asset_group_id == assetGroup) {
-                              return (
-                                <Option key={assetMaster?.asset_group_id} value={assetMaster?.asset_group_id}>
-                                  {assetMaster?.asset_name_sap}
-                                </Option>
-                              );
-                            }
+                              if (parseInt(assetMaster.asset_group_id) === parseInt(assetGroup)) {
+                                return (
+                                  <Option key={assetMaster?.id} value={assetMaster?.id}>
+                                    {assetMaster?.asset_name_sap}
+                                  </Option>
+                                );
+                              }
                             },
                             assetMasters ? assetMasters : []
                           )}
                         </Select>
                       </Form.Item>
                     </Col>
-               
-                 <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='types_of_issue' label='Types of Issue-s' rules={[{required: true , message: 'Please select Types of Issue'}]}>
-                    <Select
-                      placeholder='Select'
-                      //   loading={gettingState}
-                      showSearch
-                      filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
-                      {map(
-                            (typesOfAssetGroupIssue) => {
-                              if(assetGroup){
-                              let selectedName=assetGroups.filter(el=>el.id===assetGroup)[0].name
-                              if(typesOfAssetGroupIssue.asset_group_name===selectedName){
-                                return typesOfAssetGroupIssue.groupissues.map((data,i)=>{
-                                  return (
-                                       <Option key={i} value={i}>
-                                         {data?.name}
-                                       </Option>
-                                     );
-                                 
-                              })
-                              }
-                            //   let selectSpare=  typesOfAssetGroupIssue.filter(el=>el.asset_group_name===selectedName)
 
-                              //console.log("heell",typesOfAssetGroupIssue)
-                              // if (typesOfAssetGroupIssue.asset_group_id === assetGroup) {
-                              //  // console.log(typesOfIssue)
-                              // let issues=typesOfIssue.groupissues;
-                              // // console.log(j)
-                              // console.log(issues)
-                              // // console.log(assetGroup)
-                              // issues.map((data,i)=>{
-                              //   console.log("i",data)
-                              //   return (
-                              //     <Option key={i} value={i}>
-                              //       {data?.name}
-                              //     </Option>
-                              //   );
-                              // })
-                              
-                               }
+                    <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                      <Form.Item name='types_of_issue' label='Types of Issue-s' rules={[{ required: !isEdit, message: 'Please select Types of Issue' }]}>
+                        <Select
+                          placeholder='Select'
+                          disabled={isEdit}
+                          //   loading={gettingState}
+                          showSearch
+                          filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
+                          {map(
+                            (typesOfAssetGroupIssue) => {
+                              if (assetGroup) {
+                                let selectedName = assetGroups?.filter(el => el.id === assetGroup)[0]?.name
+                                if (typesOfAssetGroupIssue.asset_group_name === selectedName) {
+                                  return typesOfAssetGroupIssue.groupissues.map((data, i) => {
+                                    return (
+                                      <Option key={i} value={i}>
+                                        {data?.name}
+                                      </Option>
+                                    );
+
+                                  })
+                                }
+                                //   let selectSpare=  typesOfAssetGroupIssue.filter(el=>el.asset_group_name===selectedName)
+
+                                //console.log("heell",typesOfAssetGroupIssue)
+                                // if (typesOfAssetGroupIssue.asset_group_id === assetGroup) {
+                                //  // console.log(typesOfIssue)
+                                // let issues=typesOfIssue.groupissues;
+                                // // console.log(j)
+                                // console.log(issues)
+                                // // console.log(assetGroup)
+                                // issues.map((data,i)=>{
+                                //   console.log("i",data)
+                                //   return (
+                                //     <Option key={i} value={i}>
+                                //       {data?.name}
+                                //     </Option>
+                                //   );
+                                // })
+
+                              }
 
                               // return (
                               //   <Option key={typesOfAssetGroupIssue?.id} value={typesOfAssetGroupIssue?.id}>
@@ -337,17 +379,18 @@ const CreateTicketForm = () => {
                             },
                             typesOfAssetGroupIssue ? typesOfAssetGroupIssue : []
                           )}
-                    </Select>
-                  </Form.Item>
-                </Col>
-                    
-                    <Col md={{span: 6}} xs={{span: 24}}>
+                        </Select>
+                      </Form.Item>
+                    </Col>
+
+                    <Col md={{ span: 6 }} xs={{ span: 24 }}>
                       <Form.Item
                         name='service_type'
                         label='Type Of Services'
-                        rules={[{required: ['Equipment', 'IT'].includes(service), message: 'Please select Type Of Services'}]}>
+                        rules={[{ required: isEdit ? false : ['Equipment', 'IT'].includes(service), message: 'Please select Type Of Services' }]}>
                         <Select
                           placeholder='Select'
+                          disabled={isEdit}
                           //   loading={gettingState}
                           typeOfServices
                           showSearch
@@ -368,12 +411,13 @@ const CreateTicketForm = () => {
                   </>
                 )}
 
-                
 
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='assigned_to' label='Assigned To' rules={[{required: true, message: 'Please select Service for'}]}>
+
+                <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                  <Form.Item name='assigned_to' label='Assigned To' rules={[{ required: !isEdit, message: 'Please select Service for' }]}>
                     <Select
                       placeholder='Select'
+                      disabled={isEdit}
                       //   loading={gettingState}
                       showSearch
                       filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
@@ -390,40 +434,53 @@ const CreateTicketForm = () => {
                     </Select>
                   </Form.Item>
                 </Col>
-                
-                <Col md={{span: 6}} xs={{span: 24}}>
+
+                <Col md={{ span: 6 }} xs={{ span: 24 }}>
                   <Form.Item name='phone_no' label='Phone No'
-                  rules={[
-                    {required: true, message: 'Please select Phone No'},
-                  ]}>
-                    <Input name='phone_no' placeholder='Enter Phone No'  disabled/>
+                    rules={[
+                      { required: !isEdit, message: 'Please select Phone No' },
+                    ]}>
+                    <Input name='phone_no' placeholder='Enter Phone No' disabled />
                   </Form.Item>
                 </Col>
 
-                <Col md={{span: 6}} xs={{span: 24}}>
+                <Col md={{ span: 6 }} xs={{ span: 24 }}>
                   <Form.Item name='problem_description' label='Problem Description'>
-                    <TextArea rows={4} placeholder='' />
+                    <TextArea disabled={isEdit} rows={4} placeholder='' />
                   </Form.Item>
                 </Col>
 
-                <Col md={{span: 6}} xs={{span: 24}}>
+                <Col md={{ span: 6 }} xs={{ span: 24 }}>
                   <Form.Item name='attachments' label='Attachment'>
-                    <MultiUploadButton />
+                    {!isEdit && <MultiUploadButton url={'ticket-imageupload'} onSuccess={(files) => {
+                      form.setFieldsValue({ 'attachments': files?.map?.(file => file?.response?.filename ?? "")?.[0] ?? "" })
+                    }} />}
+                    {isEdit && <Image
+                      width={200}
+                      height={200}
+                      src={defaultValue.attachements}
+                    />}
                   </Form.Item>
                 </Col>
 
                 <Col span={24}>
-                  <Row gutter={[15, 15]} style={{justifyContent: 'end'}}>
-                    <Col span={12} style={{textAlign: 'right'}} className='d-flex align-items-center justify-content-end mt-3'>
+                  <Row gutter={[15, 15]} style={{ justifyContent: 'end' }}>
+                    <Col span={12} style={{ textAlign: 'right' }} className='d-flex align-items-center justify-content-end mt-3'>
                       <Form.Item className='mx-2'>
                         <Button loading={savingTickets} disabled={savingTickets} className='orangeFactory' type='primary' htmlType='submit'>
-                          Submit
+                          {isEdit ? "Update" : "Create"}
                         </Button>
                       </Form.Item>
 
                       <Form.Item>
                         <Button disabled={savingTickets} onClick={handleClickBack}>
                           Back
+                        </Button>
+                      </Form.Item>
+
+                      <Form.Item className='mx-2'>
+                        <Button danger disabled={savingTickets} onClick={handleDeleteBtn}>
+                          Close
                         </Button>
                       </Form.Item>
                     </Col>
@@ -434,6 +491,13 @@ const CreateTicketForm = () => {
           </Col>
         </Row>
       </Card>
+      <Modal title="Close Ticket" open={isModalOpen} onOk={onCloseTickets} onCancel={handleCancel}>
+        <Form layout='vertical' >
+          <Form.Item name='close_reason' label='Reason for Close'>
+            <TextArea value={cancelReason} onChange={(e) => updateCancelReason(e.target.value)} rows={4} placeholder='' />
+          </Form.Item>
+        </Form>
+      </Modal>
     </>
   );
 };

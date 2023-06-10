@@ -25,7 +25,7 @@ function TicketHandling() {
   const navigate = useNavigate();
 
   const onClickAdd = () => {
-    navigate('/createTicket/addForm');
+    navigate('/createTicket/addEditForm');
   };
   const  formticket1= () => {
     navigate('/formticket1');

@@ -1,32 +1,32 @@
-import React, {useEffect} from 'react';
-import {useNavigate} from 'react-router';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router';
 import CustomTable from '../../../components/CustomTable';
-import {useDispatch, useSelector} from 'react-redux';
-import {getTickets} from '../../../@app/service/serviceSlice';
-import {column} from './column';
+import { useDispatch, useSelector } from 'react-redux';
+import { getTickets } from '../../../@app/service/serviceSlice';
+import { column } from './column';
 
-export default function CreateTicket() {
+export default function CreateTicket(props) {
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
 
   const onClickAdd = () => {
-    navigate('/createTicket/addForm', {
-      state: {}
+    navigate('/createTicket/addEditForm', {
+      state: { isEdit: false }
     });
   };
 
   const {
     gettingTickets,
-    getTicketsResponse: {data: dataSource}
+    getTicketsResponse: { data: dataSource }
   } = useSelector((state) => {
     return state.service;
   });
 
   const handleEditClick = (data) => {
-    console.log("Edit Data",data)
-    navigate('/createTicket/addForm', {
-      state: {data}
+    console.log("Edit Data", data)
+    navigate('/createTicket/addEditForm', {
+      state: { data, isEdit: true }
     });
   };
 
@@ -34,9 +34,14 @@ export default function CreateTicket() {
     dispatch(getTickets());
   }, [dispatch]);
 
+  useEffect(() => {
+    props.setTopTitle("Tickets")
+    // eslint-disable-next-line
+  }, [])
+
   return (
     <div className='h-screen'>
-       <CustomTable loading={gettingTickets} dataSource={dataSource} column={column} handleEditClick={handleEditClick} onClickAdd={onClickAdd} title={'Create Ticket List'} />
+      <CustomTable loading={gettingTickets} dataSource={dataSource} column={column} handleEditClick={handleEditClick} onClickAdd={onClickAdd} title={'Create Ticket List'} />
     </div>
   );
 }

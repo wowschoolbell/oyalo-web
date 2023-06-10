@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
-import {PlusOutlined} from '@ant-design/icons';
-import {Button, Modal, Upload} from 'antd';
+import React, { useState } from 'react';
+import { PlusOutlined } from '@ant-design/icons';
+import { Button, Modal, Upload } from 'antd';
 // import ImgCrop from 'antd-img-crop';
-import {baseURL} from '../../api/baseURL';
+import { baseURL } from '../../api/baseURL';
 
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -12,7 +12,7 @@ const getBase64 = (file) =>
     reader.onerror = (error) => reject(error);
   });
 
-export const MultiUploadButton = ({disabled, url}) => {
+export const MultiUploadButton = ({ disabled, url, onSuccess = () => false }) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
@@ -28,10 +28,13 @@ export const MultiUploadButton = ({disabled, url}) => {
   };
 
   const handleChange = (e) => {
+    if (e?.file?.response) {
+      onSuccess(e?.fileList);
+    }
     setFileList(e?.fileList);
   };
   const uploadButton = (
-    <Button disabled={disabled} style={{display: 'flex', direction: 'row'}} icon={<PlusOutlined style={{marginTop: '3px', marginRight: '4px'}} />}>
+    <Button disabled={disabled} style={{ display: 'flex', direction: 'row' }} icon={<PlusOutlined style={{ marginTop: '3px', marginRight: '4px' }} />}>
       <div
         style={{
           marginLeft: '3px'

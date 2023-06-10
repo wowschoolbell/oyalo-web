@@ -39,7 +39,7 @@ function TicketHandlingOpen() {
   const navigate = useNavigate();
 
   const onClickAdd = () => {
-    navigate('/createTicket/addForm');
+    navigate('/createTicket/addEditForm');
   };
 
   const handleViewClick = (rowInfo) => {
