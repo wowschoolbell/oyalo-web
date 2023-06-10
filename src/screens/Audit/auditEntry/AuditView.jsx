@@ -1,29 +1,35 @@
-import React from 'react';
-import {Card, Col, Row, Form, Tabs} from 'antd';
-import {Colors} from '../../App/common/Images';
-import {useLocation, useNavigate} from 'react-router';
-import {uniq} from 'ramda';
+import React, { useState } from "react";
+import { Card, Col, Row, Form, Tabs, Modal } from "antd";
+import { Colors } from "../../App/common/Images";
+import { useLocation, useNavigate } from "react-router";
+import { uniq } from "ramda";
 // import {toString, uniq} from 'ramda';
 
-import {useForm} from 'react-hook-form';
-import FormTable from '../../../components/formComponents/FormTable';
-import ConfirmOnExit from '../../../components/confirmOnExit/ConfirmOnExit';
-// import entryApis from '../../../api/entryApis';
+import { useForm } from "react-hook-form";
+import FormTable from "../../../components/formComponents/FormTable";
+import ConfirmOnExit from "../../../components/confirmOnExit/ConfirmOnExit";
+import entryApis from "../../../api/entryApis";
 // import {useDispatch} from 'react-redux';
 
 function AuditView() {
-  const {state} = useLocation();
+  const { state } = useLocation();
   const navigate = useNavigate();
+  const [recheckPopup, setRecheckPopup] = useState(false);
+  const [recheckData, setRecheckData] = useState("");
   // const dispatch = useDispatch();
-  const {marks} = state;
+  const { marks } = state;
   const cat = uniq((marks ?? []).map((e) => e?.category_id));
   const category = [];
   cat.forEach((element) => {
-    category.push((marks ?? []).filter((mark) => Number(mark.category_id) === Number(element)));
+    category.push(
+      (marks ?? []).filter(
+        (mark) => Number(mark.category_id) === Number(element)
+      )
+    );
   });
 
   const handleOnBack = () => {
-    navigate('/auditEntry');
+    navigate("/auditEntry");
   };
 
   const {
@@ -34,88 +40,158 @@ function AuditView() {
     setError,
     clearErrors,
 
-    formState: {errors, isDirty}
+    formState: { errors, isDirty },
   } = useForm();
+
+  const handleRecheckpopup = (formData) => {
+    const data = {
+      auditentry_id: formData?.audit_id,
+    };
+    entryApis.viewRecheck({ data }).then((data) => {
+      setRecheckData(data?.data?.data.recheck_msg);
+      setRecheckPopup(true);
+    });
+  };
 
   return (
     <>
       <Card
-        className='m-5'
+        className="m-5"
         style={{
-          boxShadow: 'rgba(0, 0, 0, 0.1) 0px 10px 50px',
-          borderRadius: '16px'
+          boxShadow: "rgba(0, 0, 0, 0.1) 0px 10px 50px",
+          borderRadius: "16px",
         }}>
         <ConfirmOnExit showModel={isDirty} />
-        <Row style={{justifyContent: 'center'}}>
+        <Row style={{ justifyContent: "center" }}>
           <Col span={24}>
-            <Form name='basic' labelCol={{span: 24}} wrapperCol={{span: 24}} initialValues={{remember: true}} autoComplete='off'>
+            <Form
+              name="basic"
+              labelCol={{ span: 24 }}
+              wrapperCol={{ span: 24 }}
+              initialValues={{ remember: true }}
+              autoComplete="off">
               <Row gutter={[15, 0]}>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='add_category' label='Zone'>
-                    <span style={{color: Colors.text_color, paddingBottom: 0}}>{state?.zone_name}</span>
+                <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                  <Form.Item name="add_category" label="Zone">
+                    <span
+                      style={{ color: Colors.text_color, paddingBottom: 0 }}>
+                      {state?.zone_name}
+                    </span>
                   </Form.Item>
                 </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
+                <Col md={{ span: 6 }} xs={{ span: 24 }}>
                   <Form.Item
-                    name='add_category'
-                    label='Sub Zone'
+                    name="add_category"
+                    label="Sub Zone"
                     // rules={[{required: true, message: 'Please select category'}]}
                   >
-                    <span style={{color: Colors.text_color, paddingBottom: 0}}>{state?.subzone_name}</span>
+                    <span
+                      style={{ color: Colors.text_color, paddingBottom: 0 }}>
+                      {state?.subzone_name}
+                    </span>
                   </Form.Item>
                 </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='add_category' label='Outlet Code'>
-                    <span style={{color: Colors.text_color, paddingBottom: 0}}>{state?.outlet_ORL}</span>
+                <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                  <Form.Item name="add_category" label="Outlet Code">
+                    <span
+                      style={{ color: Colors.text_color, paddingBottom: 0 }}>
+                      {state?.outlet_ORL}
+                    </span>
                   </Form.Item>
                 </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='add_category' label='Outlet Name'>
-                    <span style={{color: Colors.text_color, paddingBottom: 0}}>{state?.outlet_name}</span>
+                <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                  <Form.Item name="add_category" label="Outlet Name">
+                    <span
+                      style={{ color: Colors.text_color, paddingBottom: 0 }}>
+                      {state?.outlet_name}
+                    </span>
                   </Form.Item>
                 </Col>
               </Row>
               <Row gutter={[15, 0]}>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='add_category' label='ORL Name'>
-                    <span style={{color: Colors.text_color, paddingBottom: 0}}>{state?.outlet_name}</span>
+                <Col md={{ span: 3 }} xs={{ span: 24 }}>
+                  <Form.Item name="add_category" label="ORL Name">
+                    <span
+                      style={{ color: Colors.text_color, paddingBottom: 0 }}>
+                      {state?.outlet_name}
+                    </span>
                   </Form.Item>
                 </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='add_category' label='Audit Type'>
-                    <span style={{color: Colors.text_color, paddingBottom: 0}}>{state?.audit_type === '1' ? 'Full Audit' : 'Category Wise'}</span>
+                <Col md={{ span: 3 }} xs={{ span: 20 }}>
+                  <Form.Item name="add_category" label="Audit Type">
+                    <span
+                      style={{ color: Colors.text_color, paddingBottom: 0 }}>
+                      {state?.audit_type === "1"
+                        ? "Full Audit"
+                        : "Category Wise"}
+                    </span>
                   </Form.Item>
                 </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='add_category' label='Audit Agent Name'>
-                    <span style={{color: Colors.text_color, paddingBottom: 0}}>{state?.agentName}</span>
+                <Col md={{ span: 4 }} xs={{ span: 20 }}>
+                  <Form.Item name="add_category" label="Audit Agent Name">
+                    <span
+                      style={{ color: Colors.text_color, paddingBottom: 0 }}>
+                      {state?.agentName}
+                    </span>
                   </Form.Item>
                 </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='add_category' label='Total Marks'>
-                    <span style={{color: Colors.text_color, paddingBottom: 0}}>{state?.total_mark}</span>
+                <Col md={{ span: 4 }} xs={{ span: 20 }}>
+                  <Form.Item name="add_category" label="Total Marks">
+                    <span
+                      style={{ color: Colors.text_color, paddingBottom: 0 }}>
+                      {state?.total_mark}
+                    </span>
                   </Form.Item>
+                </Col>
+                <Col
+                  md={{ span: 6 }}
+                  xs={{ span: 20 }}
+                  className="w-auto justify-content-center d-flex align-items-end">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleRecheckpopup(state);
+                    }}
+                    className="btn btn-primary">
+                    Remark
+                  </button>
                 </Col>
               </Row>
               <Row>
                 <Tabs
-                  defaultActiveKey='1'
+                  defaultActiveKey="1"
                   centered
-                  type='card'
+                  type="card"
                   items={(category ?? [])?.map((data, i) => {
                     const id = String(i + 1);
                     return {
                       label: data[0]?.category_name,
                       key: id,
                       children: (
-                        <FormTable {...{mode: 'entryView', index: i, data: {subcategory: data, state}, register, errors, control, setValue, getValues, setError, clearErrors}} />
-                      )
+                        <FormTable
+                          {...{
+                            mode: "entryView",
+                            index: i,
+                            data: { subcategory: data, state },
+                            register,
+                            errors,
+                            control,
+                            setValue,
+                            getValues,
+                            setError,
+                            clearErrors,
+                          }}
+                        />
+                      ),
                     };
                   })}
                 />
               </Row>
-              <div className='flex align-items-start'>
-                <button className='btn' onClick={handleOnBack} style={{color: 'white', backgroundColor: '#3a2cdb'}}>
+              <div className="flex align-items-start">
+                <button
+                  className="btn"
+                  onClick={handleOnBack}
+                  style={{ color: "white", backgroundColor: "#3a2cdb" }}>
                   Back
                 </button>
               </div>
@@ -123,6 +199,25 @@ function AuditView() {
           </Col>
         </Row>
       </Card>
+      {recheckPopup && (
+        <Modal
+          title="Re-mark Note:"
+          open={recheckPopup}
+          onOk={false}
+          footer={null}
+          onCancel={() => setRecheckPopup(false)}>
+          <h5>{recheckData}</h5>
+
+          {/* <TextArea
+            rows={4}
+            style={{ resize: "none" }}
+            value={recheckModal?.data || ""}
+            onChange={(e) =>
+              setRecheckModal({ ...recheckModal, data: e.target.value })
+            }
+          /> */}
+        </Modal>
+      )}
     </>
   );
 }

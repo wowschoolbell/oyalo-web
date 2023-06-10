@@ -25,7 +25,7 @@ function DivisionForm() {
 
   const onFinish = (data) => {
     setShowDialog(false);
-    dispatch(defaultValue?.id ? updateDivision({data: {...data, status: transStatus({status}), id: defaultValue.id}}) : saveDivision({data, status: transStatus({status})})).then(
+    dispatch(defaultValue?.id ? updateDivision({data: {...data, status: transStatus({status}), id: defaultValue.id}}) : saveDivision({data})).then(
       ({message, status, statusText}) => {
         if (status === 200) {
           navigate('/division');

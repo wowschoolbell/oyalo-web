@@ -41,7 +41,7 @@ function SubZoneMasterForm() {
 
   const onFinish = (data) => {
     setShowDialog(false);
-    dispatch(defaultValue?.id ? updateSubZonal({data: {...data, status: transStatus({status}), id: defaultValue.id}}) : saveSubZonal({data, status: transStatus({status})})).then(
+    dispatch(defaultValue?.id ? updateSubZonal({data: {...data, status: transStatus({status}), id: defaultValue.id}}) : saveSubZonal({data})).then(
       ({message, status, statusText}) => {
         if (status === 200) {
           form.resetFields();

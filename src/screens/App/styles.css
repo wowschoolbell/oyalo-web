@@ -171,7 +171,7 @@ html {
     display: none !important;
   }
 
-  /* .side-nav > .ant-menu-submenu-title {
+  .side-nav > .ant-menu-submenu-title {
     color: white !important;
     height: 70px !important;
     font-size: 12px !important;
@@ -181,7 +181,7 @@ html {
     font-family: sans-serif !important;
     text-align: center !important;
     padding-top: 15px !important;
-  } */
+  }
   .ant-menu-submenu-active .ant-menu-submenu-title,
   .ant-menu-submenu-active ~ .ant-menu-submenu-title {
     background-color: white !important;
@@ -618,8 +618,7 @@ html {
     color: #f5a60b !important;
     border-left: 5px solid #f5a60b;
   }
-
-  .ant-menu-submenu-vertical.maintext .ant-menu-submenu-title{
+  .side-nav > .ant-menu-submenu-title {
     color: white !important;
     height: 68px !important;
     font-size: 15px !important;
@@ -628,9 +627,6 @@ html {
     font-family: sans-serif Poppins !important;
     padding: 0px !important;
     padding-bottom: 5px !important;
-  }
-  .mstable div[aria-label = "action"]{
-    display: none;
   }
 
   .ant-menu-vertical .ant-menu-submenu-title {
@@ -846,119 +842,4 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type='number'] {
   -moz-appearance: textfield;
-}
-
-
-
-
-.side-nav > .ant-menu-submenu.ant-menu-submenu-vertical.side-nav .ant-menu-submenu-title {
-  color: #000 !important;
-  opacity: 1;
-  display: block !important;
-}
-
-
-
-.apphide .css-1q6at85-MuiInputBase-root-MuiOutlinedInput-root{
-  display: none;
-}
-.apphide .mt-sm-2 .btn-group{
-  display: none;
-}
-
-.appactionhide .css-gl260s-MuiDataGrid-columnHeadersInner.MuiDataGrid-columnHeadersInner--scrollable .MuiDataGrid-columnHeader:last-child{
-  display: none;
-}
-.appactionhide .css-1b64t4v-MuiDataGrid-root .MuiDataGrid-row:not(.MuiDataGrid-row--dynamicHeight)>.MuiDataGrid-cell:last-child{
-  display: none;
-}
-.appactionhideuu .MuiDataGrid-cell--withRenderer.MuiDataGrid-cell.MuiDataGrid-cell--textLeft{
-  display: none;
-}
-
-.lasthide .css-1b64t4v-MuiDataGrid-root .MuiDataGrid-columnHeader[aria-label="Action"]:last-child{
-  display: none;
-}
-.lasthide .css-1b64t4v-MuiDataGrid-root .MuiDataGrid-cell--textLeft[data-field="action"]:last-child{
-  display: none;
-}
-
-
-.lasthide .css-1b64t4v-MuiDataGrid-root .MuiDataGrid-columnHeader--sortable[data-field="Petty_Cash_Request_Status"]:last-child{
-  display: none;
-}
-.lasthide .css-1b64t4v-MuiDataGrid-root .MuiDataGrid-cell--textLeft[data-field="Petty_Cash_Request_Status"]:last-child{
-  display: none;
-}
-.addonly  .btn-group>:not(.btn-check:first-child)+.btn{
-  display: none;
-}
-.MuiDataGrid-columnHeaders {
-  background-color: #080808;
-  color: #F4A50D;
-}
-
-.lasthide :where(.css-dev-only-do-not-override-1hyej8k).ant-steps .ant-steps-item-icon {
-  width: 50px;
-  height: 50px;background-color: #f5a60b;
-  border-color: #f5a60b;
-
-}
-.lasthide :where(.css-dev-only-do-not-override-1hyej8k).ant-steps.ant-steps-vertical {
-  justify-content: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.lasthide :where(.css-dev-only-do-not-override-1hyej8k).ant-steps .ant-steps-item-icon .ant-steps-icon {
-  display: none;
-}
-.lasthide :where(.css-dev-only-do-not-override-1hyej8k).ant-steps.ant-steps-vertical >.ant-steps-item>.ant-steps-item-container>.ant-steps-item-tail::after {
-  width: 3px;
-  height: 180px;
-}
-.lasthide :where(.css-dev-only-do-not-override-1hyej8k).ant-steps .ant-steps-item-icon {
-  position: relative;
-  width: 50px;
-  height: 50px;
-}
-.lasthide  .ant-steps-item.ant-steps-item-process.ant-steps-item-active .ant-steps-item-content{
-  position: absolute;
-    left: 8%;
-}
-.lasthide  .ant-steps-item.ant-steps-item-process.ant-steps-item-active .ant-steps-item-icon{
-margin-bottom: 46px;
-}
-.lasthide :where(.css-dev-only-do-not-override-1hyej8k).ant-steps.ant-steps-vertical >.ant-steps-item>.ant-steps-item-container>.ant-steps-item-tail {
-  left: 22px;
-  position: absolute;
-  top: 8px;
-  inset-inline-start: 54%;
-  width: 1px;
-  height: 100%;
-  padding: 38px 0 6px;
-}
-.lasthide :where(.css-dev-only-do-not-override-1hyej8k).ant-steps .ant-steps-item-finish>.ant-steps-item-container>.ant-steps-item-tail::after {
-  opacity: 1;
-  background-color: #ccc;
-}
-.lasthide :where(.css-dev-only-do-not-override-1hyej8k).ant-steps.ant-steps-vertical >.ant-steps-item {
-  width: 585px;
-    margin: 0 auto;
-    position: relative;
-}
-.lasthide :where(.css-dev-only-do-not-override-1hyej8k).ant-steps .ant-steps-item-container{
-  margin-left: 50%;
-}
-.lasthide :where(.css-dev-only-do-not-override-1hyej8k).ant-steps.ant-steps-vertical >.ant-steps-item .ant-steps-item-content {
-  padding: 20px;
-  width: 218px;
-  border-radius: 7px;
-  /* padding: 20px; */
-  box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
-  display: flex;
-  flex-direction: 95px;
-  overflow: hidden;
-  flex-direction: column;
-  justify-content: center;
 }

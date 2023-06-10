@@ -24,7 +24,7 @@ function DesignationForm() {
 
   const onFinish = (data) => {
     setShowDialog(false);
-    dispatch(defaultValue?.id ? updateDesignation({data: {...data, status: transStatus({status}), id: defaultValue.id}}) : saveDesignation({data, status: transStatus({status})})).then(
+    dispatch(defaultValue?.id ? updateDesignation({data: {...data, status: transStatus({status}), id: defaultValue.id}}) : saveDesignation({data})).then(
       ({message, status, statusText}) => {
         if (status === 200) {
           form.resetFields();

@@ -1,5 +1,5 @@
-import {createSlice} from '@reduxjs/toolkit';
-import entryApis from '../../api/entryApis';
+import { createSlice } from "@reduxjs/toolkit";
+import entryApis from "../../api/entryApis";
 
 const initialState = {
   gettingEntryTypes: false,
@@ -13,10 +13,13 @@ const initialState = {
   AuditEntry: false,
   getAuditEntry: {},
   gettingApprovalReport: false,
-  getApprovalReport: {}
+  gettingUserApprovalReport: false,
+  getApprovalReport: {},
+  getUserData: {},
+  getUserRankData: {},
 };
 const entrySlice = createSlice({
-  name: 'entry',
+  name: "entry",
   initialState,
   reducers: {
     getEntryTypeRequest: (state) => {
@@ -78,26 +81,40 @@ const entrySlice = createSlice({
     },
     getApprovalReportError: (state) => {
       state.gettingApprovalReport = false;
-    }
-  }
+    },
+    getUserApprovalReportRequest: (state) => {
+      state.gettingUserApprovalReport = true;
+    },
+    getUserFetchData: (state, action) => {
+      state.getUserData = action.payload;
+    },
+    getUserRank: (state, action) => {
+      state.getUserRankData = action.payload;
+    },
+  },
 });
 
 export const AuthAction = entrySlice.actions;
 export default entrySlice.reducer;
 
 export const getAuditType =
-  ({data}) =>
+  ({ data }) =>
   async (dispatch) => {
     dispatch(entrySlice.actions.getEntryTypeRequest());
     return entryApis
-      .getEntryType({data})
-      .then(({data}) => {
+      .getEntryType({ data })
+      .then(({ data }) => {
         const {
-          data: {data: auditType, total_mark},
+          data: { data: auditType, total_mark },
           ...rest
         } = data;
 
-        dispatch(entrySlice.actions.getEntryTypeResponse({data: {...auditType, total_mark}, ...rest}));
+        dispatch(
+          entrySlice.actions.getEntryTypeResponse({
+            data: { ...auditType, total_mark },
+            ...rest,
+          })
+        );
         return data;
       })
       .catch(() => {
@@ -106,13 +123,13 @@ export const getAuditType =
   };
 
 export const addAuditEntry =
-  ({data}) =>
+  ({ data }) =>
   async (dispatch) => {
     dispatch(entrySlice.actions.saveAddAuditEntryRequest());
     return entryApis
-      .addAuditEntry({data})
-      .then(({data}) => {
-        dispatch(entrySlice.actions.saveAddAuditEntryResponse({data}));
+      .addAuditEntry({ data })
+      .then(({ data }) => {
+        dispatch(entrySlice.actions.saveAddAuditEntryResponse({ data }));
         return data;
       })
       .catch(() => {
@@ -121,13 +138,13 @@ export const addAuditEntry =
   };
 
 export const editAuditEntry =
-  ({data}) =>
+  ({ data }) =>
   async (dispatch) => {
     dispatch(entrySlice.actions.saveAddAuditEntryRequest());
     return entryApis
-      .editAuditEntry({data})
-      .then(({data}) => {
-        dispatch(entrySlice.actions.saveAddAuditEntryResponse({data}));
+      .editAuditEntry({ data })
+      .then(({ data }) => {
+        dispatch(entrySlice.actions.saveAddAuditEntryResponse({ data }));
         return data;
       })
       .catch(() => {
@@ -139,10 +156,20 @@ export const getApproval = (req) => async (dispatch) => {
   dispatch(entrySlice.actions.getApprovalRequest());
   return entryApis
     .getApproval(req)
-    .then(({data}) => {
-      const {data: approvalData, ...resatOfData} = data;
-      const onlyCapaPassRecord = approvalData?.filter((e) => e.capa_status === '1' || e.status === '5');
-      dispatch(entrySlice.actions.getApprovalResponse({data: onlyCapaPassRecord, ...resatOfData}));
+    .then(({ data }) => {
+      const { data: approvalData, ...resatOfData } = data;
+
+      console.log(approvalData, "approvalData");
+      const onlyCapaPassRecord = approvalData?.filter(
+        (e) => e.capa_status === "1" || e.status === "5"
+      );
+      // console.log(onlyCapaPassRecord, "onlyCapaPassRecord");
+      dispatch(
+        entrySlice.actions.getApprovalResponse({
+          data: onlyCapaPassRecord,
+          ...resatOfData,
+        })
+      );
       return data;
     })
     .catch(() => {
@@ -154,10 +181,17 @@ export const getCapa = (req) => async (dispatch) => {
   dispatch(entrySlice.actions.getCapaRequest());
   return entryApis
     .getCapa(req)
-    .then(({data}) => {
-      const {data: capaList, ...restOfData} = data;
-      const filterByApprovedStatus = (capaList ?? [])?.filter((e) => e.capa_status === '0');
-      dispatch(entrySlice.actions.getCapaResponse({data: filterByApprovedStatus, ...restOfData}));
+    .then(({ data }) => {
+      const { data: capaList, ...restOfData } = data;
+      const filterByApprovedStatus = (capaList ?? [])?.filter(
+        (e) => e.capa_status === "0"
+      );
+      dispatch(
+        entrySlice.actions.getCapaResponse({
+          data: filterByApprovedStatus,
+          ...restOfData,
+        })
+      );
       return data;
     })
     .catch(() => {
@@ -169,7 +203,7 @@ export const getAuditEntry = (req_data) => async (dispatch) => {
   dispatch(entrySlice.actions.getAuditEntryRequest());
   return entryApis
     .getAuditEntry(req_data)
-    .then(({data}) => {
+    .then(({ data }) => {
       dispatch(entrySlice.actions.getAuditEntryResponse(data));
       return data;
     })
@@ -182,7 +216,7 @@ export const getApprovalReport = (req) => async (dispatch) => {
   dispatch(entrySlice.actions.getApprovalReportRequest());
   return entryApis
     .getApprovalReport(req)
-    .then(({data}) => {
+    .then(({ data }) => {
       dispatch(entrySlice.actions.getApprovalReportResponse(data));
       return data;
     })

@@ -7,13 +7,6 @@ import {column} from './column';
 export default function AssetGroup() {
   const navigate = useNavigate();
 
-  const {
-    gettingAssetGroup,
-    getAssetGroupResponse: {data: dataSource}
-  } = useSelector((state) => {
-    return state.service;
-  });
-
   const onClickAdd = () => {
     navigate('/assetGroup/addForm', {
       state: {}
@@ -22,15 +15,22 @@ export default function AssetGroup() {
 
   const handleEditClick = (data) => {
     navigate('/assetGroup/addForm', {
-      state: {data, isEdit: true}
+      state: {data}
     });
   };
+
+  const {
+    savingAssetGroup,
+    saveAssetGroupResponse: {data: dataSource}
+  } = useSelector((state) => {
+    return state.service;
+  });
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getAssetGroup());
-  }, [dispatch]);
+  }, []);
 
-  return <CustomTable handleEditClick={handleEditClick} loading={gettingAssetGroup} dataSource={dataSource} column={column} onClickAdd={onClickAdd} title={'Asset Group'} />;
+  return <CustomTable handleEditClick={handleEditClick} loading={savingAssetGroup} dataSource={dataSource} column={column} onClickAdd={onClickAdd} title={'Asset Group'} />;
 }

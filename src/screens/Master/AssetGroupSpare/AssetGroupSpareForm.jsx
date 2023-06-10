@@ -7,8 +7,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {transStatus} from '../../../util/transStatus';
 import {addAuditSubCategory, getAuditCategory, updateAuditSubCategory} from '../../../@app/master/masterSlice';
 import {map} from 'ramda';
-import {getAssetGroup, saveAssetGroupSpare, updateAssetGroupSpare} from '../../../@app/service/serviceSlice';
-import messageToast from '../../../components/messageToast/messageToast';
 const {Option} = Select;
 
 function AssetGroupSpareForm() {
@@ -23,31 +21,50 @@ function AssetGroupSpareForm() {
   const [status, setStatus] = useState(defaultValue?.status ?? 1);
 
   const {
-    savingAssetGroupSpare,
-    gettingAssetGroup,
-    getAssetGroupResponse: {data: assetGroups}
+    savingAuditSubCategory,
+    getAuditCategoryResponse: {data: AuditCategory}
   } = useSelector((state) => {
-    return state.service;
+    return state.master;
   });
 
   useEffect(() => {
-    dispatch(getAssetGroup());
+    dispatch(getAuditCategory());
   }, [dispatch]);
 
   const handleClickBack = () => {
     navigate('/AssetGroupSpare');
   };
 
-  const onFinish = (data) => {
-    dispatch(defaultValue?.mode === 'edit' ? updateAssetGroupSpare(
-      { data: { ...data, id: defaultValue.id} }
-    ) : saveAssetGroupSpare({data})).then(({message, status, statusText}) => {
-      messageToast({message: message ?? statusText, status, title: 'Asset Group Spare Master'});
-      if (status === 200) {
-        form.resetFields();
-        navigate('/AssetGroupSpare');
-      }
-    });
+  const onFinish = () => {
+    //dispatch(
+    //   defaultValue?.id
+    //     ? updateAuditSubCategory( { data: { ...restOfData, status: transStatus( { status } ), auditsubcategory_ID: defaultValue?.id, auditcategory_ID: defaultValue.auditcategory_id } } )
+    //     : addAuditSubCategory( { data: { ...restOfData, status: transStatus( { status } ) } } )
+    // ).then( ( { status } ) => {
+    //   if ( status === 200 ) {
+    //     form.resetFields();
+    //   }
+    //   if ( defaultValue?.id && status === 200 ) {
+    //     navigate( '/auditSubCategory' );
+    //   }
+    // } );
+  };
+
+  const formItemLayout = {
+    labelCol: {
+      xs: {span: 24},
+      sm: {span: 4}
+    },
+    wrapperCol: {
+      xs: {span: 24},
+      sm: {span: 20}
+    }
+  };
+  const formItemLayoutWithOutLabel = {
+    wrapperCol: {
+      xs: {span: 24, offset: 0},
+      sm: {span: 20, offset: 0}
+    }
   };
 
   return (
@@ -70,34 +87,34 @@ function AssetGroupSpareForm() {
               autoComplete='off'>
               <Row gutter={[15, 0]}>
                 <Col md={{span: 6}} xs={{span: 24}} lg={4}>
-                  <Form.Item name='asset_group_id' label='Add Asset Group ' rules={[{required: true, message: 'Please select Asset Group'}]} disabled={savingAssetGroupSpare}>
+                  <Form.Item name='auditcategory_ID' label='Add Asset Group ' rules={[{required: true, message: 'Please select Asset Group'}]} disabled={savingAuditSubCategory}>
                     <Select
                       placeholder='select Asset Group'
-                      disabled={gettingAssetGroup}
+                      disabled={savingAuditSubCategory}
                       showSearch
                       filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
                       {map(
-                        (assetGroup) => {
+                        (AuditCategory) => {
                           return (
-                            <Option key={assetGroup.id} value={assetGroup.id}>
-                              {assetGroup.name}
+                            <Option key={AuditCategory.id} value={AuditCategory.id}>
+                              {AuditCategory.name}
                             </Option>
                           );
                         },
-                        assetGroups ? assetGroups : []
+                        AuditCategory ? AuditCategory : []
                       )}
                     </Select>
                   </Form.Item>
                 </Col>
                 <Col md={{span: 6}} xs={{span: 24}} lg={8}>
-                  <Form.Item name='asset_group_spares' label='Add Asset Spare'>
+                  <Form.Item name='add_sub_category' label='Add Asset Spare'>
                     <Form.List
-                      name='asset_group_spares'
+                      name='sub'
                       rules={[
                         {
                           validator: async (_, names) => {
                             if (!names || names.length < 1) {
-                              return Promise.reject(new Error('At least add 1 Asset Spare'));
+                              return Promise.reject(new Error('At least add 1 Add Sub Category'));
                             }
                           }
                         }
@@ -105,6 +122,22 @@ function AssetGroupSpareForm() {
                       {(fields, {add, remove}, {errors}) => (
                         <div>
                           {fields.map((field, index) => (
+                            // <Form.Item {...( index === 0 ? formItemLayout : formItemLayoutWithOutLabel )} required={false} key={field.key}>
+                            //   <Form.Item
+                            //     {...field}
+                            //     validateTrigger={['onChange', 'onBlur']}
+                            //     rules={[
+                            //       {
+                            //         required: true,
+                            //         whitespace: true,
+                            //         message: 'Please input Add Sub Category or delete this field.'
+                            //       }
+                            //     ]}
+                            //     noStyle>
+                            //     <Input placeholder='Add Sub Category' style={{ width: '80%' }} disabled={savingAuditSubCategory} />
+                            //   </Form.Item>
+                            //   {fields.length > 1 ? <MinusCircleOutlined className='dynamic-delete-button' style={{ paddingLeft: '6px' }} onClick={() => remove( field.name )} /> : null}
+                            // </Form.Item>
                             <Space
                               key={field.key}
                               style={{
@@ -115,17 +148,13 @@ function AssetGroupSpareForm() {
                               }}>
                               <Form.Item
                                 {...field}
-                                name={[field.name, 'name']}
+                                name={[field.name, 'sub_name']}
                                 validateTrigger={['onChange', 'onBlur']}
                                 rules={[
                                   {
                                     required: true,
                                     whitespace: true,
-                                    message: 'Please input Add Asset Spare or delete this field.'
-                                  },
-                                  {
-                                    pattern: /^[a-zA-Z0-9' '  ]*$/,
-                                    message: 'Invalid value'
+                                    message: 'Please input Add Sub Category or delete this field.'
                                   }
                                 ]}>
                                 <Input
@@ -133,28 +162,21 @@ function AssetGroupSpareForm() {
                                     width: '100% '
                                   }}
                                   placeholder='Add Asset Spare'
-                                  disabled={savingAssetGroupSpare}
+                                  disabled={savingAuditSubCategory}
                                 />
                               </Form.Item>
                               <Form.Item
                                 align='baseline'
                                 noStyle
-                                shouldUpdate={(prevValues, curValues) => prevValues.area !== curValues.area || prevValues.sights !== curValues.sights}
-                                rules={[
-                                  {
-                                    required: true,
-                                    message: 'Please slect your status'
-                                  }
-                                ]}>
+                                shouldUpdate={(prevValues, curValues) => prevValues.area !== curValues.area || prevValues.sights !== curValues.sights}>
                                 {() => (
                                   <Form.Item
-                                    initialValue={1}
                                     {...field}
                                     name={[field.name, 'status']}
                                     rules={[
                                       {
                                         required: true,
-                                        message: 'Please slect your status'
+                                        message: 'Missing Status'
                                       }
                                     ]}>
                                     <Radio.Group
@@ -163,10 +185,10 @@ function AssetGroupSpareForm() {
                                       style={{
                                         display: 'flex'
                                       }}>
-                                      <Radio.Button value={defaultValue?.mode === 'edit' ? 1 : 1} className='active'>
+                                      <Radio.Button value={1} className='active'>
                                         Active
                                       </Radio.Button>
-                                      <Radio.Button value={defaultValue?.mode === 'edit' ? 0 : 0} className='in-active'>
+                                      <Radio.Button value={0} className='in-active'>
                                         InActive
                                       </Radio.Button>
                                     </Radio.Group>
@@ -183,7 +205,7 @@ function AssetGroupSpareForm() {
                               onClick={() => add()}
                               style={{width: '40%', paddingLeft: '5px', backgroundColor: 'green', color: 'white'}}
                               icon={<PlusOutlined style={{}} />}
-                              disabled={savingAssetGroupSpare}>
+                              disabled={savingAuditSubCategory}>
                               Add field
                             </Button>
 
@@ -200,7 +222,7 @@ function AssetGroupSpareForm() {
                     <Space direction='vertical'>
                       <Col span={24}>
                         <Radio.Group
-                          disabled={savingAssetGroupSpare}
+                          disabled={savingAuditSubCategory}
                           buttonStyle='solid'
                           defaultValue={defaultValue?.status === 'In Active' ? 0 : 1}
                           onChange={( e ) => {
@@ -222,14 +244,14 @@ function AssetGroupSpareForm() {
                   <Row gutter={[15, 15]} style={{ justifyContent: 'çenter' }}>
                     <Col span={12} style={{ textAlign: 'right' }}>
                       <Form.Item>
-                        <Button className='orangeFactory' type='primary' htmlType='submit' disabled={savingAssetGroupSpare}>
+                        <Button className='orangeFactory' type='primary' htmlType='submit' disabled={savingAuditSubCategory}>
                           Submit
                         </Button>
                       </Form.Item>
                     </Col>
                     <Col span={12}>
                       <Form.Item>
-                        <Button disabled={savingAssetGroupSpare} onClick={handleClickBack}>
+                        <Button disabled={savingAuditSubCategory} onClick={handleClickBack}>
                           Back
                         </Button>
                       </Form.Item>
@@ -241,14 +263,14 @@ function AssetGroupSpareForm() {
                   <Row gutter={[15, 15]} style={{justifyContent: 'end'}}>
                     <Col span={12} className='d-flex justify-content-end align-items-center'>
                       <Form.Item className='mx-2'>
-                        <Button className='orangeFactory' type='primary' htmlType='submit' disabled={savingAssetGroupSpare}>
+                        <Button className='orangeFactory' type='primary' htmlType='submit' disabled={savingAuditSubCategory}>
                           Submit
                         </Button>
                       </Form.Item>
                       {/* </Col>
                     <Col span={12}> */}
                       <Form.Item>
-                        <Button disabled={savingAssetGroupSpare} onClick={handleClickBack}>
+                        <Button disabled={savingAuditSubCategory} onClick={handleClickBack}>
                           Back
                         </Button>
                       </Form.Item>

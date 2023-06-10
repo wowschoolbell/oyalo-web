@@ -1,8 +1,8 @@
-import {filter, head} from 'ramda';
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
+
 import {useNavigate} from 'react-router';
-import {getAssetGroupIssue} from '../../../@app/service/serviceSlice';
+import {getAuditSubCategory} from '../../../@app/master/masterSlice';
 import CustomTable from '../../../components/CustomTable';
 import {column} from './column';
 
@@ -16,39 +16,34 @@ export default function AssetGroupIssue() {
   };
 
   const {
-    gettingAssetGroupIssue,
-    getAssetGroupIssueResponse: {
-      data: dataSource
-    }
+    gettingAuditSubCategory,
+    getAuditSubCategoryResponse: {data: dataSource}
   } = useSelector((state) => {
-    return state.service;
+    return state.master;
   });
 
   const gridData = (dataSource ?? []).map((data) => {
-    const {groupissues, ...restOfData} = data;
-    const x = (groupissues ?? [])?.map((n) => {
-      return n.name;
+    const {audit_subcategory, ...restOfData} = data;
+    const x = (audit_subcategory ?? [])?.map((n) => {
+      return n.value;
     });
-    return {groupissues: x, ...restOfData};
+    return {audit_subcategory: x, ...restOfData};
   });
 
   const handleEditClick = (data) => {
-    const editingData = filter((e) => e?.asset_group_id === data?.asset_group_id, dataSource);
-    const {groupissues, asset_group_id, asset_group_status} = head(editingData);
-    const processedGroupIssues = (groupissues ?? [])?.map((e) => {
-      return {name: e.name, status: e.status};
-    });
     navigate('/AssetGroupIssue/addForm', {
-      state: {data: {id: data?.id, asset_group_issues: processedGroupIssues, asset_group_id, asset_group_status, mode: 'edit'}}
+      state: {data}
     });
   };
 
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getAssetGroupIssue());
-  }, [dispatch]);
+    dispatch(getAuditSubCategory());
+  }, []);
+
+  // eslint-disable-next-line no-unused-vars
 
   return (
-    <CustomTable handleEditClick={handleEditClick} loading={gettingAssetGroupIssue} dataSource={gridData} column={column} onClickAdd={onClickAdd} title={'Asset Group Issue'} />
+    <CustomTable handleEditClick={handleEditClick} loading={gettingAuditSubCategory} dataSource={gridData} column={column} onClickAdd={onClickAdd} title={'Asset Group Issue'} />
   );
 }

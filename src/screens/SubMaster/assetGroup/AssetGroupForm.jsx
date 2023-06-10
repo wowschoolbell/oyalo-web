@@ -1,27 +1,21 @@
-import React, {useEffect, useState} from 'react';
-import {Card, Button, Col, Row, Form, Input, Radio} from 'antd';
+import React, {useEffect} from 'react';
+import {Card, Button, Col, Row, Form, Input} from 'antd';
 import {useLocation, useNavigate} from 'react-router';
 import {useDispatch, useSelector} from 'react-redux';
 import {Select} from 'antd';
 import {getServiceFor, saveAssetGroup, updateAssetGroup} from '../../../@app/service/serviceSlice';
 import {map} from 'ramda';
 import messageToast from '../../../components/messageToast/messageToast';
-import ConfirmOnExit from '../../../components/confirmOnExit/ConfirmOnExit';
-import {transStatus} from '../../../util/transStatus';
-
 
 function AssetGroupForm() {
   const [form] = Form.useForm();
-  const [showDialog, setShowDialog] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const {Option} = Select;
 
   const {
-    state: {data: defaultValue, isEdit = false}
+    state: {data: defaultValue}
   } = useLocation();
-
-  const [status, setStatus] = useState(defaultValue?.status ?? 1);
 
   const {
     getServiceForResponse: {data: dataSource}
@@ -31,21 +25,20 @@ function AssetGroupForm() {
 
   useEffect(() => {
     dispatch(getServiceFor());
-  }, [dispatch]);
+  }, []);
 
   const {savingEmployeeLevel} = useSelector((state) => {
     return state.subMaster;
   });
 
   const onFinish = (data) => {
-    setShowDialog(false);
-    dispatch(defaultValue?.id ? updateAssetGroup({data: {...data, status: transStatus({status}), id: defaultValue.id}}) : saveAssetGroup({data, status: transStatus({status})}))
-    .then(({message, status, statusText}) => {
-      if(status === 200){
-        form.resetFields();
-        navigate('/assetGroup');
+    dispatch(defaultValue?.id ? updateAssetGroup({data: {...data, id: defaultValue.id}}) : saveAssetGroup({data})).then(({message, status, statusText}) => {
+      form.resetFields();
+
+      messageToast({message: message ?? statusText, status, title: 'Employee Level Master'});
+      if (defaultValue?.id) {
+        navigate('/employeeLevel');
       }
-      messageToast({message: message ?? statusText, status, title: 'Asset group Master'});
     });
   };
 
@@ -56,7 +49,6 @@ function AssetGroupForm() {
   return (
     <>
       <Card>
-        <ConfirmOnExit showModel={showDialog} />
         <Row style={{justifyContent: 'center'}}>
           <Col span={24}>
             <Form
@@ -64,17 +56,16 @@ function AssetGroupForm() {
               labelCol={{span: 24}}
               wrapperCol={{span: 24}}
               initialValues={{
-                ...defaultValue,
-                name:defaultValue?.name
+                status: defaultValue?.status ?? 1,
+                ...defaultValue
               }}
               onFinish={onFinish}
-              onFieldsChange={() => setShowDialog(true)}
               form={form}
               autoComplete='off'>
               <Row gutter={[15, 0]}>
                 <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='servicefor_id' label='Service For' rules={[{required: true, message: 'Please Select Service For'}]}>
-                    <Select showSearch filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
+                  <Form.Item name='name' label='Service For' rules={[{required: true, message: 'Please Select Service For'}]}>
+                    <Select defaultValue='test' showSearch filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
                       {map(
                         (data) => {
                           return (
@@ -90,38 +81,9 @@ function AssetGroupForm() {
                 </Col>
 
                 <Col span={6}>
-                  <Form.Item
-                    name='name'
-                    label='Asset Group'
-                    rules={[
-                      {required: true, message: 'Please add Asset Group'},
-                      {
-                        pattern: /^[a-zA-Z0-9' '  ]*$/,
-                        message: 'Invalid value'
-                      }
-                    ]}>
+                  <Form.Item name='name' label='Asset Group' rules={[{required: true, message: 'Please add Asset Group'}]}>
                     <Col span={24}>
-                      <Input defaultValue={defaultValue?.name} placeholder='Asset Group' disabled={savingEmployeeLevel} />
-                    </Col>
-                  </Form.Item>
-                </Col>
-                <Col span={24}>
-                  <Form.Item name='status' label='Status ' rules={[{required: true, message: 'Please slect your status'}]}>
-                    <Col span={24}>
-                      <Radio.Group
-                        buttonStyle='solid'
-                        onChange={(e) => {
-                          setStatus(e?.target?.value);
-                        }}
-                        size='small'
-                        defaultValue={defaultValue?.status === 'In Active' ? 0 : 1}>
-                        <Radio.Button className='active' value={1}>
-                          Active
-                        </Radio.Button>
-                        <Radio.Button className='in-active' value={0}>
-                          In-Active
-                        </Radio.Button>
-                      </Radio.Group>
+                      <Input name='name' placeholder='Asset Group' disabled={savingEmployeeLevel} />
                     </Col>
                   </Form.Item>
                 </Col>
@@ -130,7 +92,7 @@ function AssetGroupForm() {
                     <Col span={12} style={{textAlign: 'right'}} className='d-flex align-items-center justify-content-end mt-3'>
                       <Form.Item className='mx-2'>
                         <Button className='orangeFactory' type='primary' htmlType='submit' disabled={savingEmployeeLevel} loading={savingEmployeeLevel}>
-                          {isEdit ? 'Update' : 'Add'}
+                          Submit
                         </Button>
                       </Form.Item>
 

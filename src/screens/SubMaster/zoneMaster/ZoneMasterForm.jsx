@@ -32,7 +32,7 @@ function ZoneMasterForm() {
   }, [dispatch]);
 
   const onFinish = (data) => {
-    dispatch(defaultValue?.id ? updateZonal({data: {...data, status: transStatus({status}), id: defaultValue?.id}}) : saveZonal({data, status: transStatus({status})})).then(({status}) => {
+    dispatch(defaultValue?.id ? updateZonal({data: {...data, status: transStatus({status}), id: defaultValue?.id}}) : saveZonal({data})).then(({status}) => {
       if (status === 200) {
         form.resetFields();
         navigate('/zoneMaster');

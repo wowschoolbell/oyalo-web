@@ -1,8 +1,8 @@
-import {createSlice} from '@reduxjs/toolkit';
-import {filter} from 'ramda';
-import masterApi from '../../api/masterApi';
-import apis from '../../api/stateAPI';
-import messageToast from '../../components/messageToast/messageToast';
+import { createSlice } from "@reduxjs/toolkit";
+import { filter } from "ramda";
+import masterApi from "../../api/masterApi";
+import apis from "../../api/stateAPI";
+import messageToast from "../../components/messageToast/messageToast";
 
 const initialState = {
   savingState: false,
@@ -142,11 +142,15 @@ const initialState = {
   allCatData: {},
   allCatDataError: false,
   zoneEmp: {},
-  zoneEmpError: false
+  zoneEmpError: false,
+
+  gettingUserReport: false,
+  getUserReporResponse: {},
+  getUserReporError: {},
 };
 
 export const masterSlice = createSlice({
-  name: 'master',
+  name: "master",
   initialState,
   reducers: {
     saveStateRequest: (state) => {
@@ -585,19 +589,30 @@ export const masterSlice = createSlice({
     getEmployZone: (state, action) => {
       state.zoneEmp = action.payload;
       state.zoneEmpError = true;
-    }
-  }
+    },
+    getUserReportRequest: (state) => {
+      state.gettingUserReport = true;
+    },
+    getUserReportError: (state, action) => {
+      state.gettingUserReport = false;
+      state.getUserReportError = action.payload;
+    },
+    getUserReporResponseData: (state, action) => {
+      state.gettingUserReport = false;
+      state.getUserReporResponse = action.payload;
+    },
+  },
 });
 
 export default masterSlice.reducer;
 
 export const saveState =
-  ({data}) =>
+  ({ data }) =>
   async (dispatch) => {
     dispatch(masterSlice.actions.saveStateRequest());
     return apis
-      .addState({data})
-      .then(({data}) => {
+      .addState({ data })
+      .then(({ data }) => {
         dispatch(masterSlice.actions.saveStateResponse(data));
         return data;
       })
@@ -607,12 +622,12 @@ export const saveState =
   };
 
 export const updateState =
-  ({data}) =>
+  ({ data }) =>
   async (dispatch) => {
     dispatch(masterSlice.actions.saveStateRequest());
     return apis
-      .updateState({data})
-      .then(({data}) => {
+      .updateState({ data })
+      .then(({ data }) => {
         dispatch(masterSlice.actions.saveStateResponse(data));
         return data;
       })
@@ -625,7 +640,7 @@ export const getStates = () => async (dispatch) => {
   dispatch(masterSlice.actions.getStatesRequest());
   return apis
     .getStates()
-    .then(({data}) => {
+    .then(({ data }) => {
       dispatch(masterSlice.actions.getStatesResponse(data));
       return data;
     })
@@ -635,12 +650,12 @@ export const getStates = () => async (dispatch) => {
 };
 
 export const saveZonal =
-  ({data}) =>
+  ({ data }) =>
   async (dispatch) => {
     dispatch(masterSlice.actions.saveZonalRequest());
     return apis
-      .addZonal({data})
-      .then(({data}) => {
+      .addZonal({ data })
+      .then(({ data }) => {
         dispatch(masterSlice.actions.saveZonalResponse(data));
         return data;
       })
@@ -650,12 +665,12 @@ export const saveZonal =
   };
 
 export const updateZonal =
-  ({data}) =>
+  ({ data }) =>
   async (dispatch) => {
     dispatch(masterSlice.actions.saveZonalRequest());
     return apis
-      .updateZonal({data})
-      .then(({data}) => {
+      .updateZonal({ data })
+      .then(({ data }) => {
         dispatch(masterSlice.actions.saveZonalResponse(data));
         return data;
       })
@@ -668,12 +683,17 @@ export const getZonal = (stateID) => async (dispatch) => {
   dispatch(masterSlice.actions.getZonalRequest());
   return apis
     .getZonal()
-    .then(({data}) => {
-      const {data: zonal, ...rest} = data;
+    .then(({ data }) => {
+      const { data: zonal, ...rest } = data;
 
-      const filterByStateId = filter((e) => (stateID ? e.state_id === stateID : true), zonal ? zonal : []);
+      const filterByStateId = filter(
+        (e) => (stateID ? e.state_id === stateID : true),
+        zonal ? zonal : []
+      );
 
-      dispatch(masterSlice.actions.getZonalResponse({data: filterByStateId, ...rest}));
+      dispatch(
+        masterSlice.actions.getZonalResponse({ data: filterByStateId, ...rest })
+      );
       return data;
     })
     .catch(() => {
@@ -684,7 +704,7 @@ export const EmployeeZone = (stateID) => async (dispatch) => {
   dispatch(masterSlice.actions.getZonalRequest());
   return apis
     .getZonal()
-    .then(({data}) => {
+    .then(({ data }) => {
       const tempArr = [];
 
       data.data.forEach((el) => {
@@ -692,7 +712,7 @@ export const EmployeeZone = (stateID) => async (dispatch) => {
           tempArr.push(el);
         }
       });
-      dispatch(masterSlice.actions.getEmployZone({data: tempArr}));
+      dispatch(masterSlice.actions.getEmployZone({ data: tempArr }));
       return data;
     })
     .catch(() => {
@@ -700,12 +720,12 @@ export const EmployeeZone = (stateID) => async (dispatch) => {
     });
 };
 export const saveSubZonal =
-  ({data}) =>
+  ({ data }) =>
   async (dispatch) => {
     dispatch(masterSlice.actions.saveSubZonalRequest());
     return apis
-      .addSubZonal({data})
-      .then(({data}) => {
+      .addSubZonal({ data })
+      .then(({ data }) => {
         dispatch(masterSlice.actions.saveSubZonalResponse(data));
         return data;
       })
@@ -718,7 +738,7 @@ export const getORLName = () => async (dispatch) => {
   dispatch(masterSlice.actions.getORLRequest());
   return apis
     .getORLName()
-    .then(({data}) => {
+    .then(({ data }) => {
       dispatch(masterSlice.actions.getORLResponse(data));
       return data;
     })
@@ -731,8 +751,8 @@ export const getOutletMaster = (subzone_id) => async (dispatch) => {
   dispatch(masterSlice.actions.getOutletMasterRequest());
   return apis
     .getOutletMaster()
-    .then(({data}) => {
-      const {data: outletList, ...restOfData} = data;
+    .then(({ data }) => {
+      const { data: outletList, ...restOfData } = data;
       let filteredBySZ = [];
       if (Array.isArray(subzone_id)) {
         (outletList ?? [])?.forEach((el) => {
@@ -742,10 +762,17 @@ export const getOutletMaster = (subzone_id) => async (dispatch) => {
         });
       } else {
         filteredBySZ = (outletList ?? [])?.filter((data) => {
-          return subzone_id ? Number(data.subzone_id) === Number(subzone_id) : true;
+          return subzone_id
+            ? Number(data.subzone_id) === Number(subzone_id)
+            : true;
         });
       }
-      dispatch(masterSlice.actions.getOutletMasterResponse({data: filteredBySZ, ...restOfData}));
+      dispatch(
+        masterSlice.actions.getOutletMasterResponse({
+          data: filteredBySZ,
+          ...restOfData,
+        })
+      );
       return data;
     })
     .catch(() => {
@@ -757,7 +784,7 @@ export const getEmployeeMaster = () => async (dispatch) => {
   dispatch(masterSlice.actions.getEmployeeMasterRequest());
   return apis
     .getEmployeeMaster()
-    .then(({data}) => {
+    .then(({ data }) => {
       dispatch(masterSlice.actions.getEmployeeMasterResponse(data));
       return data;
     })
@@ -767,12 +794,12 @@ export const getEmployeeMaster = () => async (dispatch) => {
 };
 
 export const updateSubZonal =
-  ({data}) =>
+  ({ data }) =>
   async (dispatch) => {
     dispatch(masterSlice.actions.saveSubZonalRequest());
     return apis
-      .updateSubZonal({data})
-      .then(({data}) => {
+      .updateSubZonal({ data })
+      .then(({ data }) => {
         dispatch(masterSlice.actions.saveSubZonalResponse(data));
         return data;
       })
@@ -785,8 +812,8 @@ export const getSubZonal = (zoneID) => async (dispatch) => {
   dispatch(masterSlice.actions.getSubZonalRequest());
   return apis
     .getSubZonal()
-    .then(({data}) => {
-      const {data: subZonal, ...rest} = data;
+    .then(({ data }) => {
+      const { data: subZonal, ...rest } = data;
       let tempArr = [];
       if (Array.isArray(zoneID)) {
         data?.data?.forEach((el) => {
@@ -795,9 +822,14 @@ export const getSubZonal = (zoneID) => async (dispatch) => {
           }
         });
       } else {
-        tempArr = filter((e) => (zoneID ? e.zonal_id === zoneID : true), subZonal ? subZonal : []);
+        tempArr = filter(
+          (e) => (zoneID ? e.zonal_id === zoneID : true),
+          subZonal ? subZonal : []
+        );
       }
-      dispatch(masterSlice.actions.getSubZonalResponse({data: tempArr, ...rest}));
+      dispatch(
+        masterSlice.actions.getSubZonalResponse({ data: tempArr, ...rest })
+      );
       return data;
     })
     .catch(() => {
@@ -806,12 +838,12 @@ export const getSubZonal = (zoneID) => async (dispatch) => {
 };
 
 export const saveOutletMaster =
-  ({data}) =>
+  ({ data }) =>
   async (dispatch) => {
     dispatch(masterSlice.actions.saveOutletMasterRequest());
     return apis
-      .addOutletMaster({data})
-      .then(({data}) => {
+      .addOutletMaster({ data })
+      .then(({ data }) => {
         dispatch(masterSlice.actions.saveOutletMasterResponse(data));
         return data;
       })
@@ -821,12 +853,12 @@ export const saveOutletMaster =
   };
 
 export const updateOutletMaster =
-  ({data}) =>
+  ({ data }) =>
   async (dispatch) => {
     dispatch(masterSlice.actions.saveOutletMasterRequest());
     return apis
-      .updateOutletMaster({data})
-      .then(({data}) => {
+      .updateOutletMaster({ data })
+      .then(({ data }) => {
         dispatch(masterSlice.actions.saveOutletMasterResponse(data));
         return data;
       })
@@ -835,12 +867,12 @@ export const updateOutletMaster =
       });
   };
 export const updateCity =
-  ({data}) =>
+  ({ data }) =>
   async (dispatch) => {
     dispatch(masterSlice.actions.saveOutletMasterRequest());
     return apis
-      .updateCity({data})
-      .then(({data}) => {
+      .updateCity({ data })
+      .then(({ data }) => {
         dispatch(masterSlice.actions.saveCityResponse(data));
         return data;
       })
@@ -853,10 +885,15 @@ export const getCity = (subZoneID) => async (dispatch) => {
   dispatch(masterSlice.actions.getCityRequest());
   return apis
     .getCity()
-    .then(({data}) => {
-      const {data: cities, ...rest} = data;
-      const filterCities = filter((e) => (subZoneID ? e.subzonel_id === subZoneID : true), cities ? cities : []);
-      dispatch(masterSlice.actions.getCityResponse({data: filterCities, ...rest}));
+    .then(({ data }) => {
+      const { data: cities, ...rest } = data;
+      const filterCities = filter(
+        (e) => (subZoneID ? e.subzonel_id === subZoneID : true),
+        cities ? cities : []
+      );
+      dispatch(
+        masterSlice.actions.getCityResponse({ data: filterCities, ...rest })
+      );
       return data;
     })
     .catch(() => {
@@ -865,12 +902,12 @@ export const getCity = (subZoneID) => async (dispatch) => {
 };
 
 export const saveDivision =
-  ({data}) =>
+  ({ data }) =>
   async (dispatch) => {
     dispatch(masterSlice.actions.saveDivisionRequest());
     return apis
-      .addDivision({data})
-      .then(({data}) => {
+      .addDivision({ data })
+      .then(({ data }) => {
         dispatch(masterSlice.actions.saveDivisionResponse(data));
         return data;
       })
@@ -880,12 +917,12 @@ export const saveDivision =
   };
 
 export const updateDivision =
-  ({data}) =>
+  ({ data }) =>
   async (dispatch) => {
     dispatch(masterSlice.actions.saveDivisionRequest());
     return apis
-      .updateDivision({data})
-      .then(({data}) => {
+      .updateDivision({ data })
+      .then(({ data }) => {
         dispatch(masterSlice.actions.saveDivisionResponse(data));
         return data;
       })
@@ -898,8 +935,8 @@ export const getDivision = () => async (dispatch) => {
   dispatch(masterSlice.actions.getDivisionRequest());
   return apis
     .getDivision()
-    .then(({data}) => {
-      data.data = data?.data.filter((item) => item.status === '1');
+    .then(({ data }) => {
+      data.data = data?.data.filter((item) => item.status === "1");
 
       dispatch(masterSlice.actions.getDivisionResponse(data));
       return data;
@@ -913,8 +950,8 @@ export const getDepartment = () => async (dispatch) => {
   dispatch(masterSlice.actions.getDepartmentRequest());
   return apis
     .getDepartment()
-    .then(({data}) => {
-      data.data = data?.data.filter((item) => item.status === '1');
+    .then(({ data }) => {
+      data.data = data?.data.filter((item) => item.status === "1");
       dispatch(masterSlice.actions.getDepartmentResponse(data));
       return data;
     })
@@ -924,12 +961,12 @@ export const getDepartment = () => async (dispatch) => {
 };
 
 export const saveDepartment =
-  ({data}) =>
+  ({ data }) =>
   async (dispatch) => {
     dispatch(masterSlice.actions.saveDepartmentRequest());
     return apis
-      .addDepartment({data})
-      .then(({data}) => {
+      .addDepartment({ data })
+      .then(({ data }) => {
         dispatch(masterSlice.actions.saveDepartmentResponse(data));
         return data;
       })
@@ -939,12 +976,12 @@ export const saveDepartment =
   };
 
 export const updateDepartment =
-  ({data}) =>
+  ({ data }) =>
   async (dispatch) => {
     dispatch(masterSlice.actions.saveDepartmentRequest());
     return apis
-      .updateDepartment({data})
-      .then(({data}) => {
+      .updateDepartment({ data })
+      .then(({ data }) => {
         dispatch(masterSlice.actions.saveDepartmentResponse(data));
         return data;
       })
@@ -957,8 +994,8 @@ export const getDesignation = () => async (dispatch) => {
   dispatch(masterSlice.actions.getDesignationRequest());
   return apis
     .getDesignation()
-    .then(({data}) => {
-      data.data = data?.data.filter((item) => item.status === '1');
+    .then(({ data }) => {
+      data.data = data?.data.filter((item) => item.status === "1");
 
       dispatch(masterSlice.actions.getDesignationResponse(data));
       return data;
@@ -969,12 +1006,12 @@ export const getDesignation = () => async (dispatch) => {
 };
 
 export const saveDesignation =
-  ({data}) =>
+  ({ data }) =>
   async (dispatch) => {
     dispatch(masterSlice.actions.saveDesignationRequest());
     return apis
-      .addDesignation({data})
-      .then(({data}) => {
+      .addDesignation({ data })
+      .then(({ data }) => {
         dispatch(masterSlice.actions.saveDesignationResponse(data));
         return data;
       })
@@ -984,12 +1021,12 @@ export const saveDesignation =
   };
 
 export const updateDesignation =
-  ({data}) =>
+  ({ data }) =>
   async (dispatch) => {
     dispatch(masterSlice.actions.saveDesignationRequest());
     return apis
-      .updateDesignation({data})
-      .then(({data}) => {
+      .updateDesignation({ data })
+      .then(({ data }) => {
         dispatch(masterSlice.actions.saveDesignationResponse(data));
         return data;
       })
@@ -1001,7 +1038,7 @@ export const getEmployeeLevel = () => async (dispatch) => {
   dispatch(masterSlice.actions.getEmployeeLevelRequest());
   return apis
     .getEmployeeLevel()
-    .then(({data}) => {
+    .then(({ data }) => {
       dispatch(masterSlice.actions.getEmployeeLevelResponse(data));
       return data;
     })
@@ -1011,12 +1048,12 @@ export const getEmployeeLevel = () => async (dispatch) => {
 };
 
 export const updateEmployeeLevel =
-  ({data}) =>
+  ({ data }) =>
   async (dispatch) => {
     dispatch(masterSlice.actions.saveEmployeeLevelRequest());
     return apis
-      .updateEmployeeLevel({data})
-      .then(({data}) => {
+      .updateEmployeeLevel({ data })
+      .then(({ data }) => {
         dispatch(masterSlice.actions.saveEmployeeLevelResponse(data));
         return data;
       })
@@ -1026,12 +1063,12 @@ export const updateEmployeeLevel =
   };
 
 export const saveEmployeeLevel =
-  ({data}) =>
+  ({ data }) =>
   async (dispatch) => {
     dispatch(masterSlice.actions.saveEmployeeLevelRequest());
     return apis
-      .addEmployeeLevel({data})
-      .then(({data}) => {
+      .addEmployeeLevel({ data })
+      .then(({ data }) => {
         dispatch(masterSlice.actions.saveEmployeeLevelResponse(data));
         return data;
       })
@@ -1044,7 +1081,7 @@ export const getAuditCategory = () => async (dispatch) => {
   dispatch(masterSlice.actions.getAuditCategoryRequest());
   return masterApi
     .getAuditCategory()
-    .then(({data}) => {
+    .then(({ data }) => {
       dispatch(masterSlice.actions.getAuditCategoryResponse(data));
       return data;
     })
@@ -1054,15 +1091,19 @@ export const getAuditCategory = () => async (dispatch) => {
 };
 
 export const addAuditCategory =
-  ({data}) =>
+  ({ data }) =>
   async (dispatch) => {
     dispatch(masterSlice.actions.saveAuditCategoryRequest());
     return masterApi
-      .addAuditCategory({data})
-      .then(({data}) => {
+      .addAuditCategory({ data })
+      .then(({ data }) => {
         dispatch(masterSlice.actions.saveAuditCategoryResponse(data));
 
-        messageToast({message: data?.message ?? data?.statusText, status: data.status, title: 'State Master'});
+        messageToast({
+          message: data?.message ?? data?.statusText,
+          status: data.status,
+          title: "State Master",
+        });
         return data;
       })
       .catch(() => {
@@ -1071,14 +1112,18 @@ export const addAuditCategory =
   };
 
 export const updateAuditCategory =
-  ({data}) =>
+  ({ data }) =>
   async (dispatch) => {
     dispatch(masterSlice.actions.saveAuditCategoryRequest());
     return masterApi
-      .updateAuditCategory({data})
-      .then(({data}) => {
+      .updateAuditCategory({ data })
+      .then(({ data }) => {
         dispatch(masterSlice.actions.saveAuditCategoryResponse(data));
-        messageToast({message: data?.message ?? data?.statusText, status: data.status, title: 'State Master'});
+        messageToast({
+          message: data?.message ?? data?.statusText,
+          status: data.status,
+          title: "State Master",
+        });
         return data;
       })
       .catch(() => {
@@ -1090,10 +1135,19 @@ export const getAuditSubCategory = (auditcategory_ID) => async (dispatch) => {
   dispatch(masterSlice.actions.getAuditSubCategoryRequest());
   return masterApi
     .getAuditSubCategory()
-    .then(({data}) => {
-      const {data: AuditSubCategory, ...rest} = data;
-      const filterByStateId = filter((e) => (auditcategory_ID ? e.auditcategory_id === auditcategory_ID : true), AuditSubCategory ? AuditSubCategory : []);
-      dispatch(masterSlice.actions.getAuditSubCategoryResponse({data: filterByStateId, ...rest}));
+    .then(({ data }) => {
+      const { data: AuditSubCategory, ...rest } = data;
+      const filterByStateId = filter(
+        (e) =>
+          auditcategory_ID ? e.auditcategory_id === auditcategory_ID : true,
+        AuditSubCategory ? AuditSubCategory : []
+      );
+      dispatch(
+        masterSlice.actions.getAuditSubCategoryResponse({
+          data: filterByStateId,
+          ...rest,
+        })
+      );
       return data;
     })
     .catch((e) => {
@@ -1102,14 +1156,18 @@ export const getAuditSubCategory = (auditcategory_ID) => async (dispatch) => {
 };
 
 export const addAuditSubCategory =
-  ({data}) =>
+  ({ data }) =>
   async (dispatch) => {
     dispatch(masterSlice.actions.saveAuditSubCategoryRequest());
     return masterApi
-      .addAuditSubCategory({data})
-      .then(({data}) => {
+      .addAuditSubCategory({ data })
+      .then(({ data }) => {
         dispatch(masterSlice.actions.saveAuditSubCategoryResponse(data));
-        messageToast({message: data?.message ?? data?.statusText, status: data.status, title: 'State Master'});
+        messageToast({
+          message: data?.message ?? data?.statusText,
+          status: data.status,
+          title: "State Master",
+        });
         return data;
       })
       .catch(() => {
@@ -1118,14 +1176,18 @@ export const addAuditSubCategory =
   };
 
 export const updateAuditSubCategory =
-  ({data}) =>
+  ({ data }) =>
   async (dispatch) => {
     dispatch(masterSlice.actions.saveAuditSubCategoryRequest());
     return masterApi
-      .updateAuditSubCategory({data})
-      .then(({data}) => {
+      .updateAuditSubCategory({ data })
+      .then(({ data }) => {
         dispatch(masterSlice.actions.saveAuditSubCategoryResponse(data));
-        messageToast({message: data?.message ?? data?.statusText, status: data.status, title: 'State Master'});
+        messageToast({
+          message: data?.message ?? data?.statusText,
+          status: data.status,
+          title: "State Master",
+        });
         return data;
       })
       .catch(() => {
@@ -1137,7 +1199,7 @@ export const getAuditPointList = () => async (dispatch) => {
   dispatch(masterSlice.actions.getAuditPointListRequest());
   return masterApi
     .getAuditPointList()
-    .then(({data}) => {
+    .then(({ data }) => {
       dispatch(masterSlice.actions.getAuditPointListResponse(data));
       return data;
     })
@@ -1150,7 +1212,7 @@ export const getAllCat = () => async (dispatch) => {
   dispatch(masterSlice.actions.getAuditPointListRequest());
   return masterApi
     .getAuditPointList()
-    .then(({data}) => {
+    .then(({ data }) => {
       dispatch(masterSlice.actions.getAuditPointListResponse(data));
       return data;
     })
@@ -1160,14 +1222,18 @@ export const getAllCat = () => async (dispatch) => {
 };
 
 export const addAuditPointList =
-  ({data}) =>
+  ({ data }) =>
   async (dispatch) => {
     dispatch(masterSlice.actions.saveAuditPointListRequest());
     return masterApi
-      .addAuditPointList({data})
-      .then(({data}) => {
+      .addAuditPointList({ data })
+      .then(({ data }) => {
         dispatch(masterSlice.actions.saveAuditPointListResponse(data));
-        messageToast({message: data?.message ?? data?.statusText, status: data.status, title: 'State Master'});
+        messageToast({
+          message: data?.message ?? data?.statusText,
+          status: data.status,
+          title: "State Master",
+        });
         return data;
       })
       .catch(() => {
@@ -1176,14 +1242,18 @@ export const addAuditPointList =
   };
 
 export const updateAuditPointList =
-  ({data}) =>
+  ({ data }) =>
   async (dispatch) => {
     dispatch(masterSlice.actions.saveAuditPointListRequest());
     return masterApi
-      .updateAuditPointList({data})
-      .then(({data}) => {
+      .updateAuditPointList({ data })
+      .then(({ data }) => {
         dispatch(masterSlice.actions.saveAuditPointListResponse(data));
-        messageToast({message: data?.message ?? data?.statusText, status: data.status, title: 'Audit Point List Master'});
+        messageToast({
+          message: data?.message ?? data?.statusText,
+          status: data.status,
+          title: "Audit Point List Master",
+        });
         return data;
       })
       .catch(() => {
@@ -1195,7 +1265,7 @@ export const getAuditPointListMark = () => async (dispatch) => {
   dispatch(masterSlice.actions.getAuditPointListMarkRequest());
   return masterApi
     .getAuditPointMark()
-    .then(({data}) => {
+    .then(({ data }) => {
       dispatch(masterSlice.actions.getAuditPointListMarkResponse(data));
       return data;
     })
@@ -1205,14 +1275,18 @@ export const getAuditPointListMark = () => async (dispatch) => {
 };
 
 export const addAuditPointListMark =
-  ({data}) =>
+  ({ data }) =>
   async (dispatch) => {
     dispatch(masterSlice.actions.saveAuditPointListMarkRequest());
     return masterApi
-      .addAuditPointMark({data})
-      .then(({data}) => {
+      .addAuditPointMark({ data })
+      .then(({ data }) => {
         dispatch(masterSlice.actions.saveAuditPointListMarkResponse(data));
-        messageToast({message: data?.message ?? data?.statusText, status: data.status, title: 'State Master'});
+        messageToast({
+          message: data?.message ?? data?.statusText,
+          status: data.status,
+          title: "State Master",
+        });
         return data;
       })
       .catch(() => {
@@ -1221,14 +1295,18 @@ export const addAuditPointListMark =
   };
 
 export const updateAuditPointListMark =
-  ({data}) =>
+  ({ data }) =>
   async (dispatch) => {
     dispatch(masterSlice.actions.saveAuditPointListMarkRequest());
     return masterApi
-      .updateAuditPointMark({data})
-      .then(({data}) => {
+      .updateAuditPointMark({ data })
+      .then(({ data }) => {
         dispatch(masterSlice.actions.saveAuditPointListMarkResponse(data));
-        messageToast({message: data?.message ?? data?.statusText, status: data.status, title: 'Audit Point List Master'});
+        messageToast({
+          message: data?.message ?? data?.statusText,
+          status: data.status,
+          title: "Audit Point List Master",
+        });
         return data;
       })
       .catch(() => {
@@ -1240,7 +1318,7 @@ export const getRoleMaster = () => async (dispatch) => {
   dispatch(masterSlice.actions.getRoleMasterRequest());
   return masterApi
     .getRoleMaster()
-    .then(({data}) => {
+    .then(({ data }) => {
       dispatch(masterSlice.actions.getRoleMasterResponse(data));
       return data;
     })
@@ -1250,12 +1328,12 @@ export const getRoleMaster = () => async (dispatch) => {
 };
 
 export const addRoleMaster =
-  ({data}) =>
+  ({ data }) =>
   async (dispatch) => {
     dispatch(masterSlice.actions.saveRoleMasterRequest());
     return masterApi
-      .addRoleMaster({data})
-      .then(({data}) => {
+      .addRoleMaster({ data })
+      .then(({ data }) => {
         dispatch(masterSlice.actions.saveRoleMasterResponse(data));
         return data;
       })
@@ -1268,7 +1346,7 @@ export const getRoleList = () => async (dispatch) => {
   dispatch(masterSlice.actions.getRoleMasterListRequest());
   return masterApi
     .getRoleList()
-    .then(({data}) => {
+    .then(({ data }) => {
       dispatch(masterSlice.actions.getRoleMasterListResponse(data));
       return data;
     })
@@ -1278,13 +1356,13 @@ export const getRoleList = () => async (dispatch) => {
 };
 
 export const addEmployeeMaster =
-  ({data}) =>
+  ({ data }) =>
   async (dispatch) => {
     dispatch(masterSlice.actions.saveEmployeeMasterRequest());
     return apis
-      .addEmployeeMaster({data})
-      .then(({data}) => {
-        dispatch(masterSlice.actions.saveEmployeeMasterResponse({data}));
+      .addEmployeeMaster({ data })
+      .then(({ data }) => {
+        dispatch(masterSlice.actions.saveEmployeeMasterResponse({ data }));
         return data;
       })
       .catch(() => {
@@ -1296,7 +1374,7 @@ export const updateEmployeeMaster = (data) => async (dispatch) => {
   dispatch(masterSlice.actions.saveEmployeeMasterRequest());
   return apis
     .updateEmployeeMaster(data)
-    .then(({data}) => {
+    .then(({ data }) => {
       dispatch(masterSlice.actions.saveEmployeeMasterResponse(data));
       return data;
     })
@@ -1309,7 +1387,7 @@ export const getModulesList = () => async (dispatch) => {
   dispatch(masterSlice.actions.getModulesListRequest());
   return apis
     .getModulesList()
-    .then(({data}) => {
+    .then(({ data }) => {
       dispatch(masterSlice.actions.getModulesListResponse(data));
       return data;
     })
@@ -1322,8 +1400,8 @@ export const getSubModulesList = () => async (dispatch) => {
   dispatch(masterSlice.actions.getSubModulesListRequest());
   return apis
     .getSubModulesList()
-    .then(({data}) => {
-      dispatch(masterSlice.actions.getSubModulesListResponse({...data}));
+    .then(({ data }) => {
+      dispatch(masterSlice.actions.getSubModulesListResponse({ ...data }));
       return data;
     })
     .catch(() => {
@@ -1335,7 +1413,7 @@ export const getModuleScreensList = () => async (dispatch) => {
   dispatch(masterSlice.actions.getModulesScreenListRequest());
   return apis
     .getModulesScreenList()
-    .then(({data}) => {
+    .then(({ data }) => {
       dispatch(masterSlice.actions.getModulesScreenListResponse(data));
       return data;
     })
@@ -1348,7 +1426,7 @@ export const getReport = () => async (dispatch) => {
   dispatch(masterSlice.actions.getReportRequest());
   return apis
     .getReport()
-    .then(({data}) => {
+    .then(({ data }) => {
       dispatch(masterSlice.actions.getReportResponse(data));
       return data;
     })
@@ -1361,7 +1439,7 @@ export const getEmployeeMapping = () => async (dispatch) => {
   dispatch(masterSlice.actions.getEmployeeMappingRequest());
   return apis
     .getEmployeeMapping()
-    .then(({data}) => {
+    .then(({ data }) => {
       dispatch(masterSlice.actions.getEmployeeMappingResponse(data));
       return data;
     })
@@ -1371,12 +1449,12 @@ export const getEmployeeMapping = () => async (dispatch) => {
 };
 
 export const UpdateEmployeeMapping =
-  ({data}) =>
+  ({ data }) =>
   async (dispatch) => {
     dispatch(masterSlice.actions.saveEmployeeMappingRequest());
     return apis
-      .updateEmployeeMApping({data})
-      .then(({data}) => {
+      .updateEmployeeMApping({ data })
+      .then(({ data }) => {
         dispatch(masterSlice.actions.saveEmployeeMappingResponse(data));
         return data;
       })
@@ -1386,12 +1464,12 @@ export const UpdateEmployeeMapping =
   };
 
 export const addEmployeeMapping =
-  ({data}) =>
+  ({ data }) =>
   async (dispatch) => {
     dispatch(masterSlice.actions.saveEmployeeMappingRequest());
     return apis
-      .addEmployeeMapping({data})
-      .then(({data}) => {
+      .addEmployeeMapping({ data })
+      .then(({ data }) => {
         dispatch(masterSlice.actions.saveEmployeeMappingResponse(data));
         return data;
       })
@@ -1403,11 +1481,25 @@ export const addEmployeeMapping =
 export const getAllCategory = () => async (dispatch) => {
   return masterApi
     .getAllCategory()
-    .then(({data}) => {
+    .then(({ data }) => {
       dispatch(masterSlice.actions.getCat(data.data));
       return data.data;
     })
     .catch(() => {
       dispatch(masterSlice.actions.getCatErr());
+    });
+};
+
+export const getUserReportData = () => async (dispatch) => {
+  dispatch(masterSlice.actions.getUserReportRequest());
+  return apis
+    .getUserReport()
+    .then(({ data }) => {
+      console.log(data, "data");
+      dispatch(masterSlice.actions.getUserReporResponseData(data));
+      return data;
+    })
+    .catch(() => {
+      dispatch(masterSlice.actions.getUserReportError());
     });
 };

@@ -8,7 +8,7 @@ import CustomTable from '../../../components/CustomTable';
 import {column} from './column';
 
 export default function AuditPointList({setTopTitle}) {
-  setTopTitle('Audit Point List');
+  setTopTitle('Audit point list');
   const navigate = useNavigate();
 
   const {
@@ -50,7 +50,7 @@ export default function AuditPointList({setTopTitle}) {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getAuditPointList());
-  }, [dispatch]);
+  }, []);
 
   return <CustomTable dataSource={gridData} loading={gettingAuditPointList} handleEditClick={handleEditClick} column={column} onClickAdd={onClickAdd} title={'Audit Point List'} />;
 }

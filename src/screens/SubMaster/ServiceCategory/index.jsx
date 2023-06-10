@@ -1,9 +1,8 @@
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigate} from 'react-router';
+import {getEmployeeLevel} from '../../../@app/subMaster/subMasterSlice';
 import CustomTable from '../../../components/CustomTable';
-import {getServiceCategory} from '../../../@app/service/serviceSlice';
-
 import {column} from './column';
 export default function ServiceCategory() {
   const navigate = useNavigate();
@@ -16,24 +15,24 @@ export default function ServiceCategory() {
 
   const handleEditClick = (data) => {
     navigate('/serviceCategory/addForm', {
-      state: {data, isEdit: true}
+      state: {data}
     });
   };
 
   const {
-    gettingServiceCategory,
-    getServiceCategoryResponse: {data: dataSource}
+    gettingEmployeeLevel,
+    getEmployeeLevelResponse: {data: dataSource}
   } = useSelector((state) => {
-    return state.service;
+    return state.subMaster;
   });
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getServiceCategory());
-  }, [dispatch]);
+    dispatch(getEmployeeLevel());
+  }, []);
 
   return (
-    <CustomTable handleEditClick={handleEditClick} loading={gettingServiceCategory} dataSource={dataSource} column={column} onClickAdd={onClickAdd} title={'Service Category'} />
+    <CustomTable handleEditClick={handleEditClick} loading={gettingEmployeeLevel} dataSource={dataSource} column={column} onClickAdd={onClickAdd} title={'Service Category'} />
   );
 }

@@ -1,50 +1,45 @@
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
+
 import {useNavigate} from 'react-router';
-import {getAssetMaster} from '../../../@app/service/serviceSlice';
+import {getAuditSubCategory} from '../../../@app/master/masterSlice';
 import CustomTable from '../../../components/CustomTable';
 import {column} from './column';
-import {filter, head} from 'ramda';
 
 export default function AssetMaster() {
   const navigate = useNavigate();
 
   const onClickAdd = () => {
-    navigate('/outletAssetGroupMapping/addForm', {
+    navigate('/AssetMaster/addForm', {
       state: {}
     });
   };
 
   const {
-    gettingAssetMaster,
-    getAssetMasterResponse: {data: dataSource}
+    gettingAuditSubCategory,
+    getAuditSubCategoryResponse: {data: dataSource}
   } = useSelector((state) => {
-    return state.service;
+    return state.master;
   });
 
   const gridData = (dataSource ?? []).map((data) => {
-    const {spares_list, ...restOfData} = data;
-    const x = (spares_list ?? [])?.map((n) => {
-      return ' ' + n.spare + ' , ' + n.spare_warranty_end_date + ' ';
+    const {audit_subcategory, ...restOfData} = data;
+    const x = (audit_subcategory ?? [])?.map((n) => {
+      return n.value;
     });
-    return {spares_list: x, ...restOfData};
+    return {audit_subcategory: x, ...restOfData};
   });
 
   const handleEditClick = (data) => {
-    const editingData = filter((e) => e?.asset_group_id === data?.asset_group_id, dataSource ?? []);
-    const {spares_list} = head(editingData);
-    const processedSpareList = (spares_list ?? [])?.map((e) => {
-      return {spare: e.spare, spare_warranty_end_date: e.spare_warranty_end_date};
-    });
-    navigate('/outletAssetGroupMapping/addForm', {
-      state: {data: {...data, spares_list: processedSpareList}}
+    navigate('/AssetMaster/addForm', {
+      state: {data}
     });
   };
 
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getAssetMaster());
-  }, [dispatch]);
+    dispatch(getAuditSubCategory());
+  }, []);
 
-  return <CustomTable handleEditClick={handleEditClick} loading={gettingAssetMaster} dataSource={gridData} column={column} onClickAdd={onClickAdd} title={'Asset Master'} />;
+  return <CustomTable handleEditClick={handleEditClick} loading={gettingAuditSubCategory} dataSource={gridData} column={column} onClickAdd={onClickAdd} title={'Asset Master'} />;
 }

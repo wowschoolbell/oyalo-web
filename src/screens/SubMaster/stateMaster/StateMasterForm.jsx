@@ -23,7 +23,7 @@ function StateMasterForm() {
   });
 
   const onFinish = (data) => {
-    dispatch(defaultValue?.id ? updateState({data: {...data, status: transStatus({status}), id: defaultValue.id}}) : saveState({data, status: transStatus({status})})).then(({status}) => {
+    dispatch(defaultValue?.id ? updateState({data: {...data, status: transStatus({status}), id: defaultValue.id}}) : saveState({data})).then(({status}) => {
       if (status === 200) {
         form.resetFields();
         setShowDialog(false);

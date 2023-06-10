@@ -31,7 +31,7 @@ export default function SubZoneMaster({setTopTitle}) {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getSubZonal());
-  }, [dispatch]);
+  }, []);
 
   return <CustomTable handleEditClick={handleEditClick} loading={gettingSubZonal} dataSource={dataSource} column={column} onClickAdd={onClickAdd} title={'SubZone Master'} />;
 }

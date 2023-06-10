@@ -31,7 +31,7 @@ export default function CityMaster({setTopTitle}) {
 
   useEffect(() => {
     dispatch(getCity());
-  }, [dispatch]);
+  }, []);
 
   return <CustomTable handleEditClick={handleEditClick} loading={gettingCity} dataSource={dataSource} column={column} onClickAdd={onClickAdd} title={'City Master'} />;
 }

@@ -32,7 +32,7 @@ export default function Department({setTopTitle}) {
 
   useEffect(() => {
     dispatch(getDepartment());
-  }, [dispatch]);
+  }, []);
 
   return <CustomTable handleEditClick={handleEditClick} loading={gettingDepartment} dataSource={dataSource} column={column} onClickAdd={onClickAdd} title={'Department'} />;
 }

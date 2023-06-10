@@ -24,7 +24,7 @@ function EmployeeLevelForm() {
 
   const onFinish = (data) => {
     setShowDialog(false);
-    dispatch(defaultValue?.id ? updateEmployeeLevel({data: {...data, status: transStatus({status}), id: defaultValue.id}}) : saveEmployeeLevel({data, status: transStatus({status})})).then(
+    dispatch(defaultValue?.id ? updateEmployeeLevel({data: {...data, status: transStatus({status}), id: defaultValue.id}}) : saveEmployeeLevel({data})).then(
       ({message, status, statusText}) => {
         if (status === 200) {
           navigate('/employeeLevel');

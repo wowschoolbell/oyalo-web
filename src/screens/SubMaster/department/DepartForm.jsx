@@ -24,7 +24,7 @@ function DepartForm() {
   });
   const onFinish = (data) => {
     setShowDialog(false);
-    dispatch(defaultValue?.id ? updateDepartment({data: {...data, status: transStatus({status}), id: defaultValue.id}}) : saveDepartment({data, status: transStatus({status})})).then(
+    dispatch(defaultValue?.id ? updateDepartment({data: {...data, status: transStatus({status}), id: defaultValue.id}}) : saveDepartment({data})).then(
       ({message, status, statusText}) => {
         if (status === 200) {
           navigate('/department');

@@ -8,7 +8,7 @@ import {getAuditPointListMark} from '../../../@app/master/masterSlice';
 import CustomTable from '../../../components/CustomTable';
 import {column} from './column';
 export default function AuditPointMarks({setTopTitle}) {
-  setTopTitle('Audit Point Marks');
+  setTopTitle('Audit point Marks');
   const navigate = useNavigate();
 
   const {
@@ -51,7 +51,7 @@ export default function AuditPointMarks({setTopTitle}) {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getAuditPointListMark());
-  }, [dispatch]);
+  }, []);
 
   return (
     <CustomTable

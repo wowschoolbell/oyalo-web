@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "https://oyalopro.wowschoolbell.in/audit/static/css/main.1d219ebb.css",
+    "main.js": "https://oyalopro.wowschoolbell.in/audit/static/js/main.a148fd91.js",
+    "static/media/Oyalo_Logo.png": "https://oyalopro.wowschoolbell.in/audit/static/media/Oyalo_Logo.a06651be622e25043174.png",
+    "static/media/logo.png": "https://oyalopro.wowschoolbell.in/audit/static/media/logo.bbaf3768eb621ae9acde.png",
+    "index.html": "https://oyalopro.wowschoolbell.in/audit/index.html",
+    "main.1d219ebb.css.map": "https://oyalopro.wowschoolbell.in/audit/static/css/main.1d219ebb.css.map",
+    "main.a148fd91.js.map": "https://oyalopro.wowschoolbell.in/audit/static/js/main.a148fd91.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.1d219ebb.css",
+    "static/js/main.a148fd91.js"
+  ]
+}

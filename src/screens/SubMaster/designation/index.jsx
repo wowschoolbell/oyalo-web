@@ -32,7 +32,7 @@ export default function Designation({setTopTitle}) {
 
   useEffect(() => {
     dispatch(getDesignation());
-  }, [dispatch]);
+  }, []);
 
   return <CustomTable handleEditClick={handleEditClick} loading={gettingDesignation} dataSource={dataSource} column={column} onClickAdd={onClickAdd} title={'Designation'} />;
 }

@@ -95,7 +95,6 @@ function EmployeeMasterForm() {
     const contact = values.contact;
     const location = values.location;
     const email = values.email;
-    const employee_vendor_code = values?.employee_vendor_code;
 
     const status = values.status;
 
@@ -114,13 +113,10 @@ function EmployeeMasterForm() {
               division,
               name,
               Employee_Code,
-              id,
-              employee_vendor_code
+              id
             }
           })
-        : addEmployeeMaster({
-            data: {status: transStatus({status}), filename: image ?? 'No image', email, location, contact, level, designation, department, division, name, Employee_Code, employee_vendor_code}
-          })
+        : addEmployeeMaster({data: {status, filename: image ?? 'No image', email, location, contact, level, designation, department, division, name, Employee_Code}})
     ).then((data) => {
       const {status, message} = data;
       if (status === 200) {
@@ -134,6 +130,7 @@ function EmployeeMasterForm() {
       if (data?.status === 400) {
         if (message && message?.image?.length > 0) {
           messageToast({message: 'Fill the Image Field and the Image size should be greater than of 100kb size!', status: status, title: 'Employee Master'});
+          // message.error(`file upload failed.`);
         }
       }
     });
@@ -210,7 +207,6 @@ function EmployeeMasterForm() {
                 reporting_manager_code: defaultValue?.report_id,
                 reporting_manager_designation: defaultValue?.report_name,
                 reporting_manager_name: defaultValue?.report_to,
-                employee_vendor_code: defaultValue?.employee_vendor_code,
                 status: defaultValue?.status === 'Active' ? '1' : '0'
               }}
               onFinish={onFinish}
@@ -230,6 +226,7 @@ function EmployeeMasterForm() {
                     <Input name='employee_code' onChange={handleOnChange} placeholder='Enter Employee Code' />
                   </Form.Item>
                 </Col>
+
                 <Col md={{span: 6}} xs={{span: 24}}>
                   <Form.Item
                     name='name'
@@ -243,6 +240,7 @@ function EmployeeMasterForm() {
                     <Input placeholder='Enter Name' />
                   </Form.Item>
                 </Col>
+
                 <Col md={{span: 6}} xs={{span: 24}}>
                   <Form.Item name='division' label='Division' rules={[{required: true, message: 'Please select division'}]}>
                     <Select
@@ -284,6 +282,7 @@ function EmployeeMasterForm() {
                     </Select>
                   </Form.Item>
                 </Col>
+
                 <Col md={{span: 6}} xs={{span: 24}}>
                   <Form.Item name='designation' label='Designation' rules={[{required: true, message: 'Please select designation'}]}>
                     <Select
@@ -331,6 +330,7 @@ function EmployeeMasterForm() {
                     <Input placeholder='Enter Location' />
                   </Form.Item>
                 </Col>
+
                 <Col md={{span: 6}} xs={{span: 24}}>
                   <Form.Item
                     name='contact'
@@ -364,14 +364,6 @@ function EmployeeMasterForm() {
                       }
                     ]}>
                     <Input placeholder='Enter email' />
-                  </Form.Item>
-                </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item
-                    name='employee_vendor_code'
-                    label='ORL Vendor Code'
-                    >
-                    <Input placeholder='ORL Vendor Code' />
                   </Form.Item>
                 </Col>
                 <Col md={{span: 6}} xs={{span: 24}}>
@@ -434,6 +426,7 @@ function EmployeeMasterForm() {
                     </Modal>
                   </Form.Item>
                 </Col>
+
                 <Col md={{span: 6}} xs={{span: 24}}>
                   <Form.Item name='status' label='Status ' rules={[{required: true, message: 'Please slect your status'}]}>
                     <Radio.Group buttonStyle='solid' size='middle'>

@@ -48,7 +48,7 @@ export default function AuditSubCategory({setTopTitle}) {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getAuditSubCategory());
-  }, [dispatch]);
+  }, []);
 
   // eslint-disable-next-line no-unused-vars
 

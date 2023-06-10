@@ -15,7 +15,7 @@ export default function ServiceFor() {
 
   const handleEditClick = (data) => {
     navigate('/serviceFor/addForm', {
-      state: {data, isEdit: true}
+      state: {data}
     });
   };
 
@@ -30,7 +30,7 @@ export default function ServiceFor() {
 
   useEffect(() => {
     dispatch(getServiceFor());
-  }, [dispatch]);
+  }, []);
 
   return <CustomTable handleEditClick={handleEditClick} loading={gettingServiceFor} dataSource={dataSource} column={column} onClickAdd={onClickAdd} title={'Service For'} />;
 }

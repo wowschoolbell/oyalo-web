@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigate} from 'react-router';
-import {getModeOfPayment} from '../../../@app/service/serviceSlice';
+import {getEmployeeLevel} from '../../../@app/subMaster/subMasterSlice';
 import CustomTable from '../../../components/CustomTable';
 import {column} from './column';
 export default function ModeOfPayment() {
@@ -15,22 +15,22 @@ export default function ModeOfPayment() {
 
   const handleEditClick = (data) => {
     navigate('/modeOfPayment/addForm', {
-      state: {data, isEdit: true}
+      state: {data}
     });
   };
 
   const {
-    gettingModeOfPayment,
-    getModeOfPaymentResponse: {data: dataSource}
+    gettingEmployeeLevel,
+    getEmployeeLevelResponse: {data: dataSource}
   } = useSelector((state) => {
-    return state.service;
+    return state.subMaster;
   });
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getModeOfPayment());
-  }, [dispatch]);
+    dispatch(getEmployeeLevel());
+  }, []);
 
-  return <CustomTable handleEditClick={handleEditClick} loading={gettingModeOfPayment} dataSource={dataSource} column={column} onClickAdd={onClickAdd} title={'Mode of Payment'} />;
+  return <CustomTable handleEditClick={handleEditClick} loading={gettingEmployeeLevel} dataSource={dataSource} column={column} onClickAdd={onClickAdd} title={'Mode of Payment'} />;
 }

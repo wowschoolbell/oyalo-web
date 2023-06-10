@@ -7,9 +7,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {transStatus} from '../../../util/transStatus';
 import {addAuditSubCategory, getAuditCategory, updateAuditSubCategory} from '../../../@app/master/masterSlice';
 import {map} from 'ramda';
-import {getAssetGroup, saveAssetGroupIssue, updateAssetGroupIssue} from '../../../@app/service/serviceSlice';
-import messageToast from '../../../components/messageToast/messageToast';
-import ConfirmOnExit from '../../../components/confirmOnExit/ConfirmOnExit';
 const {Option} = Select;
 
 function AssetGroupIssueForm() {
@@ -22,93 +19,102 @@ function AssetGroupIssueForm() {
   const [form] = Form.useForm();
 
   const [status, setStatus] = useState(defaultValue?.status ?? 1);
-  const [showDialog, setShowDialog] = useState(false);
 
   const {
-    savingAssetGroupIssue,
-    gettingAssetGroup,
-    getAssetGroupResponse: {data: assetGroups}
+    savingAuditSubCategory,
+    getAuditCategoryResponse: {data: AuditCategory}
   } = useSelector((state) => {
-    return state.service;
+    return state.master;
   });
 
   useEffect(() => {
-    dispatch(getAssetGroup());
+    dispatch(getAuditCategory());
   }, [dispatch]);
 
   const handleClickBack = () => {
     navigate('/AssetGroupIssue');
   };
 
-  const onFinish = (data) => {
-    setShowDialog(false);
-    dispatch(defaultValue?.mode === 'edit' ? updateAssetGroupIssue(
-      { data: { ...data, id: defaultValue.id } })
-       : saveAssetGroupIssue({data})).then(({message, status, statusText}) => {
-      if (status === 200) {
-        form.resetFields();
-        messageToast({message: message ?? statusText, status, title: 'Asset Group Issue Master'});
-        navigate('/AssetGroupIssue');
-      } else {
-        if(message?.issue_ids){
-          messageToast({message: message.issue_ids[0] , status, title: 'Asset Group Issue Master'});
-        }
-        messageToast({message: message, status, title: 'Asset Group Issue Master'});
-      }
-    });
+  const onFinish = () => {
+    //dispatch(
+    //   defaultValue?.id
+    //     ? updateAuditSubCategory( { data: { ...restOfData, status: transStatus( { status } ), auditsubcategory_ID: defaultValue?.id, auditcategory_ID: defaultValue.auditcategory_id } } )
+    //     : addAuditSubCategory( { data: { ...restOfData, status: transStatus( { status } ) } } )
+    // ).then( ( { status } ) => {
+    //   if ( status === 200 ) {
+    //     form.resetFields();
+    //   }
+    //   if ( defaultValue?.id && status === 200 ) {
+    //     navigate( '/auditSubCategory' );
+    //   }
+    // } );
+  };
+
+  const formItemLayout = {
+    labelCol: {
+      xs: {span: 24},
+      sm: {span: 4}
+    },
+    wrapperCol: {
+      xs: {span: 24},
+      sm: {span: 20}
+    }
+  };
+  const formItemLayoutWithOutLabel = {
+    wrapperCol: {
+      xs: {span: 24, offset: 0},
+      sm: {span: 20, offset: 0}
+    }
   };
 
   return (
     <>
       <Card>
-        <ConfirmOnExit showModel={showDialog} />
         <Row style={{justifyContent: 'center'}}>
           <Col span={24}>
             <Form
-              onFieldsChange={() => setShowDialog(true)}
               name='basic'
               labelCol={{span: 24}}
               form={form}
               wrapperCol={{span: 24}}
               initialValues={{
+                status: defaultValue?.status ?? 1,
+                auditcategory_ID: defaultValue?.auditcategory_id,
+                name: defaultValue?.audit_subcategory,
                 ...defaultValue
               }}
               onFinish={onFinish}
               autoComplete='off'>
               <Row gutter={[15, 0]}>
                 <Col md={{span: 6}} xs={{span: 24}} lg={4}>
-                  <Form.Item
-                    name='asset_group_id'
-                    label='Asset Group'
-                    rules={[{required: true, message: 'Please select Asset Group'}]}
-                    disabled={gettingAssetGroup || savingAssetGroupIssue}>
+                  <Form.Item name='auditcategory_ID' label='Asset Group ' rules={[{required: true, message: 'Please select Asset Group'}]} disabled={savingAuditSubCategory}>
                     <Select
                       placeholder='select Asset Group'
-                      disabled={gettingAssetGroup || savingAssetGroupIssue }
+                      disabled={savingAuditSubCategory}
                       showSearch
                       filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
                       {map(
-                        (assetGroup) => {
+                        (AuditCategory) => {
                           return (
-                            <Option key={assetGroup.id} value={assetGroup.id}>
-                              {assetGroup.name}
+                            <Option key={AuditCategory.id} value={AuditCategory.id}>
+                              {AuditCategory.name}
                             </Option>
                           );
                         },
-                        assetGroups ? assetGroups : []
+                        AuditCategory ? AuditCategory : []
                       )}
                     </Select>
                   </Form.Item>
                 </Col>
                 <Col md={{span: 6}} xs={{span: 24}} lg={8}>
-                  <Form.Item name='asset_group_issues' label='Add Asset Group issue'>
+                  <Form.Item name='add_sub_category' label='Add Asset Group issue'>
                     <Form.List
-                      name='asset_group_issues'
+                      name='sub'
                       rules={[
                         {
                           validator: async (_, names) => {
                             if (!names || names.length < 1) {
-                              return Promise.reject(new Error('At least add 1 Asset Group issue'));
+                              return Promise.reject(new Error('At least add 1 Add Sub Category'));
                             }
                           }
                         }
@@ -116,8 +122,24 @@ function AssetGroupIssueForm() {
                       {(fields, {add, remove}, {errors}) => (
                         <div>
                           {fields.map((field, index) => (
+                            // <Form.Item {...( index === 0 ? formItemLayout : formItemLayoutWithOutLabel )} required={false} key={field.key}>
+                            //   <Form.Item
+                            //     {...field}
+                            //     validateTrigger={['onChange', 'onBlur']}
+                            //     rules={[
+                            //       {
+                            //         required: true,
+                            //         whitespace: true,
+                            //         message: 'Please input Add Sub Category or delete this field.'
+                            //       }
+                            //     ]}
+                            //     noStyle>
+                            //     <Input placeholder='Add Sub Category' style={{ width: '80%' }} disabled={savingAuditSubCategory} />
+                            //   </Form.Item>
+                            //   {fields.length > 1 ? <MinusCircleOutlined className='dynamic-delete-button' style={{ paddingLeft: '6px' }} onClick={() => remove( field.name )} /> : null}
+                            // </Form.Item>
                             <Space
-                              key={field.id}
+                              key={field.key}
                               style={{
                                 display: 'flex',
                                 // marginBottom: 8,
@@ -126,17 +148,13 @@ function AssetGroupIssueForm() {
                               }}>
                               <Form.Item
                                 {...field}
-                                name={[field.name, 'name']}
+                                name={[field.name, 'sub_name']}
                                 validateTrigger={['onChange', 'onBlur']}
                                 rules={[
                                   {
                                     required: true,
                                     whitespace: true,
-                                    message: 'Please input Asset Group issue or delete this field.'
-                                  },
-                                  {
-                                    pattern: /^[a-zA-Z0-9' '  ]*$/,
-                                    message: 'Invalid value'
+                                    message: 'Please input Add Sub Category or delete this field.'
                                   }
                                 ]}>
                                 <Input
@@ -144,7 +162,7 @@ function AssetGroupIssueForm() {
                                     width: '100% '
                                   }}
                                   placeholder='Add Asset Group Issue'
-                                  disabled={savingAssetGroupIssue}
+                                  disabled={savingAuditSubCategory}
                                 />
                               </Form.Item>
                               <Form.Item
@@ -155,7 +173,6 @@ function AssetGroupIssueForm() {
                                   <Form.Item
                                     {...field}
                                     name={[field.name, 'status']}
-                                    initialValue={1}
                                     rules={[
                                       {
                                         required: true,
@@ -164,15 +181,14 @@ function AssetGroupIssueForm() {
                                     ]}>
                                     <Radio.Group
                                       defaultValue={1}
-                                      disabled={savingAssetGroupIssue}
                                       buttonStyle='solid'
                                       style={{
                                         display: 'flex'
                                       }}>
-                                      <Radio.Button value={defaultValue?.mode === 'edit' ? 1 : 1} className='active'>
+                                      <Radio.Button value={1} className='active'>
                                         Active
                                       </Radio.Button>
-                                      <Radio.Button value={defaultValue?.mode === 'edit' ? 0 : 0} className='in-active'>
+                                      <Radio.Button value={0} className='in-active'>
                                         InActive
                                       </Radio.Button>
                                     </Radio.Group>
@@ -189,7 +205,7 @@ function AssetGroupIssueForm() {
                               onClick={() => add()}
                               style={{width: '40%', paddingLeft: '5px', backgroundColor: 'green', color: 'white'}}
                               icon={<PlusOutlined style={{}} />}
-                              disabled={savingAssetGroupIssue}>
+                              disabled={savingAuditSubCategory}>
                               Add field
                             </Button>
 
@@ -200,16 +216,61 @@ function AssetGroupIssueForm() {
                     </Form.List>
                   </Form.Item>
                 </Col>
+
+                {/* <Col span={24}>
+                  <Form.Item name='status' label='Status'>
+                    <Space direction='vertical'>
+                      <Col span={24}>
+                        <Radio.Group
+                          disabled={savingAuditSubCategory}
+                          buttonStyle='solid'
+                          defaultValue={defaultValue?.status === 'In Active' ? 0 : 1}
+                          onChange={( e ) => {
+                            setStatus( e?.target?.value );
+                          }}
+                          size='small'>
+                          <Radio.Button className='active' value={1}>
+                            Active
+                          </Radio.Button>
+                          <Radio.Button className='in-active' value={0}>
+                            In-Active
+                          </Radio.Button>
+                        </Radio.Group>
+                      </Col>
+                    </Space>
+                  </Form.Item>
+                </Col> */}
+                {/* <Col span={24}>
+                  <Row gutter={[15, 15]} style={{ justifyContent: 'çenter' }}>
+                    <Col span={12} style={{ textAlign: 'right' }}>
+                      <Form.Item>
+                        <Button className='orangeFactory' type='primary' htmlType='submit' disabled={savingAuditSubCategory}>
+                          Submit
+                        </Button>
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item>
+                        <Button disabled={savingAuditSubCategory} onClick={handleClickBack}>
+                          Back
+                        </Button>
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                </Col> */}
+
                 <Col span={24}>
                   <Row gutter={[15, 15]} style={{justifyContent: 'end'}}>
                     <Col span={12} className='d-flex justify-content-end align-items-center'>
                       <Form.Item className='mx-2'>
-                        <Button className='orangeFactory' type='primary' htmlType='submit' loading={savingAssetGroupIssue} disabled={savingAssetGroupIssue}>
+                        <Button className='orangeFactory' type='primary' htmlType='submit' disabled={savingAuditSubCategory}>
                           Submit
                         </Button>
                       </Form.Item>
+                      {/* </Col>
+                    <Col span={12}> */}
                       <Form.Item>
-                        <Button disabled={savingAssetGroupIssue} onClick={handleClickBack}>
+                        <Button disabled={savingAuditSubCategory} onClick={handleClickBack}>
                           Back
                         </Button>
                       </Form.Item>

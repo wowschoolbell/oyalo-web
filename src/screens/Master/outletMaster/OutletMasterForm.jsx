@@ -87,7 +87,6 @@ function OutletMasterForm() {
       fire_extinguisher_license_no: values.fire_extinguisher_license_no,
       fssai_license_no: values.fssai_license_no,
       status: values.status === 'active' ? 1 : 0,
-      orl_vendor_code: values?.orl_vendor_code,
       orl_name: values?.orl_name
     };
 
@@ -124,7 +123,7 @@ function OutletMasterForm() {
   useEffect(() => {
     dispatch(getStates());
     dispatch(getORLName());
-  }, [dispatch, submitted]);
+  }, [submitted]);
 
   useEffect(() => {
     dispatch(getZonal(stateID));
@@ -229,7 +228,6 @@ function OutletMasterForm() {
                 fire_extinguisher_license_no: defaultValue?.fire_extinguisher_license_no,
                 fssai_license_no: defaultValue?.fssai_license_no,
                 orl_name: defaultValue?.orl_id,
-                orl_vendor_code: defaultValue?.orl_vendor_code,
                 status: defaultValue?.status === 'In Active' ? 'inActive' : 'active'
               }}
               onFinish={onFinish}
@@ -672,12 +670,6 @@ function OutletMasterForm() {
                     <Input placeholder='FSSAI License No' name='fssai_license_no' onChange={handleOnChange} />
                   </Form.Item>
                 </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item label='Outlet Vendor Code' name='orl_vendor_code' rules={[{required: true, message: 'Please enter Outlet Vendor Code'}]}>
-                    <Input placeholder='Outlet Vendor Code' name='orl_vendor_code' onChange={handleOnChange} />
-                  </Form.Item>
-                </Col>
-
                 <Col md={{span: 6}} xs={{span: 24}}>
                   <Form.Item name='status' label='Status ' rules={[{required: true, message: 'Please select your status'}]}>
                     <Radio.Group buttonStyle='solid' size='middle' name='status' onChange={handleOnChange}>

@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, {Fragment, useEffect, useState} from 'react';
 import {Input, Card, Button, Col, Row, Form, Collapse, DatePicker} from 'antd';
 // import {useDispatch, useSelector} from 'react-redux';
@@ -8,8 +7,8 @@ import {useNavigate} from 'react-router-dom';
 import apis from '../../../api/masterApi';
 import {useLocation} from 'react-router-dom';
 import ConfirmOnExit from '../../../components/confirmOnExit/ConfirmOnExit';
-import {lightFormat} from 'date-fns';
 const {Panel} = Collapse;
+import {lightFormat} from 'date-fns';
 
 function AuditPointMarksForm() {
   const {state} = useLocation();

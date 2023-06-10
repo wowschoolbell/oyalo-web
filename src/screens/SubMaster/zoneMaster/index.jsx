@@ -29,7 +29,7 @@ export default function ZoneMaster({setTopTitle}) {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getZonal());
-  }, [dispatch]);
+  }, []);
 
   return <CustomTable handleEditClick={handleEditClick} loading={gettingZonal} dataSource={dataSource} column={column} onClickAdd={onClickAdd} title={'Zone Master'} />;
 }

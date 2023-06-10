@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigate} from 'react-router';
-import {getPriority} from '../../../@app/service/serviceSlice';
+import {getEmployeeLevel} from '../../../@app/subMaster/subMasterSlice';
 import CustomTable from '../../../components/CustomTable';
 import {column} from './column';
 export default function Priority() {
@@ -15,22 +15,22 @@ export default function Priority() {
 
   const handleEditClick = (data) => {
     navigate('/priority/addForm', {
-      state: {data, isEdit: true}
+      state: {data}
     });
   };
 
   const {
-    gettingPriority,
-    getPriorityResponse: {data: dataSource}
+    gettingEmployeeLevel,
+    getEmployeeLevelResponse: {data: dataSource}
   } = useSelector((state) => {
-    return state.service;
+    return state.subMaster;
   });
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getPriority());
-  }, [dispatch]);
+    dispatch(getEmployeeLevel());
+  }, []);
 
-  return <CustomTable handleEditClick={handleEditClick} loading={gettingPriority} dataSource={dataSource} column={column} onClickAdd={onClickAdd} title={'Priority'} />;
+  return <CustomTable handleEditClick={handleEditClick} loading={gettingEmployeeLevel} dataSource={dataSource} column={column} onClickAdd={onClickAdd} title={'Priority'} />;
 }

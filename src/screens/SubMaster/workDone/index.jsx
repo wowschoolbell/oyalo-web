@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigate} from 'react-router';
-import {getWorkDone} from '../../../@app/service/serviceSlice';
+import {getEmployeeLevel} from '../../../@app/subMaster/subMasterSlice';
 import CustomTable from '../../../components/CustomTable';
 import {column} from './column';
 export default function WorkDone() {
@@ -15,22 +15,22 @@ export default function WorkDone() {
 
   const handleEditClick = (data) => {
     navigate('/workDone/addForm', {
-      state: {data, isEdit: true}
+      state: {data}
     });
   };
 
   const {
-    gettingWorkDone,
-    getWorkDoneResponse: {data: dataSource}
+    gettingEmployeeLevel,
+    getEmployeeLevelResponse: {data: dataSource}
   } = useSelector((state) => {
-    return state.service;
+    return state.subMaster;
   });
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getWorkDone());
-  }, [dispatch]);
+    dispatch(getEmployeeLevel());
+  }, []);
 
-  return <CustomTable handleEditClick={handleEditClick} loading={gettingWorkDone} dataSource={dataSource} column={column} onClickAdd={onClickAdd} title={'Work Done'} />;
+  return <CustomTable handleEditClick={handleEditClick} loading={gettingEmployeeLevel} dataSource={dataSource} column={column} onClickAdd={onClickAdd} title={'Work Done'} />;
 }

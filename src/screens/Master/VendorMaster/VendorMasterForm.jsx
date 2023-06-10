@@ -1,53 +1,53 @@
 /* eslint-disable no-unused-vars */
 import React, {useEffect, useState} from 'react';
+import {MinusCircleOutlined, PlusOutlined} from '@ant-design/icons';
 import {Input, Card, Select, Button, Radio, Col, Row, Form, Space} from 'antd';
 import {useLocation, useNavigate} from 'react-router';
 import {useDispatch, useSelector} from 'react-redux';
-import {map} from 'ramda';
-import {getServiceFor, saveVendorMaster, updateVendorMaster} from '../../../@app/service/serviceSlice';
-import ConfirmOnExit from '../../../components/confirmOnExit/ConfirmOnExit';
-import messageToast from '../../../components/messageToast/messageToast';
 import {transStatus} from '../../../util/transStatus';
-
+import {addAuditSubCategory, getAuditCategory, updateAuditSubCategory} from '../../../@app/master/masterSlice';
+import {map} from 'ramda';
 const {Option} = Select;
 
 function VendorMasterForm() {
   const {
-    state: {data: defaultValue, isEdit = false}
+    state: {data: defaultValue = {}}
   } = useLocation();
-
-  const [status, setStatus] = useState(defaultValue?.status ?? 1);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [form] = Form.useForm();
 
+  const [status, setStatus] = useState(defaultValue?.status ?? 1);
+
   const {
-    savingVendorMaster,
-    getServiceForResponse: {data: serviceFor}
+    savingAuditSubCategory,
+    getAuditCategoryResponse: {data: AuditCategory}
   } = useSelector((state) => {
-    return state.service;
+    return state.master;
   });
 
-  const [showDialog, setShowDialog] = useState(false);
-
   useEffect(() => {
-    dispatch(getServiceFor());
+    dispatch(getAuditCategory());
   }, [dispatch]);
 
   const handleClickBack = () => {
     navigate('/VendorMaster');
   };
 
-  const onFinish = (data) => {
-    setShowDialog(false);
-    dispatch(defaultValue?.mode === 'edit' ? updateVendorMaster({data: {...data, status: transStatus({status}), id: defaultValue.id}}) : saveVendorMaster({data,  status: transStatus({status})})).then(({status, message, statusText}) => {
-      if (status === 200) {
-        form.resetFields();
-        navigate('/VendorMaster');
-        messageToast({message: message ?? statusText, status, title: 'Vendor Master'});
-      }
-    });
+  const onFinish = () => {
+    //dispatch(
+    //   defaultValue?.id
+    //     ? updateAuditSubCategory( { data: { ...restOfData, status: transStatus( { status } ), auditsubcategory_ID: defaultValue?.id, auditcategory_ID: defaultValue.auditcategory_id } } )
+    //     : addAuditSubCategory( { data: { ...restOfData, status: transStatus( { status } ) } } )
+    // ).then( ( { status } ) => {
+    //   if ( status === 200 ) {
+    //     form.resetFields();
+    //   }
+    //   if ( defaultValue?.id && status === 200 ) {
+    //     navigate( '/auditSubCategory' );
+    //   }
+    // } );
   };
 
   const formItemLayout = {
@@ -70,216 +70,239 @@ function VendorMasterForm() {
   return (
     <>
       <Card>
-        <ConfirmOnExit showModel={showDialog} />
         <Row style={{justifyContent: 'center'}}>
           <Col span={24}>
             <Form
-              onFieldsChange={() => setShowDialog(true)}
               name='basic'
               labelCol={{span: 24}}
               form={form}
               wrapperCol={{span: 24}}
               initialValues={{
+                status: defaultValue?.status ?? 1,
+                auditcategory_ID: defaultValue?.auditcategory_id,
+                name: defaultValue?.audit_subcategory,
                 ...defaultValue
               }}
               onFinish={onFinish}
               autoComplete='off'>
               <Row gutter={[15, 0]}>
                 <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='vendor_type' label='Vendor Type' rules={[{required: true, message: 'Please select vendor type'}]} disabled={savingVendorMaster}>
+                  <Form.Item name='auditcategory_ID' label='Vendor Type' rules={[{required: true, message: 'Please select Asset Group'}]} disabled={savingAuditSubCategory}>
                     <Select
-                      name='vendor_type'
                       placeholder='select Vendor Type'
-                      disabled={savingVendorMaster}
+                      disabled={savingAuditSubCategory}
                       showSearch
                       filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
-                      <Option value={'internal'}>internal</Option>
-                      <Option value={'External'}>External</Option>
+                      <Option>Internal</Option>
+                      <Option>External</Option>
                     </Select>
                   </Form.Item>
                 </Col>
                 <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='service_for' label='Service For'>
+                  <Form.Item
+                    name='auditcategory_ID'
+                    label='Service Category'
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Please select Service Category'
+                      }
+                    ]}
+                    disabled={savingAuditSubCategory}>
                     <Select
-                      service
-                      placeholder='Select Service For'
-                      disabled={savingVendorMaster}
+                      placeholder='select Service Category'
+                      disabled={savingAuditSubCategory}
                       showSearch
                       filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
                       {map(
-                        (data) => {
+                        (AuditCategory) => {
                           return (
-                            <Option key={data.id} value={data.id}>
-                              {data.name}
+                            <Option key={AuditCategory.id} value={AuditCategory.id}>
+                              {AuditCategory.name}
                             </Option>
                           );
                         },
-                        serviceFor ? serviceFor : []
+                        AuditCategory ? AuditCategory : []
                       )}
                     </Select>
                   </Form.Item>
                 </Col>
                 <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='vendor_for' label='Vendor For'>
-                    <Select
-                      placeholder='Select Vendor For'
-                      disabled={savingVendorMaster}
-                      showSearch
-                      filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
-                      <Option value={'Supplier'}>Supplier</Option>
-                      <Option value={'Service'}>Service</Option>
-                    </Select>
+                  <Form.Item name='name' label='Vendor Code Sap' rules={[{required: true, message: 'Please add Vendor Code Sap'}]}>
+                    <Input name='name' placeholder='Vendor Code Sap' />
                   </Form.Item>
                 </Col>
                 <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='vendor_code' label='Vendor Code' rules={[{required: true, message: 'Please enter vendor code'}]}>
-                    <Input name='vendor_code' placeholder='Enter Vendor Code' />
+                  <Form.Item name='name' label='Vendor Name' rules={[{required: true, message: 'Please add Vendor Name'}]}>
+                    <Input name='vendor_name' placeholder='Vendor Name' />
                   </Form.Item>
                 </Col>
                 <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='name' label='Name' rules={[{required: true, message: 'Please enter name'}]}>
-                    <Input name='name' placeholder='Enter Name' />
+                  <Form.Item name='name' label='Content Name' rules={[{required: true, message: 'Please add Content Name'}]}>
+                    <Input name='name' placeholder='Content Name' />
                   </Form.Item>
                 </Col>
                 <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='address' label='Address'>
-                    <Input placeholder='Enter  Address' name='address' />
+                  <Form.Item name='name' label='Contact No' rules={[{required: true, message: 'Please add Conact No'}]}>
+                    <Input name='name' placeholder='Contact No' />
                   </Form.Item>
                 </Col>
                 <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='country' label='Country'>
-                    <Input placeholder='Enter  Country' name='country' />
+                  <Form.Item name='name' label='Contact Address' rules={[{required: true, message: 'Please add Contact Address'}]}>
+                    <Input name='name' placeholder='Contact Address' />
                   </Form.Item>
                 </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='pin_code' label='Pincode'>
-                    <Input placeholder='Enter  Pincode' name='pin_code' />
-                  </Form.Item>
-                </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='city' label='City'>
-                    <Input placeholder='Enter  City' name='city' />
-                  </Form.Item>
-                </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='state' label='State'>
-                    <Input placeholder='Enter  State' name='state' />
-                  </Form.Item>
-                </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='gst_number' label='GST Number'>
-                    <Input placeholder='Enter GST Number' name='gst_number' />
-                  </Form.Item>
-                </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='company_code' label='Company Code'>
-                    <Input placeholder='Enter Company Code' name='company_code' />
-                  </Form.Item>
-                </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='payment_terms' label='Payment Terms'>
-                    <Input placeholder='Enter Payment Terms' name='payment_terms' />
-                  </Form.Item>
-                </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='pan_number' label='Pan Number'>
-                    <Input placeholder='Enter GST  PAN Number' />
-                  </Form.Item>
-                </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='pan_name' label='Pan Name'>
-                    <Input placeholder='Enter Pan Name' name='pan_number' />
-                  </Form.Item>
-                </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='type_of_service' label='Type Of Service'>
-                    <Input placeholder='Enter Type Of Service' name='type_of_service' />
-                  </Form.Item>
-                </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='rate_of_tds' label='Rate Of TDS'>
-                    <Input placeholder='Enter Rate Of TDS' name='rate_of_tds' />
-                  </Form.Item>
-                </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='msme_number' label='MSME Number'>
-                    <Input placeholder='Enter MSME Number' name='msme_number' />
-                  </Form.Item>
-                </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='phone_number' label='Phone Number'>
-                    <Input type='number' placeholder='Enter Phone Number' name='phone_number' />
-                  </Form.Item>
-                </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='mail_id' label='Mail ID'>
-                    <Input placeholder='Enter Mail ID' name='mail_id' />
-                  </Form.Item>
-                </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='bank_address' label='Bank Address'>
-                    <Input placeholder='Enter Bank Address' name='bank_address' />
-                  </Form.Item>
-                </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='bank_ifsc_code' label='Bank Ifsc Code'>
-                    <Input placeholder='Enter Bank Ifsc Code' name='bank_ifsc_code' />
-                  </Form.Item>
-                </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='bank_account_number' label='Bank Account Number'>
-                    <Input placeholder='Enter Bank Account Number' name='bank_account_number' />
-                  </Form.Item>
-                </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='rec_account' label='Reconciliaton Account'>
-                    <Input placeholder='Enter Reconciliaton Account' name='rec_account' />
-                  </Form.Item>
-                </Col>
+                {/* <Col md={{ span: 6 }} xs={{ span: 24 }} lg={8}>
+                  <Form.Item name='add_sub_category' label='Add Asset Spare'>
+                    <Form.List
+                      name='sub'
+                      rules={[
+                        {
+                          validator: async ( _, names ) => {
+                            if ( !names || names.length < 1 ) {
+                              return Promise.reject( new Error( 'At least add 1 Add Sub Category' ) );
+                            }
+                          }
+                        }
+                      ]}>
+                      {( fields, { add, remove }, { errors } ) => (
+                        <div>
+                          {fields.map( ( field, index ) => (
+                            // <Form.Item {...( index === 0 ? formItemLayout : formItemLayoutWithOutLabel )} required={false} key={field.key}>
+                            //   <Form.Item
+                            //     {...field}
+                            //     validateTrigger={['onChange', 'onBlur']}
+                            //     rules={[
+                            //       {
+                            //         required: true,
+                            //         whitespace: true,
+                            //         message: 'Please input Add Sub Category or delete this field.'
+                            //       }
+                            //     ]}
+                            //     noStyle>
+                            //     <Input placeholder='Add Sub Category' style={{ width: '80%' }} disabled={savingAuditSubCategory} />
+                            //   </Form.Item>
+                            //   {fields.length > 1 ? <MinusCircleOutlined className='dynamic-delete-button' style={{ paddingLeft: '6px' }} onClick={() => remove( field.name )} /> : null}
+                            // </Form.Item>
+                            <Space key={field.key}
+                              style={{
+                                display: 'flex',
+                                // marginBottom: 8,
+                                justifyContent: 'space-between',
+                                alignItems: 'baseline'
+                              }} >
+                              <Form.Item
+                                {...field}
+                                name={[field.name, 'sub_name']}
+                                validateTrigger={['onChange', 'onBlur']}
+                                rules={[
+                                  {
+                                    required: true,
+                                    whitespace: true,
+                                    message: 'Please input Add Sub Category or delete this field.'
+                                  }
+                                ]}
+                              >
+                                <Input style={{
+                                  width: '100% ',
+                                }} placeholder='Add Asset Spare' disabled={savingAuditSubCategory} />
+                              </Form.Item>
+                              <Form.Item
+                                align="baseline"
+                                noStyle
+                                shouldUpdate={( prevValues, curValues ) =>
+                                  prevValues.area !== curValues.area || prevValues.sights !== curValues.sights
+                                }
+                              >
+                                {() => (
 
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='sort_key' label='Sort Key'>
-                    <Input placeholder='Enter Sort Key' name='sort_key' />
-                  </Form.Item>
-                </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='purchase_org' label='Purchase Org'>
-                    <Input placeholder='Enter Purchase ORG' name='purchase_org' />
-                  </Form.Item>
-                </Col>
 
-                <Col span={24}>
-                  <Form.Item name='status' label='Status ' rules={[{required: true, message: 'Please slect your status'}]}>
-                    <Col span={24}>
-                      <Radio.Group
-                        buttonStyle='solid'
-                        onChange={(e) => {
-                          setStatus(e?.target?.value);
-                        }}
-                        size='small'
-                        defaultValue={defaultValue?.status === 'In Active' ? 0 : 1}>
-                        <Radio.Button className='active' value={1}>
-                          Active
-                        </Radio.Button>
-                        <Radio.Button className='in-active' value={0}>
-                          In-Active
-                        </Radio.Button>
-                      </Radio.Group>
-                    </Col>
-                  </Form.Item>
-                </Col>
+                                  <Form.Item
+                                    {...field}
 
+                                    name={[field.name, 'status']}
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message: 'Missing Status',
+                                      },
+                                    ]}
+                                  >
+
+                                    <Radio.Group
+                                      defaultValue={1}
+                                      buttonStyle="solid"
+                                      style={{
+                                        display: 'flex',
+                                      }}
+                                    >
+                                      <Radio.Button value={1} className='active'>Active</Radio.Button>
+                                      <Radio.Button value={0} className='in-active' >
+                                        InActive
+                                      </Radio.Button>
+                                    </Radio.Group>
+                                  </Form.Item>
+                                )}
+                              </Form.Item>
+
+
+
+                              <MinusCircleOutlined onClick={() => remove( field.name )} />
+                            </Space>
+                          ) )}
+                          <Form.Item>
+                            <Button
+                              type='dashed'
+                              onClick={() => add()}
+                              style={{ width: '40%', paddingLeft: '5px', backgroundColor: 'green', color: 'white' }}
+                              icon={<PlusOutlined style={{}} />}
+                              disabled={savingAuditSubCategory}>
+                              Add field
+                            </Button>
+
+                            <Form.ErrorList errors={errors} />
+                          </Form.Item>
+                        </div>
+                      )}
+                    </Form.List>
+                  </Form.Item>
+                </Col> */}
+
+                {/* <Col span={24}>
+                  <Form.Item name='status' label='Status'>
+                    <Space direction='vertical'>
+                      <Col span={24}>
+                        <Radio.Group
+                          disabled={savingAuditSubCategory}
+                          buttonStyle='solid'
+                          defaultValue={defaultValue?.status === 'In Active' ? 0 : 1}
+                          onChange={( e ) => {
+                            setStatus( e?.target?.value );
+                          }}
+                          size='small'>
+                          <Radio.Button className='active' value={1}>
+                            Active
+                          </Radio.Button>
+                          <Radio.Button className='in-active' value={0}>
+                            In-Active
+                          </Radio.Button>
+                        </Radio.Group>
+                      </Col>
+                    </Space>
+                  </Form.Item>
+                </Col> */}
                 <Col span={24}>
                   <Row gutter={[15, 15]} style={{justifyContent: 'end'}}>
                     <Col span={12} style={{textAlign: 'right'}} className='d-flex justify-content-end align-items-center'>
                       <Form.Item className='mx-2'>
-                        <Button className='orangeFactory' type='primary' htmlType='submit' loading={savingVendorMaster} disabled={savingVendorMaster}>
-                          Save
+                        <Button className='orangeFactory' type='primary' htmlType='submit' disabled={savingAuditSubCategory}>
+                          Submit
                         </Button>
                       </Form.Item>
-
+                      {/* </Col>
+                    <Col span={12}> */}
                       <Form.Item>
-                        <Button disabled={savingVendorMaster} onClick={handleClickBack}>
+                        <Button disabled={savingAuditSubCategory} onClick={handleClickBack}>
                           Back
                         </Button>
                       </Form.Item>

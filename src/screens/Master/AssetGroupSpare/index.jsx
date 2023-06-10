@@ -1,8 +1,8 @@
-import {filter, head} from 'ramda';
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
+
 import {useNavigate} from 'react-router';
-import {getAssetGroupSpare} from '../../../@app/service/serviceSlice';
+import {getAuditSubCategory} from '../../../@app/master/masterSlice';
 import CustomTable from '../../../components/CustomTable';
 import {column} from './column';
 
@@ -16,37 +16,34 @@ export default function AssetGroupSpare() {
   };
 
   const {
-    gettingAssetGroupSpare,
-    getAssetGroupSpareResponse: {data: dataSource}
+    gettingAuditSubCategory,
+    getAuditSubCategoryResponse: {data: dataSource}
   } = useSelector((state) => {
-    return state.service;
+    return state.master;
   });
 
   const gridData = (dataSource ?? []).map((data) => {
-    const {asset_group_name, assetspares, ...restOfData} = data;
-    const x = (assetspares ?? [])?.map((n) => {
-      return n.name;
+    const {audit_subcategory, ...restOfData} = data;
+    const x = (audit_subcategory ?? [])?.map((n) => {
+      return n.value;
     });
-    return {processedAssetSpares: x, asset_group_name, ...restOfData};
+    return {audit_subcategory: x, ...restOfData};
   });
 
   const handleEditClick = (data) => {
-    console.log(data)
-    const editingData = filter((e) => e?.asset_group_id === data?.asset_group_id, dataSource ?? []);
-    const {assetspares, asset_group_id, asset_group_status} = head(editingData);
-    const processedGroupSpare = (assetspares ?? [])?.map((e) => {
-      return {name: e.name, status: e.status};
-    });
     navigate('/AssetGroupSpare/addForm', {
-      state: {data: {id: data?.id, asset_group_spares: processedGroupSpare, asset_group_id, asset_group_status, mode: 'edit'}}
+      state: {data}
     });
   };
+
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getAssetGroupSpare());
-  }, [dispatch]);
+    dispatch(getAuditSubCategory());
+  }, []);
+
+  // eslint-disable-next-line no-unused-vars
 
   return (
-    <CustomTable handleEditClick={handleEditClick} loading={gettingAssetGroupSpare} dataSource={gridData} column={column} onClickAdd={onClickAdd} title={'Asset Group Spare'} />
+    <CustomTable handleEditClick={handleEditClick} loading={gettingAuditSubCategory} dataSource={gridData} column={column} onClickAdd={onClickAdd} title={'Asset Group Spare'} />
   );
 }

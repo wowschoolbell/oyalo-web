@@ -29,7 +29,7 @@ export default function StateMaster({setTopTitle}) {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getStates());
-  }, [dispatch]);
+  }, []);
 
   return <CustomTable handleEditClick={handleEditClick} loading={gettingState} dataSource={dataSource} column={column} onClickAdd={onClickAdd} title={'State Master'} />;
 }

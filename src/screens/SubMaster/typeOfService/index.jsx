@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigate} from 'react-router';
-import {getTypeOfService} from '../../../@app/service/serviceSlice';
+import {getEmployeeLevel} from '../../../@app/subMaster/subMasterSlice';
 import CustomTable from '../../../components/CustomTable';
 import {column} from './column';
 export default function TypeOfService() {
@@ -15,22 +15,22 @@ export default function TypeOfService() {
 
   const handleEditClick = (data) => {
     navigate('/typeOfService/addForm', {
-      state: {data, isEdit: true}
+      state: {data}
     });
   };
 
   const {
-    gettingTypeOfService,
-    getTypeOfServiceResponse: {data: dataSource}
+    gettingEmployeeLevel,
+    getEmployeeLevelResponse: {data: dataSource}
   } = useSelector((state) => {
-    return state.service;
+    return state.subMaster;
   });
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getTypeOfService());
-  }, [dispatch]);
+    dispatch(getEmployeeLevel());
+  }, []);
 
-  return <CustomTable handleEditClick={handleEditClick} loading={gettingTypeOfService} dataSource={dataSource} column={column} onClickAdd={onClickAdd} title={'Type Of Service'} />;
+  return <CustomTable handleEditClick={handleEditClick} loading={gettingEmployeeLevel} dataSource={dataSource} column={column} onClickAdd={onClickAdd} title={'Type Of Service'} />;
 }

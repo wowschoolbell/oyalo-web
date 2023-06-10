@@ -51,8 +51,8 @@ function CityMasterForm() {
   }, [dispatch, zoneID]);
 
   const onFinish = (data) => {
-    setShowDialog(false);
-    dispatch(defaultValue?.id ? updateCity({data: {...data, status: transStatus({status}), id: defaultValue.id}}) : saveCity({data, status: transStatus({status})})).then(({message, status, statusText}) => {
+    setShowDialog(true);
+    dispatch(defaultValue?.id ? updateCity({data: {...data, status: transStatus({status}), id: defaultValue.id}}) : saveCity({data})).then(({message, status, statusText}) => {
       if (status === 200) {
         form.resetFields();
         navigate('/cityMaster');

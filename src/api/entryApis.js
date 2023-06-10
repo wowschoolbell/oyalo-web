@@ -1,23 +1,26 @@
-import client from './client';
+import client from "./client";
 
 // const limit = 400;
 // const offset = 0;
 
 //Entry
-const getEntryType = ( { data } ) => client.post( 'audit-type', data, {} );
-const uploadEntryImage = ( form, { headers } ) => client.post( 'audit-entry-imageupload', form, { headers } );
-const addAuditEntry = ( { data } ) => client.post( 'audit-entry', data, {} );
+const getEntryType = ({ data }) => client.post("audit-type", data, {});
+const uploadEntryImage = (form, { headers }) =>
+  client.post("audit-entry-imageupload", form, { headers });
+const addAuditEntry = ({ data }) => client.post("audit-entry", data, {});
 
-const getAuditEntry = ( { path, data } ) => client.post( path, data, {} );
-const getApproval = ( { path, data } ) => client.post( path, data, {} );
-const getCapa = ( { path, data } ) => client.post( path, data, {} );
-const getApprovalReport = ( { path, data } ) => client.post( path, data, {} );
+const getAuditEntry = ({ path, data }) => client.post(path, data, {});
+const getApproval = ({ path, data }) => client.post(path, data, {});
+const getCapa = ({ path, data }) => client.post(path, data, {});
+const getApprovalReport = ({ path, data }) => client.post(path, data, {});
 
-const entryCheck = ( { data } ) => client.post( 'add-approval-status', data, {} );
+const entryCheck = ({ data }) => client.post("add-approval-status", data, {});
 
-const capaSubmit = ( { data } ) => client.post( 'capa-submit', data, {} );
-const editAuditEntry = ( { data } ) => client.post( 'edit-audit-entry', data, {} );
-const editApproval = ( { data } ) => client.post( 'edit-approval', data, {} );
+const capaSubmit = ({ data }) => client.post("capa-submit", data, {});
+const editAuditEntry = ({ data }) => client.post("edit-audit-entry", data, {});
+const editApproval = ({ data }) => client.post("edit-approval", data, {});
+
+const viewRecheck = ({ data }) => client.post("gets-audit-entries", data, {});
 
 const entryApis = {
   getEntryType,
@@ -30,7 +33,8 @@ const entryApis = {
   getApprovalReport,
   capaSubmit,
   editAuditEntry,
-  editApproval
+  editApproval,
+  viewRecheck,
 };
 
 export default entryApis;
