@@ -6,5 +6,5 @@ export const column = [
   { key: '5', headerName: 'Service For', field: 'service_for', hide: false, width: 180 },
   { key: '6', headerName: 'Ticket Status', field: 'ticket_status', hide: false, width: 180 },
   { key: '7', headerName: 'Creation Date', field: 'date', hide: false, width: 180 },
-  { key: '8', headerName: 'Ageing Days', field: 'ZId', hide: false, width: 180 },
+  { key: '8', headerName: 'Ageing Days', field: 'aging_days', hide: false, width: 180 },
 ];
