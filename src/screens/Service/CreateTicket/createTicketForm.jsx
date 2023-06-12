@@ -37,7 +37,7 @@ const CreateTicketForm = (props) => {
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [cancelReason, updateCancelReason] = useState("")
+  const [deleteReason, updatedeleteReason] = useState("")
 
   const outletList = outletData?.map((o) => ({
     ...o,
@@ -117,7 +117,7 @@ const CreateTicketForm = (props) => {
 
   const handleCancel = () => {
     setIsModalOpen(false);
-    updateCancelReason("");
+    updatedeleteReason("");
   };
 
   const onFinish = (data) => {
@@ -133,8 +133,8 @@ const CreateTicketForm = (props) => {
     );
   };
 
-  const onCloseTickets = () => {
-    dispatch(closeTickets({ data: { reason: cancelReason, id: defaultValue?.id } })).then(
+  const onDeleteTickets = () => {
+    dispatch(closeTickets({ data: { reason: deleteReason, id: defaultValue?.id } })).then(
       ({ message, status, statusText }) => {
         messageToast({ message: message ?? statusText, status, title: 'Ticket Closed' });
         if (status === 200) {
@@ -480,7 +480,7 @@ const CreateTicketForm = (props) => {
 
                       <Form.Item className='mx-2'>
                         <Button danger disabled={savingTickets} onClick={handleDeleteBtn}>
-                          Close
+                          Delete
                         </Button>
                       </Form.Item>
                     </Col>
@@ -491,10 +491,10 @@ const CreateTicketForm = (props) => {
           </Col>
         </Row>
       </Card>
-      <Modal title="Close Ticket" open={isModalOpen} onOk={onCloseTickets} onCancel={handleCancel}>
+      <Modal title="Delete Ticket" open={isModalOpen} onOk={onDeleteTickets} onCancel={handleCancel}>
         <Form layout='vertical' >
-          <Form.Item name='close_reason' label='Reason for Close'>
-            <TextArea value={cancelReason} onChange={(e) => updateCancelReason(e.target.value)} rows={4} placeholder='' />
+          <Form.Item name='delete_reason' label='Reason for Delete'>
+            <TextArea value={deleteReason} onChange={(e) => updatedeleteReason(e.target.value)} rows={4} placeholder='' />
           </Form.Item>
         </Form>
       </Modal>
