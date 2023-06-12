@@ -88,7 +88,10 @@ const initialState = {
   saveTicketsError: {},
   gettingTickets: false,
   getTicketsResponse: {},
-  getTicketsError: {}
+  getTicketsError: {},
+  gettingTicketHandling: false,
+  getTicketHandlingResponse: {},
+  getTicketHandlingError: {}
 };
 
 export const serviceSlice = createSlice({
@@ -613,7 +616,19 @@ export const serviceSlice = createSlice({
     updateTicketsError: (state, action) => {
       state.savingTickets = false;
       state.saveTicketsError = action.payload;
-    }
+    },
+
+    getTicketHandlingRequest: (state) => {
+      state.gettingTicketHandling = true;
+    },
+    getTicketHandlingResponse: (state, action) => {
+      state.gettingTicketHandling = false;
+      state.getTicketHandlingResponse = action.payload;
+    },
+    getTicketHandlingError: (state, action) => {
+      state.gettingTicketHandling = false;
+      state.getTicketHandlingError = action.payload;
+    },
   }
 });
 
@@ -1255,3 +1270,16 @@ export const closeTickets =
           dispatch(serviceSlice.actions.updateTicketsError());
         });
     };
+
+export const getTicketForHadling = () => async (dispatch) => {
+  dispatch(serviceSlice.actions.getTicketHandlingRequest());
+  return apis
+    .getTicketForHadling()
+    .then(({ data }) => {
+      dispatch(serviceSlice.actions.getTicketHandlingResponse(data));
+      return data;
+    })
+    .catch(() => {
+      dispatch(serviceSlice.actions.getTicketHandlingError());
+    });
+};

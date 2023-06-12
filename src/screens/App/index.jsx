@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useEffect, useState} from 'react';
-import {isEmpty} from 'ramda';
+import React, { useEffect, useState } from 'react';
+import { isEmpty } from 'ramda';
 import './styles.css';
 import {
   FaBook,
@@ -21,12 +21,12 @@ import {
   FaUserEdit,
   FaUserTag
 } from 'react-icons/fa';
-import {RiLayoutGridFill} from 'react-icons/ri';
-import {SiAdobeaudition} from 'react-icons/si';
-import {ImList2} from 'react-icons/im';
-import {Route, Routes, useNavigate} from 'react-router-dom';
+import { RiLayoutGridFill } from 'react-icons/ri';
+import { SiAdobeaudition } from 'react-icons/si';
+import { ImList2 } from 'react-icons/im';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 
-import {Badge, Input, Layout, Menu, notification} from 'antd';
+import { Badge, Input, Layout, Menu, notification } from 'antd';
 import logo from '../../logo.png';
 import OutletMaster from '../Master/outletMaster';
 import OutletMasterForm from '../Master/outletMaster/OutletMasterForm';
@@ -75,11 +75,11 @@ import AuditCAPA from '../Audit/auditSubCAPA';
 import AuditEntryForm from '../Audit/auditEntry/AuditForm';
 import Approval from '../Audit/auditApproval/Approval';
 import CapaView from '../Audit/auditSubCAPA/CapaView';
-import {Modal} from 'antd';
-import {useSelector} from 'react-redux';
+import { Modal } from 'antd';
+import { useSelector } from 'react-redux';
 import apis from '../../api/stateAPI';
-import {MdCategory,MdOutlineDynamicForm, MdGroups, MdOutlineMiscellaneousServices, MdPriorityHigh, MdWork, MdOutlinePayment} from 'react-icons/md';
-import {BsCash, BsCashCoin} from 'react-icons/bs';
+import { MdCategory, MdOutlineDynamicForm, MdGroups, MdOutlineMiscellaneousServices, MdPriorityHigh, MdWork, MdOutlinePayment } from 'react-icons/md';
+import { BsCash, BsCashCoin } from 'react-icons/bs';
 import AssetGroupIssue from '../Master/AssetGroupIssue';
 import AssetGroupIssueForm from '../Master/AssetGroupIssue/AssetGroupIssueForm';
 import AssetGroupSpare from '../Master/AssetGroupSpare';
@@ -153,10 +153,10 @@ import Mspcrequestreport from '../Service/Mspcrequestreport';
 import NewAssetMaster from '../Master/newAssetMaster';
 import NewAssetMasterForm from '../Master/newAssetMaster/NewAssetMasterForm';
 
-const {Sider} = Layout;
+const { Sider } = Layout;
 
 function App() {
-  const {type: userLog, loginStatus} = useSelector((state) => state.auth);
+  const { type: userLog, loginStatus } = useSelector((state) => state.auth);
   const userData = useSelector((state) => state.auth.userData.data);
   const badgeCount = useSelector((state) => state.auth.badgeCount);
   const [api, contextHolder] = notification.useNotification();
@@ -200,7 +200,7 @@ function App() {
         type: 'error'
       });
     } else {
-      apis.updatePass({employee_code: id, Password: pass}).then(({data}) => {
+      apis.updatePass({ employee_code: id, Password: pass }).then(({ data }) => {
         if (data.statusText === 'Password Updated.') {
           api.open({
             message: 'SuccussFully',
@@ -226,22 +226,22 @@ function App() {
 
   return (
     <>
-      <Layout style={{height: '100vh'}}>
+      <Layout style={{ height: '100vh' }}>
         {contextHolder}
-        <Sider trigger={null} width={150} collapsible collapsed={collapsed} style={{transition: '0.5s'}} className={`${collapsed ? 'd-flex' : 'd-none'} `}>
-          <div style={{textAlign: 'center', marginTop: '10px'}}>
-            <img src={logo} alt='logo' style={{width: '110%', padding: '35px'}} className='nav-logo'></img>
+        <Sider trigger={null} width={150} collapsible collapsed={collapsed} style={{ transition: '0.5s' }} className={`${collapsed ? 'd-flex' : 'd-none'} `}>
+          <div style={{ textAlign: 'center', marginTop: '10px' }}>
+            <img src={logo} alt='logo' style={{ width: '110%', padding: '35px' }} className='nav-logo'></img>
           </div>
           <Menu
             mode='vertical'
-            onClick={({key}) => {
+            onClick={({ key }) => {
               if (key === 'signout') {
                 //TODO, sign out feature here
               } else {
                 if (key !== 'search') navigate(key);
               }
             }}
-            style={{backgroundColor: 'black', color: 'white'}}>
+            style={{ backgroundColor: 'black', color: 'white' }}>
             {main.dashboard && (
               <Menu.Item key='/dashboard' className='menu side-nav'>
                 <div className='flex flex-col'>
@@ -642,7 +642,7 @@ function App() {
                     <Badge size='default' count={11} showZero color='#3199dc' />
                   </span>
                 </Menu.Item>
-                 <Menu.Item key='/mspcrequestreport' icon={<BsCash size={17} />} onClick={() => setTopTitle('MS - PettyCash Request Report')}>
+                <Menu.Item key='/mspcrequestreport' icon={<BsCash size={17} />} onClick={() => setTopTitle('MS - PettyCash Request Report')}>
                   <span>MS - PettyCash Request Report</span>
                   <span className='count'>
                     <Badge size='default' count={11} showZero color='#3199dc' />
@@ -659,9 +659,9 @@ function App() {
           </Menu>
         </Sider>
 
-        <Layout style={{height: '100vh'}}>
-          <TopNavMenu {...{collapsed, setCollapsed, TopTitle}} />
-          <Content main={main} sub={sub} {...{setTopTitle}} />
+        <Layout style={{ height: '100vh' }}>
+          <TopNavMenu {...{ collapsed, setCollapsed, TopTitle }} />
+          <Content main={main} sub={sub} {...{ setTopTitle }} />
           <Footer />
         </Layout>
         <Modal title='Update Your Password to Continue' open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
@@ -676,9 +676,9 @@ function App() {
 }
 
 function Content(props) {
-  const {main, sub, setTopTitle} = props;
+  const { main, sub, setTopTitle } = props;
   return (
-    <div style={{height: '100vh', backgroundColor: '#F4F5F7', overflow: 'auto'}}>
+    <div style={{ height: '100vh', backgroundColor: '#F4F5F7', overflow: 'auto' }}>
       <Routes>
         <Route path='/dashboard' element={<div>Dashbaord</div>}></Route>
         <Route path='/activeUsers' element={<div>Active Users List</div>}></Route>
@@ -687,26 +687,26 @@ function Content(props) {
 
         {main.master && (
           <>
-            <Route path='/outletMaster' element={<OutletMaster {...{setTopTitle}} />}></Route>
-            <Route path='/employeeMaster' element={<EmployeeMaster {...{setTopTitle}} />}></Route>
-            <Route path='/roleMaster' element={<RoleMaster {...{setTopTitle}} />}></Route>
-            <Route path='/editRoleMaster' element={<EditRoleMaster {...{setTopTitle}} />}></Route>
-            <Route path='/employeeMapping' element={<EmployeeMaping {...{setTopTitle}} />}></Route>
-            <Route path='/auditCategory' element={<AuditCategory {...{setTopTitle}} />}></Route>
-            <Route path='/auditSubCategory' element={<AuditSubCategory {...{setTopTitle}} />}></Route>
-            <Route path='/auditPointList' element={<AuditPointList {...{setTopTitle}} />}></Route>
-            <Route path='/auditPointMarks' element={<AuditPointMarks {...{setTopTitle}} />}></Route>
+            <Route path='/outletMaster' element={<OutletMaster {...{ setTopTitle }} />}></Route>
+            <Route path='/employeeMaster' element={<EmployeeMaster {...{ setTopTitle }} />}></Route>
+            <Route path='/roleMaster' element={<RoleMaster {...{ setTopTitle }} />}></Route>
+            <Route path='/editRoleMaster' element={<EditRoleMaster {...{ setTopTitle }} />}></Route>
+            <Route path='/employeeMapping' element={<EmployeeMaping {...{ setTopTitle }} />}></Route>
+            <Route path='/auditCategory' element={<AuditCategory {...{ setTopTitle }} />}></Route>
+            <Route path='/auditSubCategory' element={<AuditSubCategory {...{ setTopTitle }} />}></Route>
+            <Route path='/auditPointList' element={<AuditPointList {...{ setTopTitle }} />}></Route>
+            <Route path='/auditPointMarks' element={<AuditPointMarks {...{ setTopTitle }} />}></Route>
 
-            <Route path='/outletMaster/addForm' element={<OutletMasterForm {...{setTopTitle}} />}></Route>
-            <Route path='/employeeMaster/addForm' element={<EmployeeMasterForm {...{setTopTitle}} />}></Route>
-            <Route path='/roleMaster/addForm' element={<RoleMasterForm {...{setTopTitle}} />}></Route>
-            <Route path='/editRoleMaster/addForm' element={<EditRoleMasterForm {...{setTopTitle}} />}></Route>
-            <Route path='/employeeMapping/addForm' element={<EmployeeMappingForm {...{setTopTitle}} />}></Route>
-            <Route path='/auditCategory/addForm' element={<AuditCategoryForm {...{setTopTitle}} />}></Route>
-            <Route path='/auditSubCategory/addForm' element={<AuditSubCategoryForm {...{setTopTitle}} />}></Route>
-            <Route path='/auditPointMarks/addForm' element={<AuditPointMarksForm {...{setTopTitle}} />}></Route>
-            <Route path='/auditPointMarks/view' element={<AuditPointMarksView {...{setTopTitle}} />}></Route>
-            <Route path='/auditPointList/addForm' element={<AuditPointListForm {...{setTopTitle}} />}></Route>
+            <Route path='/outletMaster/addForm' element={<OutletMasterForm {...{ setTopTitle }} />}></Route>
+            <Route path='/employeeMaster/addForm' element={<EmployeeMasterForm {...{ setTopTitle }} />}></Route>
+            <Route path='/roleMaster/addForm' element={<RoleMasterForm {...{ setTopTitle }} />}></Route>
+            <Route path='/editRoleMaster/addForm' element={<EditRoleMasterForm {...{ setTopTitle }} />}></Route>
+            <Route path='/employeeMapping/addForm' element={<EmployeeMappingForm {...{ setTopTitle }} />}></Route>
+            <Route path='/auditCategory/addForm' element={<AuditCategoryForm {...{ setTopTitle }} />}></Route>
+            <Route path='/auditSubCategory/addForm' element={<AuditSubCategoryForm {...{ setTopTitle }} />}></Route>
+            <Route path='/auditPointMarks/addForm' element={<AuditPointMarksForm {...{ setTopTitle }} />}></Route>
+            <Route path='/auditPointMarks/view' element={<AuditPointMarksView {...{ setTopTitle }} />}></Route>
+            <Route path='/auditPointList/addForm' element={<AuditPointListForm {...{ setTopTitle }} />}></Route>
             <Route path='/AssetGroupIssue' element={<AssetGroupIssue />}></Route>
             <Route path='/AssetGroupIssue/addForm' element={<AssetGroupIssueForm />}></Route>
             <Route path='/AssetGroupSpare' element={<AssetGroupSpare />}></Route>
@@ -717,29 +717,29 @@ function Content(props) {
             <Route path='/outletAssetGroupMapping/addForm' element={<AssetMasterForm />}></Route>
             <Route path='/assetMaster' element={<NewAssetMaster />}></Route>
             <Route path='/assetMaster/addForm' element={<NewAssetMasterForm />}></Route>
-            
+
           </>
         )}
 
         {main.submaster && (
           <>
-            <Route path='/stateMaster' element={<StateMaster {...{setTopTitle}} />}></Route>
-            <Route path='/zoneMaster' element={<ZoneMaster {...{setTopTitle}} />}></Route>
-            <Route path='/subZoneMaster' element={<SubZoneMaster {...{setTopTitle}} />}></Route>
-            <Route path='/cityMaster' element={<CityMaster {...{setTopTitle}} />}></Route>
-            <Route path='/division' element={<Division {...{setTopTitle}} />}></Route>
-            <Route path='/department' element={<Department {...{setTopTitle}} />}></Route>
-            <Route path='/Designation' element={<Designation {...{setTopTitle}} />}></Route>
-            <Route path='/employeeLevel' element={<EmployeeLevel {...{setTopTitle}} />}></Route>
+            <Route path='/stateMaster' element={<StateMaster {...{ setTopTitle }} />}></Route>
+            <Route path='/zoneMaster' element={<ZoneMaster {...{ setTopTitle }} />}></Route>
+            <Route path='/subZoneMaster' element={<SubZoneMaster {...{ setTopTitle }} />}></Route>
+            <Route path='/cityMaster' element={<CityMaster {...{ setTopTitle }} />}></Route>
+            <Route path='/division' element={<Division {...{ setTopTitle }} />}></Route>
+            <Route path='/department' element={<Department {...{ setTopTitle }} />}></Route>
+            <Route path='/Designation' element={<Designation {...{ setTopTitle }} />}></Route>
+            <Route path='/employeeLevel' element={<EmployeeLevel {...{ setTopTitle }} />}></Route>
 
-            <Route path='/stateMaster/addForm' element={<StateMasterForm {...{setTopTitle}} />}></Route>
-            <Route path='/zoneMaster/addForm' element={<ZoneMasterForm {...{setTopTitle}} />}></Route>
-            <Route path='/subZoneMaster/addForm' element={<SubZoneMasterForm {...{setTopTitle}} />}></Route>
-            <Route path='/cityMaster/addForm' element={<CityMasterForm {...{setTopTitle}} />}></Route>
-            <Route path='/division/addForm' element={<DivisionForm {...{setTopTitle}} />}></Route>
-            <Route path='/department/addForm' element={<DepartForm {...{setTopTitle}} />}></Route>
-            <Route path='/Designation/addForm' element={<DesignationForm {...{setTopTitle}} />}></Route>
-            <Route path='/employeeLevel/addForm' element={<EmployeeLevelForm {...{setTopTitle}} />}></Route>
+            <Route path='/stateMaster/addForm' element={<StateMasterForm {...{ setTopTitle }} />}></Route>
+            <Route path='/zoneMaster/addForm' element={<ZoneMasterForm {...{ setTopTitle }} />}></Route>
+            <Route path='/subZoneMaster/addForm' element={<SubZoneMasterForm {...{ setTopTitle }} />}></Route>
+            <Route path='/cityMaster/addForm' element={<CityMasterForm {...{ setTopTitle }} />}></Route>
+            <Route path='/division/addForm' element={<DivisionForm {...{ setTopTitle }} />}></Route>
+            <Route path='/department/addForm' element={<DepartForm {...{ setTopTitle }} />}></Route>
+            <Route path='/Designation/addForm' element={<DesignationForm {...{ setTopTitle }} />}></Route>
+            <Route path='/employeeLevel/addForm' element={<EmployeeLevelForm {...{ setTopTitle }} />}></Route>
 
             <Route path='/serviceFor' element={<ServiceFor />}></Route>
             <Route path='/serviceFor/addForm' element={<ServiceForForm />}></Route>
@@ -763,39 +763,39 @@ function Content(props) {
         {main.audit && (
           <>
             <Route path='/audit' element={<div>Profile</div>}></Route>
-            <Route path='/auditEntry' element={<AuditEntry {...{setTopTitle}} />}></Route>
-            <Route path='/auditEntry/addForm' element={<AuditEntryForm mode='add' {...{setTopTitle}} />}></Route>
-            <Route path='/auditEntry/editForm' element={<AuditEntryForm mode='edit' {...{setTopTitle}} />}></Route>
-            <Route path='/auditEntry/auditView' element={<AuditView {...{setTopTitle}} />}></Route>{' '}
+            <Route path='/auditEntry' element={<AuditEntry {...{ setTopTitle }} />}></Route>
+            <Route path='/auditEntry/addForm' element={<AuditEntryForm mode='add' {...{ setTopTitle }} />}></Route>
+            <Route path='/auditEntry/editForm' element={<AuditEntryForm mode='edit' {...{ setTopTitle }} />}></Route>
+            <Route path='/auditEntry/auditView' element={<AuditView {...{ setTopTitle }} />}></Route>{' '}
           </>
         )}
 
         {main.audit && sub.approval && (
           <>
-            <Route path='/auditApproval' element={<AuditApproval {...{setTopTitle}} />}></Route>
-            <Route path='/approvalView' element={<Approval {...{setTopTitle}} />}></Route>{' '}
+            <Route path='/auditApproval' element={<AuditApproval {...{ setTopTitle }} />}></Route>
+            <Route path='/approvalView' element={<Approval {...{ setTopTitle }} />}></Route>{' '}
           </>
         )}
 
         {main.audit && sub.capa && (
           <>
-            <Route path='/capa' element={<AuditCAPA {...{setTopTitle}} />}></Route>
-            <Route path='/capaView' element={<CapaView {...{setTopTitle}} />}></Route>
+            <Route path='/capa' element={<AuditCAPA {...{ setTopTitle }} />}></Route>
+            <Route path='/capaView' element={<CapaView {...{ setTopTitle }} />}></Route>
           </>
         )}
 
         {main.audit && sub.capa && (
           <>
-            <Route path='/report' element={<AuditReport {...{setTopTitle}} />}></Route>
+            <Route path='/report' element={<AuditReport {...{ setTopTitle }} />}></Route>
           </>
         )}
 
-        <Route path='/createTicket' element={<CreateTicket setTopTitle={setTopTitle}  />}></Route>
+        <Route path='/createTicket' element={<CreateTicket setTopTitle={setTopTitle} />}></Route>
         <Route path='/createTicket/addEditForm' element={<CreateTicketForm setTopTitle={setTopTitle} />}></Route>
         <Route path='/createTicket/showForm' element={<ShowTicket />}></Route>
         <Route path='/createTicket/showForm1' element={<ShowTicket1 />}></Route>
-        <Route path='/handleTicket' element={<TicketHandling />}></Route>
-        <Route path='/ticketForm' element={<TicketHandlingForm />}></Route>
+        <Route path='/handleTicket' element={<TicketHandling setTopTitle={setTopTitle} />}></Route>
+        <Route path='/ticketForm' element={<TicketHandlingForm setTopTitle={setTopTitle} />}></Route>
         <Route path='/pcadvancereqms' element={<Pcadvancereqms />}></Route>
         <Route path='/pcaclaimsubmissionms' element={<Pcaclaimsubmissionms />}></Route>
         <Route path='/pcadvancereqmsform' element={<PcadvancereqmsForm />}></Route>

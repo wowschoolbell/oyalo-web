@@ -63,6 +63,9 @@ const updateTickets = ( { data } ) => client.post( 'update-tickets', data, {} );
 const closeTickets = ( { data } ) => client.post( 'delete-ticket?ticket_id='+data.id, data, {} );
 
 
+const getTicketForHadling = () => client.get( 'get-ticket-handling', { limit, offset }, {} );
+
+
 
 const serviceApi = {
   addServiceFor,
@@ -107,7 +110,8 @@ const serviceApi = {
   addTickets,
   getTickets,
   updateTickets,
-  closeTickets
+  closeTickets,
+  getTicketForHadling
 }
 
 export default serviceApi;

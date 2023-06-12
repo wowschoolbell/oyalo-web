@@ -1,11 +1,19 @@
-export const column = [
+export let column = [
   { key: '1', headerName: 'S.No', field: 'S.No', hide: false, width: 70 },
-  { key: '2', headerName: 'Ticket No', field: 'id', hide: false, width: 300 },
-  { key: '3', headerName: 'Asset Group', field: 'state', hide: false, width: 180 },
-  { key: '4', headerName: 'Asset', field: 'subZone', hide: false, width: 180 },
-  { key: '5', headerName: 'Service For', field: 'city', hide: false, width: 180 },
-  { key: '6', headerName: 'Ticket Status', field: 'outletC', hide: false, width: 180 },
-  { key: '7', headerName: 'Current Status', field: 'outletN', hide: false, width: 180 },
-  { key: '8', headerName: 'Creation Date', field: 'zomato', hide: false, width: 180 },
-  { key: '9', headerName: 'Ageing Days', field: 'ZId', hide: false, width: 180 },
-  ];
+  { key: '2', headerName: 'Ticket No', field: 'ticket_no', hide: false, width: 100 },
+  { key: '3', headerName: 'Outlet Name', field: 'outlet_name', hide: false, width: 130 },
+  { key: '5', headerName: 'Service For', field: 'service_for', hide: false, width: 130 },
+  { key: '4', headerName: 'Ticket Description', field: 'ticket_description', hide: false, width: 180 },
+  { key: '6', headerName: 'Asset Group', field: 'asset_group', hide: false, width: 130 },
+  { key: '7', headerName: 'Ticket Status', field: 'Ticket_status', hide: false, width: 130 },
+  { key: '8', headerName: 'Payment status', field: 'Payment_status', hide: false, width: 130 },
+  { key: '9', headerName: 'Ticket Date', field: 'Ticket_Date', hide: false, width: 130 },
+  { key: '9', headerName: 'Aging', field: 'Aging', hide: false, width: 130 },
+  {
+    key: '7', headerName: 'Action', field: 'btnfields', hide: false, width: 180, renderCell: (params) => {
+      return <button className='orangeFactory btn' onClick={() => false}>
+        Update
+      </button>
+    },
+  }
+];

@@ -24,7 +24,6 @@ export default function CreateTicket(props) {
   });
 
   const handleEditClick = (data) => {
-    console.log("Edit Data", data)
     navigate('/createTicket/addEditForm', {
       state: { data, isEdit: true }
     });
