@@ -45,7 +45,7 @@ export const MultiUploadButton = ({ disabled, url, onSuccess = () => false }) =>
   );
 
   const props = {
-    name: 'image',
+    name: 'attachments[0]',
     action: `${baseURL}${url}`,
     headers: {
       authorization: 'authorization-text'

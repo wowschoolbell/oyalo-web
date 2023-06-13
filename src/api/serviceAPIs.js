@@ -60,7 +60,7 @@ const updateGlAccount = ( { data } ) => client.put( 'update-GLAccount', data, {}
 const addTickets = ( { data } ) => client.post( 'add-tickets', data, {} );
 const getTickets = () => client.get( 'get-tickets', { limit, offset }, {} );
 const updateTickets = ( { data } ) => client.post( 'update-tickets', data, {} );
-const closeTickets = ( { data } ) => client.post( 'delete-ticket?ticket_id='+data.id, data, {} );
+const closeTickets = ( { data } ) => client.post( 'delete-tickets-dat?ticket_id='+data.id, data, {} );
 
 
 const getTicketForHadling = () => client.get( 'get-ticket-handling', { limit, offset }, {} );

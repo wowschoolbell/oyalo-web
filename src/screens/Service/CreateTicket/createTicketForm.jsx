@@ -17,7 +17,10 @@ import { map } from 'ramda';
 import { getAssetGroup, getAssetGroupIssue, getAssetMaster, getPriority, getServiceFor, getTypeOfService, saveTickets, updateTickets, closeTickets } from '../../../@app/service/serviceSlice';
 import { MultiUploadButton } from '../../../components/multiUploadButton/MultiUploadButton';
 import typesOfIssue from './typesOfIssue.constant';
+import { ExclamationCircleFilled } from '@ant-design/icons';
 const { TextArea } = Input;
+
+const { confirm } = Modal;
 
 const { Option } = Select;
 const CreateTicketForm = (props) => {
@@ -35,9 +38,6 @@ const CreateTicketForm = (props) => {
   } = useSelector((state) => {
     return state.master;
   });
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [deleteReason, updatedeleteReason] = useState("")
 
   const outletList = outletData?.map((o) => ({
     ...o,
@@ -112,17 +112,25 @@ const CreateTicketForm = (props) => {
   };
 
   const handleDeleteBtn = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-    updatedeleteReason("");
+    confirm({
+      title: 'Are you sure?',
+      icon: <ExclamationCircleFilled />,
+      content: 'Do you want to delete this ticket?',
+      okText: 'Yes',
+      okType: 'danger',
+      cancelText: 'No',
+      onOk() {
+        onDeleteTickets();
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
   };
 
   const onFinish = (data) => {
     const outletCode = defaultValue?.id ? defaultValue.outlet_code : (outletData ?? []).find((outletData) => outletData?.id === selectedOutlet)?.outlet_code;
-    dispatch(isEdit ? updateTickets({ data: { asset: data.asset, id: defaultValue?.id } }) : saveTickets({ data: { ...data, outlet_code: outletCode } })).then(
+    dispatch(isEdit ? updateTickets({ data: { asset: data.asset, id: defaultValue?.id } }) : saveTickets({ data: { ...data, attachments: JSON.stringify(data?.attachments ?? "[]"), outlet_code: outletCode } })).then(
       ({ message, status, statusText }) => {
         messageToast({ message: message ?? statusText, status, title: isEdit ? 'Ticket Updated' : 'Ticket creation' });
         if (status === 200) {
@@ -134,9 +142,9 @@ const CreateTicketForm = (props) => {
   };
 
   const onDeleteTickets = () => {
-    dispatch(closeTickets({ data: { reason: deleteReason, id: defaultValue?.id } })).then(
+    dispatch(closeTickets({ data: { id: defaultValue?.id } })).then(
       ({ message, status, statusText }) => {
-        messageToast({ message: message ?? statusText, status, title: 'Ticket Closed' });
+        messageToast({ message: message ?? statusText, status, title: 'Ticket Deleted' });
         if (status === 200) {
           form.resetFields();
           navigate('/createTicket');
@@ -155,6 +163,8 @@ const CreateTicketForm = (props) => {
         asset_group: defaultValue.asset_group,
         outlet_code: defaultValue.outlet_code,
         assigned_to: defaultValue.assigned_to,
+        service_type: defaultValue.type_of_service,
+        types_of_issue: defaultValue.types_of_issue_id
       });
 
       props.setTopTitle('Edit Ticket')
@@ -162,8 +172,6 @@ const CreateTicketForm = (props) => {
       props.setTopTitle('Create Ticket')
     }
   }, [isEdit])
-
-  const dateFormat = ['DD/MM/YYYY', 'DD/MM/YY'];
 
   return (
     <>
@@ -343,7 +351,7 @@ const CreateTicketForm = (props) => {
                                 if (typesOfAssetGroupIssue.asset_group_name === selectedName) {
                                   return typesOfAssetGroupIssue.groupissues.map((data, i) => {
                                     return (
-                                      <Option key={i} value={i}>
+                                      <Option key={i} value={data?.name}>
                                         {data?.name}
                                       </Option>
                                     );
@@ -450,16 +458,18 @@ const CreateTicketForm = (props) => {
                   </Form.Item>
                 </Col>
 
-                <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                <Col md={{ span: 24 }} xs={{ span: 24 }}>
                   <Form.Item name='attachments' label='Attachment'>
                     {!isEdit && <MultiUploadButton url={'ticket-imageupload'} onSuccess={(files) => {
-                      form.setFieldsValue({ 'attachments': files?.map?.(file => file?.response?.filename ?? "")?.[0] ?? "" })
+                      form.setFieldsValue({ 'attachments': files?.map?.(file => JSON.parse(file?.response?.filename ?? "['']")?.[0] ?? "") ?? "" })
                     }} />}
-                    {isEdit && <Image
-                      width={200}
-                      height={200}
-                      src={defaultValue.attachements}
-                    />}
+                    {isEdit && <Image.PreviewGroup>
+                      {defaultValue.attachments?.map(attach => <Image
+                          width={200}
+                          src={`${defaultValue.pathfor_attachments}/${attach}`}
+                        />
+                      )}
+                    </Image.PreviewGroup>}
                   </Form.Item>
                 </Col>
 
@@ -491,13 +501,6 @@ const CreateTicketForm = (props) => {
           </Col>
         </Row>
       </Card>
-      <Modal title="Delete Ticket" open={isModalOpen} onOk={onDeleteTickets} onCancel={handleCancel}>
-        <Form layout='vertical' >
-          <Form.Item name='delete_reason' label='Reason for Delete'>
-            <TextArea value={deleteReason} onChange={(e) => updatedeleteReason(e.target.value)} rows={4} placeholder='' />
-          </Form.Item>
-        </Form>
-      </Modal>
     </>
   );
 };
