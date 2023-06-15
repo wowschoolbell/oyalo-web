@@ -795,7 +795,7 @@ function Content(props) {
         <Route path='/createTicket/showForm' element={<ShowTicket />}></Route>
         <Route path='/createTicket/showForm1' element={<ShowTicket1 />}></Route>
         <Route path='/handleTicket' element={<TicketHandling setTopTitle={setTopTitle} />}></Route>
-        <Route path='/ticketForm' element={<TicketHandlingForm setTopTitle={setTopTitle} />}></Route>
+        <Route path='/ticketHandling' element={<TicketHandlingForm setTopTitle={setTopTitle} />}></Route>
         <Route path='/pcadvancereqms' element={<Pcadvancereqms />}></Route>
         <Route path='/pcaclaimsubmissionms' element={<Pcaclaimsubmissionms />}></Route>
         <Route path='/pcadvancereqmsform' element={<PcadvancereqmsForm />}></Route>

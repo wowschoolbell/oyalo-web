@@ -1,20 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useEffect, useState} from 'react';
-import {Card, Modal} from 'antd';
-import Container from 'react-bootstrap/Container';
+import { SearchOutlined } from '@ant-design/icons/lib/icons';
+import { OutlinedInput, Stack, Tooltip } from '@mui/material';
 import InputAdornment from '@mui/material/InputAdornment';
-import {SearchOutlined} from '@ant-design/icons/lib/icons';
-import {OutlinedInput, Stack, Tooltip} from '@mui/material';
-import {BsPlusLg} from 'react-icons/bs';
-import {AiOutlineDownload, AiOutlineImport} from 'react-icons/ai';
+import { DataGrid, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarExport, GridToolbarFilterButton } from '@mui/x-data-grid';
+import { Card, Modal } from 'antd';
+import { isEmpty } from 'ramda';
+import React, { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
-import {DataGrid, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarExport, GridToolbarFilterButton} from '@mui/x-data-grid';
-import {FaEye, FaUserEdit} from 'react-icons/fa';
+import Container from 'react-bootstrap/Container';
+import { AiOutlineDownload, AiOutlineImport } from 'react-icons/ai';
+import { BsPlusLg } from 'react-icons/bs';
+import { FaEye, FaUserEdit } from 'react-icons/fa';
+import { useNavigate } from 'react-router';
+import { useDebounce } from '../../customHooks/useDebouce';
 import ViewCard from '../viewCard/ViewCard';
-import {useNavigate} from 'react-router';
-import {useDebounce} from '../../customHooks/useDebouce';
 import CustomPagination from './customPagination';
-import {isEmpty} from 'ramda';
 
 const customHeaderDesign = {
   '& .MuiDataGrid-columnHeaders': {
@@ -43,9 +43,9 @@ const customMobileFilterDesign = {
   }
 };
 
-export default function CustomTable({dataSource, column, onClickAdd, title, loading = false, handleEditClick, handleViewClick, addButtonStatus = false}) {
+export default function CustomTable({ dataSource, column, onClickAdd, title, loading = false, handleEditClick, handleViewClick, addButtonStatus = false, hideActionBtn = false }) {
   const data = (dataSource ?? []).map((data, index) => {
-    return {'S.No': index + 1, id: index + 1, ...data, status: Number(data.status) ? 'Active' : 'In Active'};
+    return { 'S.No': index + 1, id: index + 1, ...data, status: Number(data.status) ? 'Active' : 'In Active' };
   });
 
   const [searchText, setSearchText] = useState('');
@@ -64,8 +64,11 @@ export default function CustomTable({dataSource, column, onClickAdd, title, load
   }, [query, title, searchText]);
 
   const columns = [
-    ...column,
-    {
+    ...column
+  ].filter((e) => !e.hide);
+
+  if (!hideActionBtn) {
+    columns.push({
       field: 'action',
       headerName: 'Action',
       width: 150,
@@ -87,7 +90,7 @@ export default function CustomTable({dataSource, column, onClickAdd, title, load
               width: '50%',
               content: <ViewCard data={params.row} column={column} />,
               icon: <></>,
-              onOk() {}
+              onOk() { }
             });
           } else {
             navigate('/approvalView', {
@@ -98,44 +101,44 @@ export default function CustomTable({dataSource, column, onClickAdd, title, load
 
         return (
           <Stack direction='row' spacing={3}>
-             {title !== 'Create Ticket List'  ? (
+            {title !== 'Create Ticket List' ? (
               <Tooltip placement='bottom' title={'View'}>
-              <Button
-                variant='outlined'
-                onClick={handleViewClick ? () => handleViewClick(params.row) : view}
-                color='warning'
-                style={{backgroundColor: '#1f3bb3', width: '50px'}}
-                size='sm'>
-                <FaEye color='#fff' />
-              </Button>
-            </Tooltip>
-             ) : (
+                <Button
+                  variant='outlined'
+                  onClick={handleViewClick ? () => handleViewClick(params.row) : view}
+                  color='warning'
+                  style={{ backgroundColor: '#1f3bb3', width: '50px' }}
+                  size='sm'>
+                  <FaEye color='#fff' />
+                </Button>
+              </Tooltip>
+            ) : (
               <></>
-             ) }
+            )}
             {title !== 'Role Master' && title !== 'Audit Report' && title !== 'CAPA Submission List' && title !== 'Approval List' && title !== 'Create Ticket List' ? (
               <Tooltip placement='bottom' title={'Edit'}>
-                <Button variant='outlined' onClick={() => handleEditClick(params.row)} color='error' style={{backgroundColor: '#ffaf00', width: '50px'}} size='sm'>
+                <Button variant='outlined' onClick={() => handleEditClick(params.row)} color='error' style={{ backgroundColor: '#ffaf00', width: '50px' }} size='sm'>
                   <FaUserEdit color='#fff' />
                 </Button>
               </Tooltip>
             ) : (
               <></>
             )}
-            {title === 'Create Ticket List'  ? (
-                <>
-                  <div dangerouslySetInnerHTML={{__html: params.value}}></div>
-                  <button className='orangeFactory btn' onClick={() => handleEditClick(params.row)}>
-                    Update
-                  </button>
-                </>
+            {title === 'Create Ticket List' ? (
+              <>
+                <div dangerouslySetInnerHTML={{ __html: params.value }}></div>
+                <button className='orangeFactory btn' onClick={() => handleEditClick(params.row)}>
+                  Update
+                </button>
+              </>
             ) : (
               <></>
             )}
           </Stack>
         );
       }
-    }
-  ].filter((e) => !e.hide);
+    })
+  }
 
   function CustomToolbar() {
     return (
@@ -158,10 +161,10 @@ export default function CustomTable({dataSource, column, onClickAdd, title, load
   }
 
   return (
-    <Container style={{width: '100%'}}>
+    <Container style={{ width: '100%' }}>
       {/* title={<h3>{title}</h3>} */}
-      <Card style={{height: '100%'}} bordered={true}>
-        <div className='row align-items-center' style={{paddingLeft: '11px', paddingTop: '4px'}}>
+      <Card style={{ height: '100%' }} bordered={true}>
+        <div className='row align-items-center' style={{ paddingLeft: '11px', paddingTop: '4px' }}>
           <div className='col-lg-4 col-md-3 col-sm-12 mt-2 pb-4 row align-items-center'>
             <OutlinedInput
               className='align-items-center ml-sm-2 mr-sm-2 shadow-sm'
@@ -191,7 +194,7 @@ export default function CustomTable({dataSource, column, onClickAdd, title, load
                   </Button>
                 </Tooltip>
 
-                {(title !== 'Entry List' && title!== 'Asset Group Issue' && title !== 'Asset Group Spare')? (
+                {(title !== 'Entry List' && title !== 'Asset Group Issue' && title !== 'Asset Group Spare') ? (
                   <>
                     <Tooltip placement='bottom' title={'Upload'}>
                       <div className='btn btn-primary me-2 px-md-3 px-sm-4'>
@@ -214,9 +217,9 @@ export default function CustomTable({dataSource, column, onClickAdd, title, load
           )}
         </div>
         <div>
-          <div style={{height: 520, width: '100%'}}>
-            <div style={{display: 'flex', height: '100%'}}>
-              <div style={{flexGrow: 1, fontSize: '25px'}}>
+          <div style={{ height: 520, width: '100%' }}>
+            <div style={{ display: 'flex', height: '100%' }}>
+              <div style={{ flexGrow: 1, fontSize: '25px' }}>
                 <DataGrid
                   density='compact'
                   loading={loading}

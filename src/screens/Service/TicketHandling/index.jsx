@@ -19,8 +19,8 @@ function TicketHandling(props) {
   };
 
   const handleViewClick = (rowInfo) => {
-    navigate('/ticketForm', {
-      state: rowInfo
+    navigate('/ticketHandling', {
+      state: { data: rowInfo }
     });
   };
 
@@ -250,12 +250,11 @@ function TicketHandling(props) {
         </Row>
       </Card>
       <CustomTable
-        showHeader={false}
-        showEdit={false}
         loading={gettingTicketHandling}
         dataSource={data}
-        column={column}
+        column={column(handleViewClick)}
         handleViewClick={handleViewClick}
+        hideActionBtn={true}
         onClickAdd={onClickAdd}
         title={'Create List'}
       />

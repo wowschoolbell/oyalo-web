@@ -91,7 +91,11 @@ const initialState = {
   getTicketsError: {},
   gettingTicketHandling: false,
   getTicketHandlingResponse: {},
-  getTicketHandlingError: {}
+  getTicketHandlingError: {},
+
+  updatingTicketHandling: false,
+  updateTicketHandlingResponse: {},
+  updateTicketHandlingError: {}
 };
 
 export const serviceSlice = createSlice({
@@ -628,6 +632,19 @@ export const serviceSlice = createSlice({
     getTicketHandlingError: (state, action) => {
       state.gettingTicketHandling = false;
       state.getTicketHandlingError = action.payload;
+    },
+
+    ////////////////
+    updateTicketHandlingRequest: (state) => {
+      state.updatingTicketHandling = true;
+    },
+    updatedTicketHandlingResponse: (state, action) => {
+      state.updatingTicketHandling = false;
+      state.updateTicketHandlingResponse = action.payload;
+    },
+    updatedTicketHandlingError: (state, action) => {
+      state.updatingTicketHandling = false;
+      state.updateTicketHandlingError = action.payload;
     },
   }
 });
@@ -1283,3 +1300,18 @@ export const getTicketForHadling = () => async (dispatch) => {
       dispatch(serviceSlice.actions.getTicketHandlingError());
     });
 };
+
+export const updateTicketHandling =
+  ({ data }) =>
+    async (dispatch) => {
+      dispatch(serviceSlice.actions.updateTicketHandlingRequest());
+      return apis
+        .updateTicketHandling({ data })
+        .then(async ({ data }) => {
+          await dispatch(serviceSlice.actions.updatedTicketHandlingResponse(data));
+          return data;
+        })
+        .catch(() => {
+          dispatch(serviceSlice.actions.updatedTicketHandlingError());
+        });
+    };

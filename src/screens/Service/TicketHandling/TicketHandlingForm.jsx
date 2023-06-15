@@ -1,190 +1,124 @@
 /* eslint-disable no-unused-vars */
-import React, {memo, useEffect, useState} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-import {Input, Card, DatePicker, Button, Col, Row, Form, Select} from 'antd';
-import {saveOutletMaster, getStates, getSubZonal, getZonal, updateOutletMaster, getCity} from '../../../@app/master/masterSlice';
-// import {map} from 'ramda';
-import {useLocation, useNavigate} from 'react-router';
-// import dayjs from 'dayjs';
+import { Card, Col, Form, Input, Row, Select, Button } from 'antd';
+import React, { memo, useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router';
+import { getEmployeeMaster } from '../../../@app/master/masterSlice';
+import { ConverToReactSelect } from '../../../util';
+import { getAssetGroupSpare, updateTicketHandling } from '../../../@app/service/serviceSlice';
+import { MultiUploadButton } from '../../../components/multiUploadButton/MultiUploadButton';
 import messageToast from '../../../components/messageToast/messageToast';
-import {transStatus} from '../../../util/transStatus';
-// import { Input } from 'antd';
-// import {CREATE_TICKET_FORM_DATA} from './createTicket.constants';
-import {includes} from 'ramda';
-import TicketHandling from '.';
-import TicketHandlingDropDowns from './TicketHandlingOpen';
-import TicketHandlingAssign from './TicketHandlingAssign';
-import TicketHandlingOpen from './TicketHandlingOpen';
-const {TextArea} = Input;
 
-const {Option} = Select;
+const OPTIONS = {
+  vendorType: [{ value: "Internal", label: "Internal" }, { value: "External", label: "External" }],
+  workdoneBy: [{ value: "Service with spare", label: "Service with spare" }, { value: "Service without spare", label: "Service without spare" }],
+  costInvolved: [{ value: "Yes", label: "Yes" }, { value: "No", label: "No" }],
+  issueResolved: [{ value: "Yes", label: "Yes" }, { value: "No", label: "No" }],
+  paymentMode: [{ value: "Pettycash", label: "Pettycash" }, { value: "Online", label: "Online" }],
+  quotation: [{ value: "Yes", label: "Yes" }, { value: "No", label: "No" }],
+  advance: [{ value: "Yes", label: "Yes" }, { value: "No", label: "No" }],
+  issueClosed: [{ value: "Yes", label: "Yes" }, { value: "No", label: "No" }],
+}
 
 function TicketHandlingForm() {
-  const {state} = useLocation();
-  // const handleClickBack = () => {
-  //   navigate('/createTicket');
-  // };
+
   const dispatch = useDispatch();
-  // const {
-  //   saveOutletMasterRequest,
-  //   getStatesResponse: {data: states},
-  //   gettingState,
-  //   getCityResponse: {data: cities},
-  //   gettingCity,
-  //   getZonalResponse: {data: Zonals},
-  //   gettingZonal,
-  //   getSubZonalResponse: {data: SubZonals},
-  //   gettingSubZonal,
-  //   savingCity
-  // } = useSelector((state) => {
-  //   return state.master;
-  // });
   const navigate = useNavigate();
-
-  // const { state } = useLocation();
-
-  // let defaultValue = state?.data;
+  const { state: { data: defaultValue } } = useLocation();
+  const { gettingEmployeMaster: gettingEmployeeList, getEmployeeMasterResponse: { data: employeeList } } = useSelector((state) => { return state.master });
+  const { gettingAssetGroupSpare, getAssetGroupSpareResponse: { data: assetSpares }, } = useSelector((state) => { return state.service });
+  const { updatingTicketHandling } = useSelector((state) => { return state.service });
 
   const [form] = Form.useForm();
+  const vendorType = Form.useWatch('vendor_type', form);
+  const costInvolved = Form.useWatch('cost_involved', form);
+  const workdoneBy = Form.useWatch('workdone_by', form);
+  const paymentMode = Form.useWatch('payment_mode', form);
+  const quotation = Form.useWatch('quotation', form);
+  const advance = Form.useWatch('advance', form);
+  const advancePercentage = Form.useWatch('advance_percentage', form);
+  const spendAmount = Form.useWatch('spend_amount', form);
 
-  // const stateID = Form.useWatch('stateID', form);
-  // const zoneID = Form.useWatch('zoneID', form);
-  // const subzoneID = Form.useWatch('subzoneID', form);
-  // const priority = Form.useWatch('priority', form);
-  // const serviceFor = Form.useWatch('serviceFor', form);
+  const [employee, setEmployee] = useState({});
 
-  // const onFinish = (values) => {
-  //   let data = {
-  //     state: values.stateID,
-  //     city: values.city_name,
-  //     zone: values.zoneID,
-  //     subzone: values.subzoneID,
-  //     oulet_Code: values.oulet_Code,
-  //     name: values.name,
-  //     zomoato_status: values.zomoato_status,
-  //     zomoatoID: values.zomoatoID,
-  //     zomoato_date: values['zomoato_date']?.format('YYYY-MM-DD'),
-  //     swiggy_status: values.swiggy_status,
-  //     swiggyID: values.swiggyID,
-  //     swiggy_date: values['swiggy_date']?.format('YYYY-MM-DD'),
-  //     dotpe_status: values.dotpe_status,
-  //     dotpeID: values.dotpeID,
-  //     dotpe_date: values.dotpe_date?.format('YYYY-MM-DD'),
-  //     email: values.email,
-  //     latitude: values.latitude,
-  //     longitude: values.longitude,
-  //     address: values.address,
-  //     order_placing_no: values.order_placing_no,
-  //     orl_cug_no: values.orl_cug_no,
-  //     contact: values.contact,
-  //     open_time: values.open_time?.format('HH:mm:ss'),
-  //     close_time: values.close_time?.format('HH:mm:ss'),
-  //     opening_date: values.opening_date?.format('YYYY-MM-DD'),
-  //     profit_center: values.profit_center,
-  //     cost_center: values.cost_center,
-  //     labour_license_no: values.labour_license_no,
-  //     fire_license_no: values.fire_license_no,
-  //     fire_extinguisher_license_no: values.fire_extinguisher_license_no,
-  //     fssai_license_no: values.fssai_license_no,
-  //     status: values.status === 'active' ? 1 : 0
-  //   };
+  const onFinish = (data) => {
+    dispatch(updateTicketHandling({
+      data: {
+        ...data,
+        id: defaultValue?.id,
+        existing_photo: JSON.stringify(data?.existing_photo ?? []) ?? "[]",
+        new_photo: JSON.stringify(data?.new_photo ?? []) ?? "[]",
+        document_copy: JSON.stringify(data?.document_copy ?? []) ?? "[]",
+        quotation_copy: JSON.stringify(data?.quotation_copy ?? []) ?? "[]",
+      }
+    })).then(
+      ({ message, status, statusText }) => {
+        messageToast({ message: message ?? statusText, status, title: 'Ticket Updated' });
+        if (status === 200) {
+          form.resetFields();
+          navigate('/handleTicket');
+        }
+      }
+    );
+  };
 
-  //   dispatch(defaultValue?.id ? updateOutletMaster({ data: { ...data, id: defaultValue.id, status: transStatus({ status: data?.status }) } }) : saveOutletMaster({ data })).then((data) => {
-  //     const { status, message } = data;
-  //     if (status === 200) {
-  //       messageToast({ message: data?.statusText, status: status, title: 'Outlet Master' });
-  //       form.resetFields();
-  //     }
-  //     if (data?.exception) {
-  //       messageToast({ message: 'Invalid Request', status: 400, title: 'Outlet Master' });
-  //     }
-  //     if (status === 400) {
-  //       if ((message && message?.contact?.length > 0) || (message && message.email?.length > 0) || (message && message.name?.length > 0)) {
-  //         if (message && message.contact) {
-  //           messageToast({ message: message?.contact[0], status: status, title: 'Outlet Master' });
-  //         } else if (message && message.email) {
-  //           messageToast({ message: message?.email[0], status: status, title: 'Outlet Master' });
-  //         } else if (message && message.name) {
-  //           messageToast({ message: message?.name[0], status: status, title: 'Outlet Master' });
-  //         }
-  //         if (message) {
-  //           messageToast({ message: message, status: status, title: 'Employee Master' });
-  //         }
-  //       }
-  //     }
-  //     if (status === 200) {
-  //       messageToast({ message: message, status: status, title: 'Outlet Master' });
-  //     }
-  //     if (defaultValue?.id) {
-  //       navigate('/createTicket');
-  //     }
-  //   });
-  // };
+  const canIshowIssueResolved = () => {
+    if (costInvolved === OPTIONS.costInvolved[1].value) {
+      return true;
+    }
+    return false;
+  }
 
-  // useEffect(() => {
-  //   dispatch(getStates());
-  // }, [dispatch]);
+  const canIshowIssueClosed = () => {
+    if (costInvolved === OPTIONS.costInvolved[1].value && paymentMode && quotation === OPTIONS.quotation[0].value) {
+      return true
+    }
+    return true;
+  }
 
-  // useEffect(() => {
-  //   dispatch(getZonal(stateID));
-  // }, [dispatch, stateID]);
+  const handleClickBack = () => {
+    navigate(-1);
+  }
 
-  // useEffect(() => {
-  //   dispatch(getSubZonal(zoneID));
-  // }, [dispatch, zoneID]);
 
-  // useEffect(() => {
-  //   dispatch(getCity(subzoneID));
-  // }, [dispatch, subzoneID]);
+  const giveMeEmployeeOptions = useCallback(() => {
+    return ConverToReactSelect(employeeList, "id", "name")
+  }, [employeeList])
 
-  // // const [zomatoStatus, setZomatoStatus] = useState(defaultValue?.zomoato_status ?? false);
-  // // const [swiggyStatus, setSwiggyStatus] = useState(defaultValue?.swiggy_status ?? false);
-  // // const [dotpeStatus, setDotpeStaus] = useState(defaultValue?.dotpe_status ?? false);
+  const giveMeAdvanceAmount = () => {
+    let spendAmount = form.getFieldValue('spend_amount') ?? 0;
+    return spendAmount * (advancePercentage / 100);
+  }
 
-  // const handleOnChange = (e) => {
-  //   if (e.target.name === 'zomoato_status') {
-  //     if (e.target.value === 0) {
-  //       setZomatoStatus(false);
-  //     } else {
-  //       setZomatoStatus(true);
-  //     }
-  //   }
-  //   if (e.target.name === 'swiggy_status') {
-  //     if (e.target.value === 0) {
-  //       setSwiggyStatus(false);
-  //     } else {
-  //       setSwiggyStatus(true);
-  //     }
-  //   }
+  const giveMeAssetSpares = useCallback(() => {
+    return ConverToReactSelect(assetSpares?.filter(_ => defaultValue.asset_group === _.asset_group_id.toString())?.[0]?.assetspares, "name", "name")
+    // eslint-disable-next-line
+  }, [assetSpares])
 
-  //   if (e.target.name === 'dotpe_status') {
-  //     if (e.target.value === 0) {
-  //       setDotpeStaus(false);
-  //     } else {
-  //       setDotpeStaus(true);
-  //     }
-  //   }
-  //   if (
-  //     e.target.name === 'latitude' ||
-  //     e.target.name === 'longitude' ||
-  //     e.target.name === 'orl_cug_no' ||
-  //     e.target.name === 'contact' ||
-  //     e.target.name === 'order_placing_no' ||
-  //     e.target.name === 'oulet_Code'
-  //   ) {
-  //     return form.setFieldsValue({
-  //       [e.target.name]: e.target.value.replace(/[^0-9 ./]/g, '')
-  //     });
-  //   }
-  //   return form.setFieldsValue({
-  //     [e.target.name]: e.target.value
-  //   });
-  // };
+  useEffect(() => {
+    if (vendorType === OPTIONS.vendorType[0].value && !employeeList?.length)
+      dispatch(getEmployeeMaster());
 
-  // const onFinishFailed = (errorInfo) => {
-  //   console.log('Failed:', errorInfo);
-  // };
-  // const dateFormat = ['DD/MM/YYYY', 'DD/MM/YY'];
+    // eslint-disable-next-line
+  }, [vendorType]);
+
+  useEffect(() => {
+    form.setFieldsValue({ employee_contact_no: employee?.contact })
+    // eslint-disable-next-line
+  }, [employee]);
+
+  useEffect(() => {
+    form.setFieldsValue({ advance_amount: giveMeAdvanceAmount() })
+    // eslint-disable-next-line
+  }, [advancePercentage, spendAmount]);
+
+  useEffect(() => {
+    if (workdoneBy === OPTIONS.workdoneBy[0].value && !assetSpares?.length)
+      dispatch(getAssetGroupSpare())
+
+    form.setFieldsValue({ covered_in_amc: "Auto" })
+    // eslint-disable-next-line
+  }, [workdoneBy])
 
   return (
     <>
@@ -192,70 +126,268 @@ function TicketHandlingForm() {
         <Row>
           <Col span={24}>
             <Form
-              name='basic'
-              labelCol={{span: 24}}
-              wrapperCol={{span: 24}}
-              // onFinish={onFinish}
-              // onFinishFailed={onFinishFailed}
+              name='update_ticket_handling'
+              labelCol={{ span: 24 }}
+              wrapperCol={{ span: 24 }}
+              onFinish={onFinish}
               autoComplete='off'
-              form={form}>
+              form={form}
+              initialValues={{
+                ...defaultValue
+              }}
+            >
+              {/* Vendor Type */}
               <Row gutter={[15, 0]}>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='ticketNo' label='Ticket No'>
-                    <Input placeholder='' name='ticketNo' defaultValue={'ticket'} />
-                  </Form.Item>
-                </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='ticketDescription' label='Ticket Description'>
-                    <Input placeholder='' name='ticketDescription' />
-                  </Form.Item>
-                </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='outletName' label='Outlet Name'>
-                    <Input placeholder='' name='outletName' />
-                  </Form.Item>
-                </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='serviceFor' label='Service For'>
-                    <Input placeholder='' name='serviceFor' />
-                  </Form.Item>
-                </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='assetGroup' label='Asset Group'>
-                    <Input placeholder='' name='assetGroup' />
-                  </Form.Item>
-                </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='asset' label='Asset'>
-                    <Input placeholder='' name='asset' />
-                  </Form.Item>
-                </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='waitingAt' label='Waiting At'>
-                    <Input placeholder='' name='waitingAt' />
-                  </Form.Item>
-                </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='orlName' label='ORL Name'>
-                    <Input placeholder='' name='orlName' />
-                  </Form.Item>
-                </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='ticketDescription' label='Ticket Description'>
-                    <Input placeholder='' name='ticketDescription' />
-                  </Form.Item>
-                </Col>
-                <Col md={{span: 6}} xs={{span: 24}}>
-                  <Form.Item name='orlNumber' label='ORLNumber'>
-                    <Input placeholder='' name='orlNumber' />
+                <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                  <Form.Item name='vendor_type' label='Vendor Type'>
+                    <Select placeholder='Select Vendor Type' options={OPTIONS.vendorType} />
                   </Form.Item>
                 </Col>
               </Row>
+
+              {/* Vendor Details */}
+              <Row gutter={[15, 0]}>
+                {/* If Vendor Type is Internal */}
+                {vendorType === OPTIONS.vendorType[0].value && <>
+                  {/* Employee Name */}
+                  <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                    <Form.Item name='employee_name' label='Employee Name'>
+                      <Select
+                        loading={gettingEmployeeList}
+                        placeholder='Select Employee Name'
+                        options={giveMeEmployeeOptions()}
+                        onChange={(value, option) => {
+                          setEmployee(option);
+                        }}
+                      />
+                    </Form.Item>
+                  </Col>
+                  {/* Employee Mobile */}
+                  <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                    <Form.Item name='employee_contact_no' label='Contact No.'>
+                      <Input disabled placeholder='Enter contact no' name='employee_contact_no' />
+                    </Form.Item>
+                  </Col>
+                </>}
+
+                {/* If Vendot Type is External */}
+                {vendorType === OPTIONS.vendorType[1].value && <>
+                  {/* Vendor Name */}
+                  <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                    <Form.Item name='vendor_name' label='Vendor Name'>
+                      <Input placeholder='Enter Vendor Name' name='vendor_name' />
+                    </Form.Item>
+                  </Col>
+                  {/* Vendor Mobile */}
+                  <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                    <Form.Item name='vendor_contact_no' label='Contact No.'>
+                      <Input placeholder='Enter contact no' name='vendor_contact_no' />
+                    </Form.Item>
+                  </Col>
+                </>}
+              </Row>
+
+              {/* Workdone */}
+              <Row gutter={[15, 0]}>
+                <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                  <Form.Item name='workdone_by' label='Workdone By'>
+                    <Select placeholder='Select Workdone' options={OPTIONS.workdoneBy} />
+                  </Form.Item>
+                </Col>
+              </Row>
+
+              {/* If Workdone By is Service with Spare */}
+              {workdoneBy === OPTIONS.workdoneBy[0].value && <>
+                <Row gutter={[15, 0]}>
+                  {/* Spare */}
+                  <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                    <Form.Item name='spare' label='Spare'>
+                      <Select loading={gettingAssetGroupSpare} placeholder='Select' options={giveMeAssetSpares()} />
+                    </Form.Item>
+                  </Col>
+
+                  {/* Covered in AMC */}
+                  <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                    <Form.Item name='covered_in_amc' label='Covered in AMC'>
+                      <Input disabled placeholder='Enter' name='covered_in_amc' />
+                    </Form.Item>
+                  </Col>
+                </Row>
+
+                {/* Spare Upload */}
+                <Row gutter={[15, 0]}>
+                  {/* Existing Spare Photo */}
+                  <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                    <Form.Item name='existing_photo' label='Existing Spare Photo'>
+                      <MultiUploadButton url={'ticket-imageupload'} onSuccess={(files) => {
+                        form.setFieldsValue({ 'existing_photo': files?.map?.(file => JSON.parse(file?.response?.filename ?? "['']")?.[0] ?? "") ?? "" })
+                      }} />
+                    </Form.Item>
+                  </Col>
+
+                  {/* New Spare Photo */}
+                  <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                    <Form.Item name='new_photo' label='New Spare Photo'>
+                      <MultiUploadButton url={'ticket-imageupload'} onSuccess={(files) => {
+                        form.setFieldsValue({ 'new_photo': files?.map?.(file => JSON.parse(file?.response?.filename ?? "['']")?.[0] ?? "") ?? "" })
+                      }} />
+                    </Form.Item>
+                  </Col>
+
+                  {/* Document Copy */}
+                  <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                    <Form.Item name='document_copy' label='Document Copy'>
+                      <MultiUploadButton url={'ticket-imageupload'} onSuccess={(files) => {
+                        form.setFieldsValue({ 'document_copy': files?.map?.(file => JSON.parse(file?.response?.filename ?? "['']")?.[0] ?? "") ?? "" })
+                      }} />
+                    </Form.Item>
+                  </Col>
+                </Row>
+
+                {/* Tentative Date */}
+                <Row gutter={[15, 0]}>
+                  <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                    <Form.Item name='tentative_date' label='Tentative Date'>
+                      <Input type='date' placeholder='Select' name='tentative_date' />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              </>}
+
+              {/* Cost Involved */}
+              <Row gutter={[15, 0]}>
+                <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                  <Form.Item name='cost_involved' label='Cost Involved'>
+                    <Select placeholder='Select' options={OPTIONS.costInvolved} />
+                  </Form.Item>
+                </Col>
+              </Row>
+
+              {/* If Cost Involved is Yes */}
+              {costInvolved === OPTIONS.costInvolved[0].value && <>
+                {/* Mode of Payment */}
+                <Row gutter={[15, 0]}>
+                  <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                    <Form.Item name='payment_mode' label='Mode of Payment'>
+                      <Select placeholder='Select' options={OPTIONS.paymentMode} />
+                    </Form.Item>
+                  </Col>
+                </Row>
+
+                {/* Quotation */}
+                {paymentMode && <Row gutter={[15, 0]}>
+                  <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                    <Form.Item name='quotation' label='Quotation'>
+                      <Select placeholder='Select' options={OPTIONS.quotation} />
+                    </Form.Item>
+                  </Col>
+
+                  {/* Spend Amount */}
+                  <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                    <Form.Item name='spend_amount' label='Spend Amount' rules={[{ required: true }]}>
+                      <Input type='number' placeholder='Enter' name='spend_amount' />
+                    </Form.Item>
+                  </Col>
+                </Row>}
+
+                {/* If Mode of Payment is Pettycash */}
+                {paymentMode === OPTIONS.paymentMode[0].value && <>
+                  {/* If Quotation is Yes */}
+                  {quotation === OPTIONS.quotation[0].value && <>
+                    <Row gutter={[15, 0]}>
+                      {/* Quotation Number */}
+                      <Col md={{ span: 6 }} xs={{ span: 24 }} rules={[{ required: true }]}>
+                        <Form.Item name='quotation_no' label='Quotation No'>
+                          <Input placeholder='Enter' name='quotation_no' />
+                        </Form.Item>
+                      </Col>
+
+                      {/* Quotation Copy */}
+                      <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                        <Form.Item name='quotation_copy' label='Quotation Copy'>
+                          <MultiUploadButton url={'ticket-imageupload'} onSuccess={(files) => {
+                            form.setFieldsValue({ 'quotation_copy': files?.map?.(file => JSON.parse(file?.response?.filename ?? "['']")?.[0] ?? "") ?? "" })
+                          }} />
+                        </Form.Item>
+                      </Col>
+                    </Row>
+                  </>}
+                </>}
+
+                {/* If Mode of Payment is Online */}
+                {paymentMode === OPTIONS.paymentMode[1].value && <>
+                  {/* Advance */}
+                  <Row gutter={[15, 0]}>
+                    <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                      <Form.Item name='advance' label='Advance'>
+                        <Select placeholder='Select' options={OPTIONS.advance} />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+
+                  {/* If Advance is yes */}
+                  {advance === OPTIONS.advance[0].value && <>
+                    <Row gutter={[15, 0]}>
+                      {/* Advance Percentage */}
+                      <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                        <Form.Item name='advance_percentage' label='Advance Percentage'>
+                          <Input placeholder='Enter' name='advance_percentage' />
+                        </Form.Item>
+                      </Col>
+
+                      {/* Advance Amount */}
+                      <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                        <Form.Item name='advance_amount' label='Advance Amount'>
+                          <Input disabled placeholder='Enter' name='advance_amount' />
+                        </Form.Item>
+                      </Col>
+                    </Row>
+                  </>}
+                </>}
+              </>}
+
+              {/* Issue Closed */}
+              {canIshowIssueClosed() && <Row gutter={[15, 0]}>
+                <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                  <Form.Item name='issue_closed' label='Issue Closed'>
+                    <Select placeholder='Select' options={OPTIONS.issueClosed} />
+                  </Form.Item>
+                </Col>
+              </Row>}
+
+              {/* Issue Resolved */}
+              {canIshowIssueResolved() && <Row gutter={[15, 0]}>
+                <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                  <Form.Item name='issue_resolved' label='Issue Resolved'>
+                    <Select placeholder='Select' options={OPTIONS.issue} />
+                  </Form.Item>
+                </Col>
+              </Row>}
+
+              <Row gutter={[15, 0]}>
+                <Col span={24}>
+                  <Row gutter={[15, 15]} style={{ justifyContent: 'end' }}>
+                    <Col span={12} style={{ textAlign: 'right' }} className='d-flex align-items-center justify-content-end mt-3'>
+                      <Form.Item className='mx-2'>
+                        <Button loading={updatingTicketHandling} disabled={updatingTicketHandling} className='orangeFactory' type='primary' htmlType='submit'>
+                          {"Update"}
+                        </Button>
+                      </Form.Item>
+
+                      <Form.Item>
+                        <Button disabled={updatingTicketHandling} onClick={handleClickBack}>
+                          Back
+                        </Button>
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+
             </Form>
           </Col>
         </Row>
-      </Card>
-      {state.current_status === 'open' ? <TicketHandlingOpen /> : <TicketHandlingAssign />}
+      </Card >
     </>
   );
 }
