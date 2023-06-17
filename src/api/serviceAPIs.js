@@ -42,7 +42,7 @@ const updateAssetMaster = ({ data }) => client.post('update-asset-master', data,
 
 const addNewAssetMaster = ({ data }) => client.post('add-new-asset-master', data, {});
 const getNewAssetMaster = () => client.get('get-new-asset-master', { limit, offset }, {});
-const updateNewAssetMaster = ({ data }) => client.put('update-new-asset-master', data, {});
+const updateNewAssetMaster = ({ data }) => client.post('update-new-asset-master', data, {});
 
 const addAssetGroupSpare = ({ data }) => client.post('add-asset-group-spare', data, {});
 const getAssetGroupSpare = () => client.get('get-asset-group-spare', { limit, offset }, {});

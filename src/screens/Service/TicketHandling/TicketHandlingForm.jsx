@@ -91,7 +91,7 @@ function TicketHandlingForm() {
   }
 
   const giveMeAssetSpares = useCallback(() => {
-    return ConverToReactSelect(assetSpares?.filter(_ => defaultValue.asset_group === _.asset_group_id.toString())?.[0]?.assetspares, "name", "name")
+    return ConverToReactSelect(assetSpares?.filter(_ => defaultValue?.asset_group_id?.toString() === _?.asset_group_id?.toString())?.[0]?.assetspares, "name", "name")
     // eslint-disable-next-line
   }, [assetSpares])
 
