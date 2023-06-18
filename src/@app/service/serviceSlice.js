@@ -1,5 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit';
-import apis from '../../api/serviceAPIs';
+import { createSlice } from "@reduxjs/toolkit";
+import apis from "../../api/serviceAPIs";
 
 const initialState = {
   savingServiceFor: false,
@@ -95,11 +95,11 @@ const initialState = {
 
   updatingTicketHandling: false,
   updateTicketHandlingResponse: {},
-  updateTicketHandlingError: {}
+  updateTicketHandlingError: {},
 };
 
 export const serviceSlice = createSlice({
-  name: 'service',
+  name: "service",
   initialState,
   reducers: {
     saveServiceForRequest: (state) => {
@@ -547,7 +547,6 @@ export const serviceSlice = createSlice({
       state.saveNewAssetMasterError = action.payload;
     },
 
-
     ////////////////
     saveVendorMasterRequest: (state) => {
       state.savingVendorMaster = true;
@@ -646,7 +645,7 @@ export const serviceSlice = createSlice({
       state.updatingTicketHandling = false;
       state.updateTicketHandlingError = action.payload;
     },
-  }
+  },
 });
 
 export default serviceSlice.reducer;
@@ -654,18 +653,18 @@ export default serviceSlice.reducer;
 // Actions
 export const saveServiceFor =
   ({ data }) =>
-    async (dispatch) => {
-      dispatch(serviceSlice.actions.saveServiceForRequest());
-      return apis
-        .addServiceFor({ data })
-        .then(async ({ data }) => {
-          await dispatch(serviceSlice.actions.saveServiceForResponse(data));
-          return data;
-        })
-        .catch(() => {
-          dispatch(serviceSlice.actions.saveServiceForError());
-        });
-    };
+  async (dispatch) => {
+    dispatch(serviceSlice.actions.saveServiceForRequest());
+    return apis
+      .addServiceFor({ data })
+      .then(async ({ data }) => {
+        await dispatch(serviceSlice.actions.saveServiceForResponse(data));
+        return data;
+      })
+      .catch(() => {
+        dispatch(serviceSlice.actions.saveServiceForError());
+      });
+  };
 
 export const getServiceFor = () => async (dispatch) => {
   dispatch(serviceSlice.actions.getServiceForRequest());
@@ -682,34 +681,34 @@ export const getServiceFor = () => async (dispatch) => {
 
 export const updateServiceFor =
   ({ data }) =>
-    async (dispatch) => {
-      dispatch(serviceSlice.actions.updateServiceForRequest());
-      return apis
-        .updateServiceFor({ data })
-        .then(async ({ data }) => {
-          await dispatch(serviceSlice.actions.updateServiceForResponse(data));
-          return data;
-        })
-        .catch(() => {
-          dispatch(serviceSlice.actions.updateServiceForError());
-        });
-    };
+  async (dispatch) => {
+    dispatch(serviceSlice.actions.updateServiceForRequest());
+    return apis
+      .updateServiceFor({ data })
+      .then(async ({ data }) => {
+        await dispatch(serviceSlice.actions.updateServiceForResponse(data));
+        return data;
+      })
+      .catch(() => {
+        dispatch(serviceSlice.actions.updateServiceForError());
+      });
+  };
 
 //////////////////////////////
 export const saveAssetGroup =
   ({ data }) =>
-    async (dispatch) => {
-      dispatch(serviceSlice.actions.saveAssetGroupRequest());
-      return apis
-        .addAssetGroup({ data })
-        .then(async ({ data }) => {
-          await dispatch(serviceSlice.actions.saveAssetGroupResponse(data));
-          return data;
-        })
-        .catch(() => {
-          dispatch(serviceSlice.actions.saveAssetGroupError());
-        });
-    };
+  async (dispatch) => {
+    dispatch(serviceSlice.actions.saveAssetGroupRequest());
+    return apis
+      .addAssetGroup({ data })
+      .then(async ({ data }) => {
+        await dispatch(serviceSlice.actions.saveAssetGroupResponse(data));
+        return data;
+      })
+      .catch(() => {
+        dispatch(serviceSlice.actions.saveAssetGroupError());
+      });
+  };
 
 export const getAssetGroup = () => async (dispatch) => {
   dispatch(serviceSlice.actions.getAssetGroupRequest());
@@ -726,35 +725,35 @@ export const getAssetGroup = () => async (dispatch) => {
 
 export const updateAssetGroup =
   ({ data }) =>
-    async (dispatch) => {
-      dispatch(serviceSlice.actions.updateAssetGroupRequest());
-      return apis
-        .updateAssetGroup({ data })
-        .then(async ({ data }) => {
-          await dispatch(serviceSlice.actions.updateAssetGroupResponse(data));
-          return data;
-        })
-        .catch(() => {
-          dispatch(serviceSlice.actions.updateAssetGroupError());
-        });
-    };
+  async (dispatch) => {
+    dispatch(serviceSlice.actions.updateAssetGroupRequest());
+    return apis
+      .updateAssetGroup({ data })
+      .then(async ({ data }) => {
+        await dispatch(serviceSlice.actions.updateAssetGroupResponse(data));
+        return data;
+      })
+      .catch(() => {
+        dispatch(serviceSlice.actions.updateAssetGroupError());
+      });
+  };
 
 //////////////
 
 export const saveServiceCategory =
   ({ data }) =>
-    async (dispatch) => {
-      dispatch(serviceSlice.actions.saveServiceCategoryRequest());
-      return apis
-        .addServiceCategory({ data })
-        .then(async ({ data }) => {
-          await dispatch(serviceSlice.actions.saveServiceCategoryResponse(data));
-          return data;
-        })
-        .catch(() => {
-          dispatch(serviceSlice.actions.saveServiceCategoryError());
-        });
-    };
+  async (dispatch) => {
+    dispatch(serviceSlice.actions.saveServiceCategoryRequest());
+    return apis
+      .addServiceCategory({ data })
+      .then(async ({ data }) => {
+        await dispatch(serviceSlice.actions.saveServiceCategoryResponse(data));
+        return data;
+      })
+      .catch(() => {
+        dispatch(serviceSlice.actions.saveServiceCategoryError());
+      });
+  };
 
 export const getServiceCategory = () => async (dispatch) => {
   dispatch(serviceSlice.actions.getServiceCategoryRequest());
@@ -771,34 +770,36 @@ export const getServiceCategory = () => async (dispatch) => {
 
 export const updateServiceCategory =
   ({ data }) =>
-    async (dispatch) => {
-      dispatch(serviceSlice.actions.updateServiceCategoryRequest());
-      return apis
-        .updateServiceCategory({ data })
-        .then(async ({ data }) => {
-          await dispatch(serviceSlice.actions.updateServiceCategoryResponse(data));
-          return data;
-        })
-        .catch(() => {
-          dispatch(serviceSlice.actions.updateServiceCategoryError());
-        });
-    };
+  async (dispatch) => {
+    dispatch(serviceSlice.actions.updateServiceCategoryRequest());
+    return apis
+      .updateServiceCategory({ data })
+      .then(async ({ data }) => {
+        await dispatch(
+          serviceSlice.actions.updateServiceCategoryResponse(data)
+        );
+        return data;
+      })
+      .catch(() => {
+        dispatch(serviceSlice.actions.updateServiceCategoryError());
+      });
+  };
 
 //////
 export const savePriority =
   ({ data }) =>
-    async (dispatch) => {
-      dispatch(serviceSlice.actions.savePriorityRequest());
-      return apis
-        .addPriority({ data })
-        .then(async ({ data }) => {
-          await dispatch(serviceSlice.actions.savePriorityResponse(data));
-          return data;
-        })
-        .catch(() => {
-          dispatch(serviceSlice.actions.savePriorityError());
-        });
-    };
+  async (dispatch) => {
+    dispatch(serviceSlice.actions.savePriorityRequest());
+    return apis
+      .addPriority({ data })
+      .then(async ({ data }) => {
+        await dispatch(serviceSlice.actions.savePriorityResponse(data));
+        return data;
+      })
+      .catch(() => {
+        dispatch(serviceSlice.actions.savePriorityError());
+      });
+  };
 
 export const getPriority = () => async (dispatch) => {
   dispatch(serviceSlice.actions.getPriorityRequest());
@@ -815,35 +816,35 @@ export const getPriority = () => async (dispatch) => {
 
 export const updatePriority =
   ({ data }) =>
-    async (dispatch) => {
-      dispatch(serviceSlice.actions.updatePriorityRequest());
-      return apis
-        .updatePriority({ data })
-        .then(async ({ data }) => {
-          await dispatch(serviceSlice.actions.updatePriorityResponse(data));
-          return data;
-        })
-        .catch(() => {
-          dispatch(serviceSlice.actions.updatePriorityError());
-        });
-    };
+  async (dispatch) => {
+    dispatch(serviceSlice.actions.updatePriorityRequest());
+    return apis
+      .updatePriority({ data })
+      .then(async ({ data }) => {
+        await dispatch(serviceSlice.actions.updatePriorityResponse(data));
+        return data;
+      })
+      .catch(() => {
+        dispatch(serviceSlice.actions.updatePriorityError());
+      });
+  };
 
 ///////////
 
 export const saveTypeOfService =
   ({ data }) =>
-    async (dispatch) => {
-      dispatch(serviceSlice.actions.saveTypeOfServiceRequest());
-      return apis
-        .addTypeOfService({ data })
-        .then(async ({ data }) => {
-          await dispatch(serviceSlice.actions.saveTypeOfServiceResponse(data));
-          return data;
-        })
-        .catch(() => {
-          dispatch(serviceSlice.actions.saveTypeOfServiceError());
-        });
-    };
+  async (dispatch) => {
+    dispatch(serviceSlice.actions.saveTypeOfServiceRequest());
+    return apis
+      .addTypeOfService({ data })
+      .then(async ({ data }) => {
+        await dispatch(serviceSlice.actions.saveTypeOfServiceResponse(data));
+        return data;
+      })
+      .catch(() => {
+        dispatch(serviceSlice.actions.saveTypeOfServiceError());
+      });
+  };
 
 export const getTypeOfService = () => async (dispatch) => {
   dispatch(serviceSlice.actions.getTypeOfServiceRequest());
@@ -860,35 +861,35 @@ export const getTypeOfService = () => async (dispatch) => {
 
 export const updateTypeOfService =
   ({ data }) =>
-    async (dispatch) => {
-      dispatch(serviceSlice.actions.updateTypeOfServiceRequest());
-      return apis
-        .updateTypeOfService({ data })
-        .then(async ({ data }) => {
-          await dispatch(serviceSlice.actions.updateTypeOfServiceResponse(data));
-          return data;
-        })
-        .catch(() => {
-          dispatch(serviceSlice.actions.updateTypeOfServiceError());
-        });
-    };
+  async (dispatch) => {
+    dispatch(serviceSlice.actions.updateTypeOfServiceRequest());
+    return apis
+      .updateTypeOfService({ data })
+      .then(async ({ data }) => {
+        await dispatch(serviceSlice.actions.updateTypeOfServiceResponse(data));
+        return data;
+      })
+      .catch(() => {
+        dispatch(serviceSlice.actions.updateTypeOfServiceError());
+      });
+  };
 
 //////////////////////
 
 export const saveWorkDone =
   ({ data }) =>
-    async (dispatch) => {
-      dispatch(serviceSlice.actions.saveWorkDoneRequest());
-      return apis
-        .addWorkDone({ data })
-        .then(async ({ data }) => {
-          await dispatch(serviceSlice.actions.saveWorkDoneResponse(data));
-          return data;
-        })
-        .catch(() => {
-          dispatch(serviceSlice.actions.saveWorkDoneError());
-        });
-    };
+  async (dispatch) => {
+    dispatch(serviceSlice.actions.saveWorkDoneRequest());
+    return apis
+      .addWorkDone({ data })
+      .then(async ({ data }) => {
+        await dispatch(serviceSlice.actions.saveWorkDoneResponse(data));
+        return data;
+      })
+      .catch(() => {
+        dispatch(serviceSlice.actions.saveWorkDoneError());
+      });
+  };
 
 export const getWorkDone = () => async (dispatch) => {
   dispatch(serviceSlice.actions.getWorkDoneRequest());
@@ -905,34 +906,34 @@ export const getWorkDone = () => async (dispatch) => {
 
 export const updateWorkDone =
   ({ data }) =>
-    async (dispatch) => {
-      dispatch(serviceSlice.actions.updateWorkDoneRequest());
-      return apis
-        .updateWorkDone({ data })
-        .then(async ({ data }) => {
-          await dispatch(serviceSlice.actions.updateWorkDoneResponse(data));
-          return data;
-        })
-        .catch(() => {
-          dispatch(serviceSlice.actions.updateWorkDoneError());
-        });
-    };
+  async (dispatch) => {
+    dispatch(serviceSlice.actions.updateWorkDoneRequest());
+    return apis
+      .updateWorkDone({ data })
+      .then(async ({ data }) => {
+        await dispatch(serviceSlice.actions.updateWorkDoneResponse(data));
+        return data;
+      })
+      .catch(() => {
+        dispatch(serviceSlice.actions.updateWorkDoneError());
+      });
+  };
 
 //////////
 export const saveModeOfPayment =
   ({ data }) =>
-    async (dispatch) => {
-      dispatch(serviceSlice.actions.saveModeOfPaymentRequest());
-      return apis
-        .addModeOfPayment({ data })
-        .then(async ({ data }) => {
-          await dispatch(serviceSlice.actions.saveModeOfPaymentResponse(data));
-          return data;
-        })
-        .catch(() => {
-          dispatch(serviceSlice.actions.saveModeOfPaymentError());
-        });
-    };
+  async (dispatch) => {
+    dispatch(serviceSlice.actions.saveModeOfPaymentRequest());
+    return apis
+      .addModeOfPayment({ data })
+      .then(async ({ data }) => {
+        await dispatch(serviceSlice.actions.saveModeOfPaymentResponse(data));
+        return data;
+      })
+      .catch(() => {
+        dispatch(serviceSlice.actions.saveModeOfPaymentError());
+      });
+  };
 
 export const getModeOfPayment = () => async (dispatch) => {
   dispatch(serviceSlice.actions.getModeOfPaymentRequest());
@@ -949,18 +950,18 @@ export const getModeOfPayment = () => async (dispatch) => {
 
 export const updateModeOfPayment =
   ({ data }) =>
-    async (dispatch) => {
-      dispatch(serviceSlice.actions.updateModeOfPaymentRequest());
-      return apis
-        .updateModeOfPayment({ data })
-        .then(async ({ data }) => {
-          await dispatch(serviceSlice.actions.updateModeOfPaymentResponse(data));
-          return data;
-        })
-        .catch(() => {
-          dispatch(serviceSlice.actions.updateModeOfPaymentError());
-        });
-    };
+  async (dispatch) => {
+    dispatch(serviceSlice.actions.updateModeOfPaymentRequest());
+    return apis
+      .updateModeOfPayment({ data })
+      .then(async ({ data }) => {
+        await dispatch(serviceSlice.actions.updateModeOfPaymentResponse(data));
+        return data;
+      })
+      .catch(() => {
+        dispatch(serviceSlice.actions.updateModeOfPaymentError());
+      });
+  };
 
 /**
  * API's for GL Account
@@ -968,18 +969,18 @@ export const updateModeOfPayment =
 
 export const saveGlAccount =
   ({ data }) =>
-    async (dispatch) => {
-      dispatch(serviceSlice.actions.saveGlAccountRequest());
-      return apis
-        .addGlAccount({ data })
-        .then(async ({ data }) => {
-          await dispatch(serviceSlice.actions.saveGlAccountResponse(data));
-          return data;
-        })
-        .catch(() => {
-          dispatch(serviceSlice.actions.saveGlAccountError());
-        });
-    };
+  async (dispatch) => {
+    dispatch(serviceSlice.actions.saveGlAccountRequest());
+    return apis
+      .addGlAccount({ data })
+      .then(async ({ data }) => {
+        await dispatch(serviceSlice.actions.saveGlAccountResponse(data));
+        return data;
+      })
+      .catch(() => {
+        dispatch(serviceSlice.actions.saveGlAccountError());
+      });
+  };
 
 export const getGlAccount = () => async (dispatch) => {
   dispatch(serviceSlice.actions.getGlAccountRequest());
@@ -996,34 +997,34 @@ export const getGlAccount = () => async (dispatch) => {
 
 export const updateGlAccount =
   ({ data }) =>
-    async (dispatch) => {
-      dispatch(serviceSlice.actions.updateGlAccountRequest());
-      return apis
-        .updateGlAccount({ data })
-        .then(async ({ data }) => {
-          await dispatch(serviceSlice.actions.updateGlAccountResponse(data));
-          return data;
-        })
-        .catch(() => {
-          dispatch(serviceSlice.actions.updateGlAccountError());
-        });
-    };
+  async (dispatch) => {
+    dispatch(serviceSlice.actions.updateGlAccountRequest());
+    return apis
+      .updateGlAccount({ data })
+      .then(async ({ data }) => {
+        await dispatch(serviceSlice.actions.updateGlAccountResponse(data));
+        return data;
+      })
+      .catch(() => {
+        dispatch(serviceSlice.actions.updateGlAccountError());
+      });
+  };
 
 //////////
 export const saveAssetGroupIssue =
   ({ data }) =>
-    async (dispatch) => {
-      dispatch(serviceSlice.actions.saveAssetGroupIssueRequest());
-      return apis
-        .addAssetGroupIssue({ data })
-        .then(async ({ data }) => {
-          await dispatch(serviceSlice.actions.saveAssetGroupIssueResponse(data));
-          return data;
-        })
-        .catch(() => {
-          dispatch(serviceSlice.actions.saveAssetGroupIssueError());
-        });
-    };
+  async (dispatch) => {
+    dispatch(serviceSlice.actions.saveAssetGroupIssueRequest());
+    return apis
+      .addAssetGroupIssue({ data })
+      .then(async ({ data }) => {
+        await dispatch(serviceSlice.actions.saveAssetGroupIssueResponse(data));
+        return data;
+      })
+      .catch(() => {
+        dispatch(serviceSlice.actions.saveAssetGroupIssueError());
+      });
+  };
 
 export const getAssetGroupIssue = () => async (dispatch) => {
   dispatch(serviceSlice.actions.getAssetGroupIssueRequest());
@@ -1040,34 +1041,36 @@ export const getAssetGroupIssue = () => async (dispatch) => {
 
 export const updateAssetGroupIssue =
   ({ data }) =>
-    async (dispatch) => {
-      dispatch(serviceSlice.actions.updateAssetGroupIssueRequest());
-      return apis
-        .updateAssetGroupIssue({ data })
-        .then(async ({ data }) => {
-          await dispatch(serviceSlice.actions.updateAssetGroupIssueResponse(data));
-          return data;
-        })
-        .catch(() => {
-          dispatch(serviceSlice.actions.updateAssetGroupIssueError());
-        });
-    };
+  async (dispatch) => {
+    dispatch(serviceSlice.actions.updateAssetGroupIssueRequest());
+    return apis
+      .updateAssetGroupIssue({ data })
+      .then(async ({ data }) => {
+        await dispatch(
+          serviceSlice.actions.updateAssetGroupIssueResponse(data)
+        );
+        return data;
+      })
+      .catch(() => {
+        dispatch(serviceSlice.actions.updateAssetGroupIssueError());
+      });
+  };
 
 //////////
 export const saveAssetGroupSpare =
   ({ data }) =>
-    async (dispatch) => {
-      dispatch(serviceSlice.actions.saveAssetGroupSpareRequest());
-      return apis
-        .addAssetGroupSpare({ data })
-        .then(async ({ data }) => {
-          await dispatch(serviceSlice.actions.saveAssetGroupSpareResponse(data));
-          return data;
-        })
-        .catch(() => {
-          dispatch(serviceSlice.actions.saveAssetGroupSpareError());
-        });
-    };
+  async (dispatch) => {
+    dispatch(serviceSlice.actions.saveAssetGroupSpareRequest());
+    return apis
+      .addAssetGroupSpare({ data })
+      .then(async ({ data }) => {
+        await dispatch(serviceSlice.actions.saveAssetGroupSpareResponse(data));
+        return data;
+      })
+      .catch(() => {
+        dispatch(serviceSlice.actions.saveAssetGroupSpareError());
+      });
+  };
 
 export const getAssetGroupSpare = () => async (dispatch) => {
   dispatch(serviceSlice.actions.getAssetGroupSpareRequest());
@@ -1084,34 +1087,36 @@ export const getAssetGroupSpare = () => async (dispatch) => {
 
 export const updateAssetGroupSpare =
   ({ data }) =>
-    async (dispatch) => {
-      dispatch(serviceSlice.actions.updateAssetGroupSpareRequest());
-      return apis
-        .updateAssetGroupSpare({ data })
-        .then(async ({ data }) => {
-          await dispatch(serviceSlice.actions.updateAssetGroupSpareResponse(data));
-          return data;
-        })
-        .catch(() => {
-          dispatch(serviceSlice.actions.updateAssetGroupSpareError());
-        });
-    };
+  async (dispatch) => {
+    dispatch(serviceSlice.actions.updateAssetGroupSpareRequest());
+    return apis
+      .updateAssetGroupSpare({ data })
+      .then(async ({ data }) => {
+        await dispatch(
+          serviceSlice.actions.updateAssetGroupSpareResponse(data)
+        );
+        return data;
+      })
+      .catch(() => {
+        dispatch(serviceSlice.actions.updateAssetGroupSpareError());
+      });
+  };
 
 //////////
 export const saveAssetMaster =
   ({ data }) =>
-    async (dispatch) => {
-      dispatch(serviceSlice.actions.saveAssetMasterRequest());
-      return apis
-        .addAssetMaster({ data })
-        .then(async ({ data }) => {
-          await dispatch(serviceSlice.actions.saveAssetMasterResponse(data));
-          return data;
-        })
-        .catch(() => {
-          dispatch(serviceSlice.actions.saveAssetMasterError());
-        });
-    };
+  async (dispatch) => {
+    dispatch(serviceSlice.actions.saveAssetMasterRequest());
+    return apis
+      .addAssetMaster({ data })
+      .then(async ({ data }) => {
+        await dispatch(serviceSlice.actions.saveAssetMasterResponse(data));
+        return data;
+      })
+      .catch(() => {
+        dispatch(serviceSlice.actions.saveAssetMasterError());
+      });
+  };
 
 export const getAssetMaster = () => async (dispatch) => {
   dispatch(serviceSlice.actions.getAssetMasterRequest());
@@ -1128,34 +1133,49 @@ export const getAssetMaster = () => async (dispatch) => {
 
 export const updateAssetMaster =
   ({ data }) =>
-    async (dispatch) => {
-      dispatch(serviceSlice.actions.updateAssetMasterRequest());
-      return apis
-        .updateAssetMaster({ data })
-        .then(async ({ data }) => {
-          await dispatch(serviceSlice.actions.updateAssetMasterResponse(data));
-          return data;
-        })
-        .catch(() => {
-          dispatch(serviceSlice.actions.updateAssetMasterError());
-        });
-    };
+  async (dispatch) => {
+    dispatch(serviceSlice.actions.updateAssetMasterRequest());
+    return apis
+      .updateAssetMaster({ data })
+      .then(async ({ data }) => {
+        await dispatch(serviceSlice.actions.updateAssetMasterResponse(data));
+        return data;
+      })
+      .catch(() => {
+        dispatch(serviceSlice.actions.updateAssetMasterError());
+      });
+  };
+
+export const updateAssetMasterExist =
+  ({ data }) =>
+  async (dispatch) => {
+    dispatch(serviceSlice.actions.updateAssetMasterRequest());
+    return apis
+      .updateAssetMasterExist({ data })
+      .then(async ({ data }) => {
+        await dispatch(serviceSlice.actions.updateAssetMasterResponse(data));
+        return data;
+      })
+      .catch(() => {
+        dispatch(serviceSlice.actions.updateAssetMasterError());
+      });
+  };
 
 //////////
 export const saveNewAssetMaster =
   ({ data }) =>
-    async (dispatch) => {
-      dispatch(serviceSlice.actions.saveNewAssetMasterRequest());
-      return apis
-        .addNewAssetMaster({ data })
-        .then(async ({ data }) => {
-          await dispatch(serviceSlice.actions.saveNewAssetMasterResponse(data));
-          return data;
-        })
-        .catch(() => {
-          dispatch(serviceSlice.actions.saveNewAssetMasterError());
-        });
-    };
+  async (dispatch) => {
+    dispatch(serviceSlice.actions.saveNewAssetMasterRequest());
+    return apis
+      .addNewAssetMaster({ data })
+      .then(async ({ data }) => {
+        await dispatch(serviceSlice.actions.saveNewAssetMasterResponse(data));
+        return data;
+      })
+      .catch(() => {
+        dispatch(serviceSlice.actions.saveNewAssetMasterError());
+      });
+  };
 
 export const getNewAssetMaster = () => async (dispatch) => {
   dispatch(serviceSlice.actions.getNewAssetMasterRequest());
@@ -1172,34 +1192,34 @@ export const getNewAssetMaster = () => async (dispatch) => {
 
 export const updateNewAssetMaster =
   ({ data }) =>
-    async (dispatch) => {
-      dispatch(serviceSlice.actions.updateNewAssetMasterRequest());
-      return apis
-        .updateNewAssetMaster({ data })
-        .then(async ({ data }) => {
-          await dispatch(serviceSlice.actions.updateNewAssetMasterResponse(data));
-          return data;
-        })
-        .catch(() => {
-          dispatch(serviceSlice.actions.updateNewAssetMasterError());
-        });
-    };
+  async (dispatch) => {
+    dispatch(serviceSlice.actions.updateNewAssetMasterRequest());
+    return apis
+      .updateNewAssetMaster({ data })
+      .then(async ({ data }) => {
+        await dispatch(serviceSlice.actions.updateNewAssetMasterResponse(data));
+        return data;
+      })
+      .catch(() => {
+        dispatch(serviceSlice.actions.updateNewAssetMasterError());
+      });
+  };
 
 //////////
 export const saveVendorMaster =
   ({ data }) =>
-    async (dispatch) => {
-      dispatch(serviceSlice.actions.saveVendorMasterRequest());
-      return apis
-        .addVendorMaster({ data })
-        .then(async ({ data }) => {
-          await dispatch(serviceSlice.actions.saveVendorMasterResponse(data));
-          return data;
-        })
-        .catch(() => {
-          dispatch(serviceSlice.actions.saveVendorMasterError());
-        });
-    };
+  async (dispatch) => {
+    dispatch(serviceSlice.actions.saveVendorMasterRequest());
+    return apis
+      .addVendorMaster({ data })
+      .then(async ({ data }) => {
+        await dispatch(serviceSlice.actions.saveVendorMasterResponse(data));
+        return data;
+      })
+      .catch(() => {
+        dispatch(serviceSlice.actions.saveVendorMasterError());
+      });
+  };
 
 export const getVendorMaster = () => async (dispatch) => {
   dispatch(serviceSlice.actions.getVendorMasterRequest());
@@ -1216,34 +1236,34 @@ export const getVendorMaster = () => async (dispatch) => {
 
 export const updateVendorMaster =
   ({ data }) =>
-    async (dispatch) => {
-      dispatch(serviceSlice.actions.updateVendorMasterRequest());
-      return apis
-        .updateVendorMaster({ data })
-        .then(async ({ data }) => {
-          await dispatch(serviceSlice.actions.updateVendorMasterResponse(data));
-          return data;
-        })
-        .catch(() => {
-          dispatch(serviceSlice.actions.updateVendorMasterError());
-        });
-    };
+  async (dispatch) => {
+    dispatch(serviceSlice.actions.updateVendorMasterRequest());
+    return apis
+      .updateVendorMaster({ data })
+      .then(async ({ data }) => {
+        await dispatch(serviceSlice.actions.updateVendorMasterResponse(data));
+        return data;
+      })
+      .catch(() => {
+        dispatch(serviceSlice.actions.updateVendorMasterError());
+      });
+  };
 
 //////////
 export const saveTickets =
   ({ data }) =>
-    async (dispatch) => {
-      dispatch(serviceSlice.actions.saveTicketsRequest());
-      return apis
-        .addTickets({ data })
-        .then(async ({ data }) => {
-          await dispatch(serviceSlice.actions.saveTicketsResponse(data));
-          return data;
-        })
-        .catch(() => {
-          dispatch(serviceSlice.actions.saveTicketsError());
-        });
-    };
+  async (dispatch) => {
+    dispatch(serviceSlice.actions.saveTicketsRequest());
+    return apis
+      .addTickets({ data })
+      .then(async ({ data }) => {
+        await dispatch(serviceSlice.actions.saveTicketsResponse(data));
+        return data;
+      })
+      .catch(() => {
+        dispatch(serviceSlice.actions.saveTicketsError());
+      });
+  };
 
 export const getTickets = () => async (dispatch) => {
   dispatch(serviceSlice.actions.getTicketsRequest());
@@ -1260,33 +1280,33 @@ export const getTickets = () => async (dispatch) => {
 
 export const updateTickets =
   ({ data }) =>
-    async (dispatch) => {
-      dispatch(serviceSlice.actions.updateTicketsRequest());
-      return apis
-        .updateTickets({ data })
-        .then(async ({ data }) => {
-          await dispatch(serviceSlice.actions.updateTicketsResponse(data));
-          return data;
-        })
-        .catch(() => {
-          dispatch(serviceSlice.actions.updateTicketsError());
-        });
-    };
+  async (dispatch) => {
+    dispatch(serviceSlice.actions.updateTicketsRequest());
+    return apis
+      .updateTickets({ data })
+      .then(async ({ data }) => {
+        await dispatch(serviceSlice.actions.updateTicketsResponse(data));
+        return data;
+      })
+      .catch(() => {
+        dispatch(serviceSlice.actions.updateTicketsError());
+      });
+  };
 
 export const closeTickets =
   ({ data }) =>
-    async (dispatch) => {
-      dispatch(serviceSlice.actions.updateTicketsRequest());
-      return apis
-        .closeTickets({ data })
-        .then(async ({ data }) => {
-          await dispatch(serviceSlice.actions.updateTicketsResponse(data));
-          return data;
-        })
-        .catch(() => {
-          dispatch(serviceSlice.actions.updateTicketsError());
-        });
-    };
+  async (dispatch) => {
+    dispatch(serviceSlice.actions.updateTicketsRequest());
+    return apis
+      .closeTickets({ data })
+      .then(async ({ data }) => {
+        await dispatch(serviceSlice.actions.updateTicketsResponse(data));
+        return data;
+      })
+      .catch(() => {
+        dispatch(serviceSlice.actions.updateTicketsError());
+      });
+  };
 
 export const getTicketForHadling = () => async (dispatch) => {
   dispatch(serviceSlice.actions.getTicketHandlingRequest());
@@ -1303,15 +1323,17 @@ export const getTicketForHadling = () => async (dispatch) => {
 
 export const updateTicketHandling =
   ({ data }) =>
-    async (dispatch) => {
-      dispatch(serviceSlice.actions.updateTicketHandlingRequest());
-      return apis
-        .updateTicketHandling({ data })
-        .then(async ({ data }) => {
-          await dispatch(serviceSlice.actions.updatedTicketHandlingResponse(data));
-          return data;
-        })
-        .catch(() => {
-          dispatch(serviceSlice.actions.updatedTicketHandlingError());
-        });
-    };
+  async (dispatch) => {
+    dispatch(serviceSlice.actions.updateTicketHandlingRequest());
+    return apis
+      .updateTicketHandling({ data })
+      .then(async ({ data }) => {
+        await dispatch(
+          serviceSlice.actions.updatedTicketHandlingResponse(data)
+        );
+        return data;
+      })
+      .catch(() => {
+        dispatch(serviceSlice.actions.updatedTicketHandlingError());
+      });
+  };
