@@ -63,9 +63,11 @@ const updateTickets = ({ data }) => client.post('update-tickets', data, {});
 const closeTickets = ({ data }) => client.post('delete-tickets-dat?ticket_id=' + data.id, data, {});
 
 
-const getTicketForHadling = () => client.get('get-ticket-handling', { limit, offset }, {});
+const getTicketForHadling = ({ type }) => client.get('get-ticket-handling', { limit, offset, type }, {});
 const updateTicketHandling = ({ data }) => client.post('update-ticket-handling', data, {});
+const updateOHTicketHandling = ({ data }) => client.post('update-po-ticket-update', data, {});
 
+const updateOHTicketHandlingStatus = ({ data }) => client.post('update-oh-ticket-update', data, {});
 
 const serviceApi = {
   addServiceFor,
@@ -112,7 +114,9 @@ const serviceApi = {
   updateTickets,
   closeTickets,
   getTicketForHadling,
-  updateTicketHandling
+  updateTicketHandling,
+  updateOHTicketHandling,
+  updateOHTicketHandlingStatus,
 }
 
 export default serviceApi;

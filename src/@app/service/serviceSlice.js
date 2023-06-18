@@ -95,7 +95,11 @@ const initialState = {
 
   updatingTicketHandling: false,
   updateTicketHandlingResponse: {},
-  updateTicketHandlingError: {}
+  updateTicketHandlingError: {},
+
+  updatingOHTicketStatus: false,
+  updateOHTicketStatusResponse: {},
+  updateOHTicketStatusError: {}
 };
 
 export const serviceSlice = createSlice({
@@ -645,6 +649,19 @@ export const serviceSlice = createSlice({
     updatedTicketHandlingError: (state, action) => {
       state.updatingTicketHandling = false;
       state.updateTicketHandlingError = action.payload;
+    },
+
+    ////////////////
+    updateOHTicketStatusRequest: (state) => {
+      state.updatingOHTicketStatus = true;
+    },
+    updateOHTicketStatusResponse: (state, action) => {
+      state.updatingOHTicketStatus = false;
+      state.updateOHTicketStatusResponse = action.payload;
+    },
+    updateOHTicketStatusError: (state, action) => {
+      state.updatingOHTicketStatus = false;
+      state.updateOHTicketStatusError = action.payload;
     },
   }
 });
@@ -1288,10 +1305,10 @@ export const closeTickets =
         });
     };
 
-export const getTicketForHadling = () => async (dispatch) => {
+export const getTicketForHadling = (payload) => async (dispatch) => {
   dispatch(serviceSlice.actions.getTicketHandlingRequest());
   return apis
-    .getTicketForHadling()
+    .getTicketForHadling(payload)
     .then(({ data }) => {
       dispatch(serviceSlice.actions.getTicketHandlingResponse(data));
       return data;
@@ -1313,5 +1330,35 @@ export const updateTicketHandling =
         })
         .catch(() => {
           dispatch(serviceSlice.actions.updatedTicketHandlingError());
+        });
+    };
+
+export const updateOHTicketHandling =
+  ({ data }) =>
+    async (dispatch) => {
+      dispatch(serviceSlice.actions.updateTicketHandlingRequest());
+      return apis
+        .updateOHTicketHandling({ data })
+        .then(async ({ data }) => {
+          await dispatch(serviceSlice.actions.updatedTicketHandlingResponse(data));
+          return data;
+        })
+        .catch(() => {
+          dispatch(serviceSlice.actions.updatedTicketHandlingError());
+        });
+    };
+
+export const updateOHTicketStatus =
+  ({ data }) =>
+    async (dispatch) => {
+      dispatch(serviceSlice.actions.updateOHTicketStatusRequest());
+      return apis
+        .updateOHTicketHandlingStatus({ data })
+        .then(async ({ data }) => {
+          await dispatch(serviceSlice.actions.updateOHTicketStatusResponse(data));
+          return data;
+        })
+        .catch(() => {
+          dispatch(serviceSlice.actions.updateOHTicketStatusError());
         });
     };

@@ -65,12 +65,12 @@ function TicketHandling(props) {
   const dateFormat = ['DD/MM/YYYY', 'DD/MM/YY'];
 
   useEffect(() => {
-    props.setTopTitle("Tickets")
+    props.setTopTitle("Ticket Handling")
     // eslint-disable-next-line
   }, [])
 
   useEffect(() => {
-    dispatch(getTicketForHadling());
+    dispatch(getTicketForHadling({ type: "" }));
   }, [dispatch]);
 
   return (

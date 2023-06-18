@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
-import { Card, Col, Form, Input, Row, Select, Button } from 'antd';
+import { Card, Col, Form, Input, Row, Select, Button, Image } from 'antd';
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router';
 import { getEmployeeMaster } from '../../../@app/master/masterSlice';
 import { ConverToReactSelect } from '../../../util';
-import { getAssetGroupSpare, updateTicketHandling } from '../../../@app/service/serviceSlice';
+import { getAssetGroupSpare, updateOHTicketHandling, updateTicketHandling } from '../../../@app/service/serviceSlice';
 import { MultiUploadButton } from '../../../components/multiUploadButton/MultiUploadButton';
 import messageToast from '../../../components/messageToast/messageToast';
 
@@ -32,34 +32,52 @@ function TicketHandlingForm() {
   const [form] = Form.useForm();
   const vendorType = Form.useWatch('vendor_type', form);
   const costInvolved = Form.useWatch('cost_involved', form);
-  const workdoneBy = Form.useWatch('workdone_by', form);
+  const workdoneBy = Form.useWatch('workdone', form);
   const paymentMode = Form.useWatch('payment_mode', form);
   const quotation = Form.useWatch('quotation', form);
   const advance = Form.useWatch('advance', form);
   const advancePercentage = Form.useWatch('advance_percentage', form);
   const spendAmount = Form.useWatch('spend_amount', form);
 
-  const [employee, setEmployee] = useState({});
+  const [employee, setEmployee] = useState(defaultValue.id ? defaultValue.employee_name : {});
+
+  const OHStatus = ['OH Approved', 'OH Rejected', 'OHApproved'].includes(defaultValue.ticket_status);
 
   const onFinish = (data) => {
-    dispatch(updateTicketHandling({
-      data: {
-        ...data,
-        id: defaultValue?.id,
-        existing_photo: JSON.stringify(data?.existing_photo ?? []) ?? "[]",
-        new_photo: JSON.stringify(data?.new_photo ?? []) ?? "[]",
-        document_copy: JSON.stringify(data?.document_copy ?? []) ?? "[]",
-        quotation_copy: JSON.stringify(data?.quotation_copy ?? []) ?? "[]",
-      }
-    })).then(
-      ({ message, status, statusText }) => {
-        messageToast({ message: message ?? statusText, status, title: 'Ticket Updated' });
-        if (status === 200) {
-          form.resetFields();
-          navigate('/handleTicket');
+    if (OHStatus) {
+      dispatch(updateOHTicketHandling({
+        data: {
+          ...data,
+          id: defaultValue?.id
         }
-      }
-    );
+      })).then(
+        ({ message, status, statusText }) => {
+          messageToast({ message: message ?? statusText, status, title: 'Ticket Updated' });
+          if (status === 200) {
+            form.resetFields();
+            navigate('/handleTicket');
+          }
+        }
+      );
+    } else {
+      dispatch(updateTicketHandling({
+        data: {
+          ...data,
+          covered_in_amc: "Auto",
+          id: defaultValue?.id,
+          employee_id: employee?.id,
+          balance_amount: `${parseInt(data.spend_amount) - parseInt(data.advance)}`
+        }
+      })).then(
+        ({ message, status, statusText }) => {
+          messageToast({ message: message ?? statusText, status, title: 'Ticket Updated' });
+          if (status === 200) {
+            form.resetFields();
+            navigate('/handleTicket');
+          }
+        }
+      );
+    }
   };
 
   const canIshowIssueResolved = () => {
@@ -91,7 +109,7 @@ function TicketHandlingForm() {
   }
 
   const giveMeAssetSpares = useCallback(() => {
-    return ConverToReactSelect(assetSpares?.filter(_ => defaultValue?.asset_group_id?.toString() === _?.asset_group_id?.toString())?.[0]?.assetspares, "name", "name")
+    return ConverToReactSelect(assetSpares?.filter(_ => defaultValue?.asset_group_details?.toString() === _?.asset_group_id?.toString())?.[0]?.assetspares, "name", "name")
     // eslint-disable-next-line
   }, [assetSpares])
 
@@ -103,7 +121,7 @@ function TicketHandlingForm() {
   }, [vendorType]);
 
   useEffect(() => {
-    form.setFieldsValue({ employee_contact_no: employee?.contact })
+    form.setFieldsValue({ emp_contact_no: employee?.contact })
     // eslint-disable-next-line
   }, [employee]);
 
@@ -133,14 +151,15 @@ function TicketHandlingForm() {
               autoComplete='off'
               form={form}
               initialValues={{
-                ...defaultValue
+                ...defaultValue,
+                employee_id: defaultValue.id && defaultValue.employee_name ? { value: defaultValue.employee_name.id, label: defaultValue.employee_name.name, ...defaultValue.employee_name } : "",
               }}
             >
               {/* Vendor Type */}
               <Row gutter={[15, 0]}>
                 <Col md={{ span: 6 }} xs={{ span: 24 }}>
                   <Form.Item name='vendor_type' label='Vendor Type'>
-                    <Select placeholder='Select Vendor Type' options={OPTIONS.vendorType} />
+                    <Select disabled={OHStatus} placeholder='Select Vendor Type' options={OPTIONS.vendorType} />
                   </Form.Item>
                 </Col>
               </Row>
@@ -151,7 +170,7 @@ function TicketHandlingForm() {
                 {vendorType === OPTIONS.vendorType[0].value && <>
                   {/* Employee Name */}
                   <Col md={{ span: 6 }} xs={{ span: 24 }}>
-                    <Form.Item name='employee_name' label='Employee Name'>
+                    <Form.Item name='employee_id' label='Employee Name'>
                       <Select
                         loading={gettingEmployeeList}
                         placeholder='Select Employee Name'
@@ -159,13 +178,14 @@ function TicketHandlingForm() {
                         onChange={(value, option) => {
                           setEmployee(option);
                         }}
+                        disabled={OHStatus}
                       />
                     </Form.Item>
                   </Col>
                   {/* Employee Mobile */}
                   <Col md={{ span: 6 }} xs={{ span: 24 }}>
-                    <Form.Item name='employee_contact_no' label='Contact No.'>
-                      <Input disabled placeholder='Enter contact no' name='employee_contact_no' />
+                    <Form.Item name='emp_contact_no' label='Contact No.'>
+                      <Input disabled placeholder='Enter contact no' name='emp_contact_no' />
                     </Form.Item>
                   </Col>
                 </>}
@@ -175,13 +195,13 @@ function TicketHandlingForm() {
                   {/* Vendor Name */}
                   <Col md={{ span: 6 }} xs={{ span: 24 }}>
                     <Form.Item name='vendor_name' label='Vendor Name'>
-                      <Input placeholder='Enter Vendor Name' name='vendor_name' />
+                      <Input disabled={OHStatus} placeholder='Enter Vendor Name' name='vendor_name' />
                     </Form.Item>
                   </Col>
                   {/* Vendor Mobile */}
                   <Col md={{ span: 6 }} xs={{ span: 24 }}>
                     <Form.Item name='vendor_contact_no' label='Contact No.'>
-                      <Input placeholder='Enter contact no' name='vendor_contact_no' />
+                      <Input disabled={OHStatus} placeholder='Enter contact no' name='vendor_contact_no' />
                     </Form.Item>
                   </Col>
                 </>}
@@ -190,8 +210,8 @@ function TicketHandlingForm() {
               {/* Workdone */}
               <Row gutter={[15, 0]}>
                 <Col md={{ span: 6 }} xs={{ span: 24 }}>
-                  <Form.Item name='workdone_by' label='Workdone By'>
-                    <Select placeholder='Select Workdone' options={OPTIONS.workdoneBy} />
+                  <Form.Item name='workdone' label='Workdone By'>
+                    <Select disabled={OHStatus} placeholder='Select Workdone' options={OPTIONS.workdoneBy} />
                   </Form.Item>
                 </Col>
               </Row>
@@ -201,8 +221,8 @@ function TicketHandlingForm() {
                 <Row gutter={[15, 0]}>
                   {/* Spare */}
                   <Col md={{ span: 6 }} xs={{ span: 24 }}>
-                    <Form.Item name='spare' label='Spare'>
-                      <Select loading={gettingAssetGroupSpare} placeholder='Select' options={giveMeAssetSpares()} />
+                    <Form.Item name='spare_id' label='Spare'>
+                      <Select disabled={OHStatus} loading={gettingAssetGroupSpare} placeholder='Select' options={giveMeAssetSpares()} />
                     </Form.Item>
                   </Col>
 
@@ -219,27 +239,46 @@ function TicketHandlingForm() {
                   {/* Existing Spare Photo */}
                   <Col md={{ span: 6 }} xs={{ span: 24 }}>
                     <Form.Item name='existing_photo' label='Existing Spare Photo'>
-                      <MultiUploadButton url={'ticket-imageupload'} onSuccess={(files) => {
+                      {!OHStatus && <MultiUploadButton url={'ticket-imageupload'} onSuccess={(files) => {
                         form.setFieldsValue({ 'existing_photo': files?.map?.(file => JSON.parse(file?.response?.filename ?? "['']")?.[0] ?? "") ?? "" })
-                      }} />
+                      }} />}
+                      <Image.PreviewGroup>
+                        {form.getFieldValue('existing_photo')?.map(_ => <Image
+                          width={200}
+                          src={`${defaultValue.pathfor_attachments}/${_}`}
+                        />
+                        )}
+                      </Image.PreviewGroup>
                     </Form.Item>
                   </Col>
 
                   {/* New Spare Photo */}
                   <Col md={{ span: 6 }} xs={{ span: 24 }}>
                     <Form.Item name='new_photo' label='New Spare Photo'>
-                      <MultiUploadButton url={'ticket-imageupload'} onSuccess={(files) => {
+                      {!OHStatus && <MultiUploadButton url={'ticket-imageupload'} onSuccess={(files) => {
                         form.setFieldsValue({ 'new_photo': files?.map?.(file => JSON.parse(file?.response?.filename ?? "['']")?.[0] ?? "") ?? "" })
-                      }} />
+                      }} />}
+                      <Image.PreviewGroup>
+                        {form.getFieldValue('new_photo')?.map(_ => <Image
+                          width={200}
+                          src={`${defaultValue.pathfor_attachments}/${_}`}
+                        />)}
+                      </Image.PreviewGroup>
                     </Form.Item>
                   </Col>
 
                   {/* Document Copy */}
                   <Col md={{ span: 6 }} xs={{ span: 24 }}>
                     <Form.Item name='document_copy' label='Document Copy'>
-                      <MultiUploadButton url={'ticket-imageupload'} onSuccess={(files) => {
+                      {!OHStatus && <MultiUploadButton url={'ticket-imageupload'} onSuccess={(files) => {
                         form.setFieldsValue({ 'document_copy': files?.map?.(file => JSON.parse(file?.response?.filename ?? "['']")?.[0] ?? "") ?? "" })
-                      }} />
+                      }} />}
+                      <Image.PreviewGroup>
+                        {form.getFieldValue('document_copy')?.map(_ => <Image
+                          width={200}
+                          src={`${defaultValue.pathfor_attachments}/${_}`}
+                        />)}
+                      </Image.PreviewGroup>
                     </Form.Item>
                   </Col>
                 </Row>
@@ -248,7 +287,7 @@ function TicketHandlingForm() {
                 <Row gutter={[15, 0]}>
                   <Col md={{ span: 6 }} xs={{ span: 24 }}>
                     <Form.Item name='tentative_date' label='Tentative Date'>
-                      <Input type='date' placeholder='Select' name='tentative_date' />
+                      <Input disabled={OHStatus} type='date' placeholder='Select' name='tentative_date' />
                     </Form.Item>
                   </Col>
                 </Row>
@@ -258,7 +297,7 @@ function TicketHandlingForm() {
               <Row gutter={[15, 0]}>
                 <Col md={{ span: 6 }} xs={{ span: 24 }}>
                   <Form.Item name='cost_involved' label='Cost Involved'>
-                    <Select placeholder='Select' options={OPTIONS.costInvolved} />
+                    <Select disabled={OHStatus} placeholder='Select' options={OPTIONS.costInvolved} />
                   </Form.Item>
                 </Col>
               </Row>
@@ -269,7 +308,7 @@ function TicketHandlingForm() {
                 <Row gutter={[15, 0]}>
                   <Col md={{ span: 6 }} xs={{ span: 24 }}>
                     <Form.Item name='payment_mode' label='Mode of Payment'>
-                      <Select placeholder='Select' options={OPTIONS.paymentMode} />
+                      <Select disabled={OHStatus} placeholder='Select' options={OPTIONS.paymentMode} />
                     </Form.Item>
                   </Col>
                 </Row>
@@ -278,14 +317,14 @@ function TicketHandlingForm() {
                 {paymentMode && <Row gutter={[15, 0]}>
                   <Col md={{ span: 6 }} xs={{ span: 24 }}>
                     <Form.Item name='quotation' label='Quotation'>
-                      <Select placeholder='Select' options={OPTIONS.quotation} />
+                      <Select disabled={OHStatus} placeholder='Select' options={OPTIONS.quotation} />
                     </Form.Item>
                   </Col>
 
                   {/* Spend Amount */}
                   <Col md={{ span: 6 }} xs={{ span: 24 }}>
                     <Form.Item name='spend_amount' label='Spend Amount' rules={[{ required: true }]}>
-                      <Input type='number' placeholder='Enter' name='spend_amount' />
+                      <Input disabled={OHStatus} type='number' placeholder='Enter' name='spend_amount' />
                     </Form.Item>
                   </Col>
                 </Row>}
@@ -298,16 +337,22 @@ function TicketHandlingForm() {
                       {/* Quotation Number */}
                       <Col md={{ span: 6 }} xs={{ span: 24 }} rules={[{ required: true }]}>
                         <Form.Item name='quotation_no' label='Quotation No'>
-                          <Input placeholder='Enter' name='quotation_no' />
+                          <Input disabled={OHStatus} placeholder='Enter' name='quotation_no' />
                         </Form.Item>
                       </Col>
 
                       {/* Quotation Copy */}
                       <Col md={{ span: 6 }} xs={{ span: 24 }}>
                         <Form.Item name='quotation_copy' label='Quotation Copy'>
-                          <MultiUploadButton url={'ticket-imageupload'} onSuccess={(files) => {
+                          {!OHStatus && <MultiUploadButton url={'ticket-imageupload'} onSuccess={(files) => {
                             form.setFieldsValue({ 'quotation_copy': files?.map?.(file => JSON.parse(file?.response?.filename ?? "['']")?.[0] ?? "") ?? "" })
-                          }} />
+                          }} />}
+                          <Image.PreviewGroup>
+                            {form.getFieldValue('quotation_copy')?.map(_ => <Image
+                              width={200}
+                              src={`${defaultValue.pathfor_attachments}/${_}`}
+                            />)}
+                          </Image.PreviewGroup>
                         </Form.Item>
                       </Col>
                     </Row>
@@ -320,7 +365,7 @@ function TicketHandlingForm() {
                   <Row gutter={[15, 0]}>
                     <Col md={{ span: 6 }} xs={{ span: 24 }}>
                       <Form.Item name='advance' label='Advance'>
-                        <Select placeholder='Select' options={OPTIONS.advance} />
+                        <Select disabled={OHStatus} placeholder='Select' options={OPTIONS.advance} />
                       </Form.Item>
                     </Col>
                   </Row>
@@ -331,7 +376,7 @@ function TicketHandlingForm() {
                       {/* Advance Percentage */}
                       <Col md={{ span: 6 }} xs={{ span: 24 }}>
                         <Form.Item name='advance_percentage' label='Advance Percentage'>
-                          <Input placeholder='Enter' name='advance_percentage' />
+                          <Input disabled={OHStatus} placeholder='Enter' name='advance_percentage' />
                         </Form.Item>
                       </Col>
 
@@ -346,6 +391,52 @@ function TicketHandlingForm() {
                 </>}
               </>}
 
+              {/* PO Details */}
+              {OHStatus && <Row gutter={[15, 0]}>
+                {/* PO No */}
+                <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                  <Form.Item name='po_no' label='PO No'>
+                    <Input placeholder='Enter' name='po_no' />
+                  </Form.Item>
+                </Col>
+
+                {/* Vendor Name */}
+                <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                  <Form.Item name='vendor_name_po' label='Vendor Name'>
+                    <Input placeholder='Enter' name='vendor_name_po' />
+                  </Form.Item>
+                </Col>
+
+                {/* PO Value */}
+                <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                  <Form.Item name='po_value' label='PO Value'>
+                    <Input placeholder='Enter' name='po_value' />
+                  </Form.Item>
+                </Col>
+
+                {/* Advance Paid */}
+                <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                  <Form.Item name='advance_paid' label='Advance Paid'>
+                    <Select placeholder='Select' options={OPTIONS.issueClosed} />
+                  </Form.Item>
+                </Col>
+
+                {/* PO Copy */}
+                <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                  <Form.Item name='po_copy' label='PO Copy'>
+                    <MultiUploadButton url={'ticket-imageupload'} onSuccess={(files) => {
+                      form.setFieldsValue({ 'po_copy': files?.map?.(file => JSON.parse(file?.response?.filename ?? "['']")?.[0] ?? "") ?? "" })
+                    }} />
+                    <Image.PreviewGroup>
+                      {form.getFieldValue('po_copy')?.map(_ => <Image
+                        width={200}
+                        src={`${defaultValue.pathfor_attachments}/${_}`}
+                      />)}
+                    </Image.PreviewGroup>
+                  </Form.Item>
+                </Col>
+              </Row>}
+
               {/* Issue Closed */}
               {canIshowIssueClosed() && <Row gutter={[15, 0]}>
                 <Col md={{ span: 6 }} xs={{ span: 24 }}>
@@ -359,7 +450,7 @@ function TicketHandlingForm() {
               {canIshowIssueResolved() && <Row gutter={[15, 0]}>
                 <Col md={{ span: 6 }} xs={{ span: 24 }}>
                   <Form.Item name='issue_resolved' label='Issue Resolved'>
-                    <Select placeholder='Select' options={OPTIONS.issue} />
+                    <Select placeholder='Select' options={OPTIONS.issueResolved} />
                   </Form.Item>
                 </Col>
               </Row>}
