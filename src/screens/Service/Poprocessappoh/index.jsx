@@ -20,7 +20,7 @@ function Poprocessappoh() {
   });
 
   useEffect(() => {
-    dispatch(getTicketForHadling({ type: "waiting @OH Approval" }));
+    dispatch(getTicketForHadling({ type: "Waiting @ OH Approval" }));
   }, [dispatch]);
 
 
