@@ -488,11 +488,11 @@ const CreateTicketForm = (props) => {
                         </Button>
                       </Form.Item>
 
-                      <Form.Item className='mx-2'>
+                      {isEdit && <Form.Item className='mx-2'>
                         <Button danger disabled={savingTickets} onClick={handleDeleteBtn}>
                           Delete
                         </Button>
-                      </Form.Item>
+                      </Form.Item>}
                     </Col>
                   </Row>
                 </Col>

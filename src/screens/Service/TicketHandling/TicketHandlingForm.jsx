@@ -41,7 +41,7 @@ function TicketHandlingForm() {
 
   const [employee, setEmployee] = useState(defaultValue.id ? defaultValue.employee_name : {});
 
-  const OHStatus = ['OH Approved', 'OH Rejected', 'OHApproved'].includes(defaultValue.ticket_status);
+  const OHStatus = ['OH Approved', 'OH Rejected', 'OHApproved', 'PO processed','Waiting @ PO'].includes(defaultValue.ticket_status);
 
   const onFinish = (data) => {
     if (OHStatus) {
