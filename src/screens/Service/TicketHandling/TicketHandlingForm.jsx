@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Card, Col, Form, Input, Row, Select, Button, Image } from 'antd';
+import { Card, Col, Form, Input, Row, Select, Button, Image, Descriptions, Modal } from 'antd';
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router';
@@ -40,8 +40,13 @@ function TicketHandlingForm() {
   const spendAmount = Form.useWatch('spend_amount', form);
 
   const [employee, setEmployee] = useState(defaultValue.id ? defaultValue.employee_name : {});
+  const [state, updateState] = useState({ isOpen: false, title: "Title", images: [] });
 
-  const OHStatus = ['OH Approved', 'OH Rejected', 'OHApproved', 'PO processed','Waiting @ PO'].includes(defaultValue.ticket_status);
+  const openModal = (title, images = []) => {
+    updateState({ ...state, title, isOpen: true, images })
+  };
+
+  const OHStatus = ['OH Approved', 'OH Rejected', 'OHApproved', 'PO processed', 'Waiting @ PO'].includes(defaultValue.ticket_status);
 
   const onFinish = (data) => {
     if (OHStatus) {
@@ -141,6 +146,21 @@ function TicketHandlingForm() {
   return (
     <>
       <Card>
+        <Descriptions title="Ticket Info" bordered size='small' >
+          <Descriptions.Item label={"Ticket No"}>{defaultValue.ticket_no}</Descriptions.Item>
+          <Descriptions.Item label={"Ticket Description"}>{defaultValue.problem_description}</Descriptions.Item>
+          <Descriptions.Item label={"Service For"}>{defaultValue.service_for}</Descriptions.Item>
+          <Descriptions.Item label={"Asset Group"}>{defaultValue.asset_group}</Descriptions.Item>
+          <Descriptions.Item label={"Asset"}>{defaultValue.asset}</Descriptions.Item>
+          <Descriptions.Item label={"ORL Name"}>{defaultValue.orl_name}</Descriptions.Item>
+          <Descriptions.Item label={"ORL Number"}>{defaultValue.contact_no}</Descriptions.Item>
+          <Descriptions.Item label={"Assigned To"}>{defaultValue.assigned_to}</Descriptions.Item>
+          <Descriptions.Item label={"Contact No"}>{defaultValue.contact_no}</Descriptions.Item>
+          <Descriptions.Item label={"Attachement"}>{<Button type='link' color='primary' onClick={() => openModal("Ticket Attachement", typeof defaultValue.attachments !== "string" ? defaultValue?.attachments : [])} >View</Button>}</Descriptions.Item>
+        </Descriptions>
+      </Card>
+
+      <Card style={{ marginTop: "8px" }} >
         <Row>
           <Col span={24}>
             <Form
@@ -158,20 +178,18 @@ function TicketHandlingForm() {
               {/* Vendor Type */}
               <Row gutter={[15, 0]}>
                 <Col md={{ span: 6 }} xs={{ span: 24 }}>
-                  <Form.Item name='vendor_type' label='Vendor Type'>
-                    <Select disabled={OHStatus} placeholder='Select Vendor Type' options={OPTIONS.vendorType} />
+                  <Form.Item name='vendor_type' label='Vendor Type' rules={[{ required: true, message: 'Please select vendor type' }]}>
+                    <Select allowClear disabled={OHStatus} placeholder='Select Vendor Type' options={OPTIONS.vendorType} />
                   </Form.Item>
                 </Col>
-              </Row>
 
-              {/* Vendor Details */}
-              <Row gutter={[15, 0]}>
+                {/* Vendor Details */}
                 {/* If Vendor Type is Internal */}
                 {vendorType === OPTIONS.vendorType[0].value && <>
                   {/* Employee Name */}
                   <Col md={{ span: 6 }} xs={{ span: 24 }}>
-                    <Form.Item name='employee_id' label='Employee Name'>
-                      <Select
+                    <Form.Item name='employee_id' label='Employee Name' rules={[{ required: true, message: 'Please select employee name' }]}>
+                      <Select allowClear
                         loading={gettingEmployeeList}
                         placeholder='Select Employee Name'
                         options={giveMeEmployeeOptions()}
@@ -194,7 +212,7 @@ function TicketHandlingForm() {
                 {vendorType === OPTIONS.vendorType[1].value && <>
                   {/* Vendor Name */}
                   <Col md={{ span: 6 }} xs={{ span: 24 }}>
-                    <Form.Item name='vendor_name' label='Vendor Name'>
+                    <Form.Item name='vendor_name' label='Vendor Name' rules={[{ required: true, message: 'Please enter vendor name' }]}>
                       <Input disabled={OHStatus} placeholder='Enter Vendor Name' name='vendor_name' />
                     </Form.Item>
                   </Col>
@@ -205,24 +223,20 @@ function TicketHandlingForm() {
                     </Form.Item>
                   </Col>
                 </>}
-              </Row>
 
-              {/* Workdone */}
-              <Row gutter={[15, 0]}>
+                {/* Workdone */}
                 <Col md={{ span: 6 }} xs={{ span: 24 }}>
                   <Form.Item name='workdone' label='Workdone By'>
-                    <Select disabled={OHStatus} placeholder='Select Workdone' options={OPTIONS.workdoneBy} />
+                    <Select allowClear disabled={OHStatus} placeholder='Select Workdone' options={OPTIONS.workdoneBy} />
                   </Form.Item>
                 </Col>
-              </Row>
 
-              {/* If Workdone By is Service with Spare */}
-              {workdoneBy === OPTIONS.workdoneBy[0].value && <>
-                <Row gutter={[15, 0]}>
+                {/* If Workdone By is Service with Spare */}
+                {workdoneBy === OPTIONS.workdoneBy[0].value && <>
                   {/* Spare */}
                   <Col md={{ span: 6 }} xs={{ span: 24 }}>
                     <Form.Item name='spare_id' label='Spare'>
-                      <Select disabled={OHStatus} loading={gettingAssetGroupSpare} placeholder='Select' options={giveMeAssetSpares()} />
+                      <Select allowClear disabled={OHStatus} loading={gettingAssetGroupSpare} placeholder='Select' options={giveMeAssetSpares()} />
                     </Form.Item>
                   </Col>
 
@@ -232,110 +246,102 @@ function TicketHandlingForm() {
                       <Input disabled placeholder='Enter' name='covered_in_amc' />
                     </Form.Item>
                   </Col>
-                </Row>
 
-                {/* Spare Upload */}
-                <Row gutter={[15, 0]}>
+                  {/* Spare Upload */}
                   {/* Existing Spare Photo */}
                   <Col md={{ span: 6 }} xs={{ span: 24 }}>
                     <Form.Item name='existing_photo' label='Existing Spare Photo'>
-                      {!OHStatus && <MultiUploadButton url={'ticket-imageupload'} onSuccess={(files) => {
-                        form.setFieldsValue({ 'existing_photo': files?.map?.(file => JSON.parse(file?.response?.filename ?? "['']")?.[0] ?? "") ?? "" })
-                      }} />}
-                      <Image.PreviewGroup>
-                        {form.getFieldValue('existing_photo')?.map(_ => <Image
-                          width={200}
-                          src={`${defaultValue.pathfor_attachments}/${_}`}
-                        />
-                        )}
-                      </Image.PreviewGroup>
+                      <Row>
+                        <Col>
+                          {!OHStatus && <MultiUploadButton url={'ticket-imageupload'} onSuccess={(files) => {
+                            form.setFieldsValue({ 'existing_photo': files?.map?.(file => JSON.parse(file?.response?.filename ?? "['']")?.[0] ?? "") ?? "" })
+                          }} />}
+                        </Col>
+                        <Col>
+                          <Button type='link' color='primary' onClick={() => openModal("Existing Spare Photo", typeof defaultValue.existing_photo !== "string" ? defaultValue?.existing_photo : [])} >View</Button>
+                        </Col>
+                      </Row>
                     </Form.Item>
                   </Col>
 
                   {/* New Spare Photo */}
                   <Col md={{ span: 6 }} xs={{ span: 24 }}>
                     <Form.Item name='new_photo' label='New Spare Photo'>
-                      {!OHStatus && <MultiUploadButton url={'ticket-imageupload'} onSuccess={(files) => {
-                        form.setFieldsValue({ 'new_photo': files?.map?.(file => JSON.parse(file?.response?.filename ?? "['']")?.[0] ?? "") ?? "" })
-                      }} />}
-                      <Image.PreviewGroup>
-                        {form.getFieldValue('new_photo')?.map(_ => <Image
-                          width={200}
-                          src={`${defaultValue.pathfor_attachments}/${_}`}
-                        />)}
-                      </Image.PreviewGroup>
+                      <Row>
+                        <Col>
+                          {!OHStatus && <MultiUploadButton url={'ticket-imageupload'} onSuccess={(files) => {
+                            form.setFieldsValue({ 'new_photo': files?.map?.(file => JSON.parse(file?.response?.filename ?? "['']")?.[0] ?? "") ?? "" })
+                          }} />}
+                        </Col>
+                        <Col>
+                          <Button type='link' color='primary' onClick={() => openModal("New Spare Photo", typeof defaultValue.new_photo !== "string" ? defaultValue?.new_photo : [])} >View</Button>
+                        </Col>
+                      </Row>
                     </Form.Item>
                   </Col>
 
                   {/* Document Copy */}
                   <Col md={{ span: 6 }} xs={{ span: 24 }}>
                     <Form.Item name='document_copy' label='Document Copy'>
-                      {!OHStatus && <MultiUploadButton url={'ticket-imageupload'} onSuccess={(files) => {
-                        form.setFieldsValue({ 'document_copy': files?.map?.(file => JSON.parse(file?.response?.filename ?? "['']")?.[0] ?? "") ?? "" })
-                      }} />}
-                      <Image.PreviewGroup>
-                        {form.getFieldValue('document_copy')?.map(_ => <Image
-                          width={200}
-                          src={`${defaultValue.pathfor_attachments}/${_}`}
-                        />)}
-                      </Image.PreviewGroup>
+                      <Row>
+                        <Col>
+                          {!OHStatus && <MultiUploadButton url={'ticket-imageupload'} onSuccess={(files) => {
+                            form.setFieldsValue({ 'document_copy': files?.map?.(file => JSON.parse(file?.response?.filename ?? "['']")?.[0] ?? "") ?? "" })
+                          }} />}
+                        </Col>
+                        <Col>
+                          <Button type='link' color='primary' onClick={() => openModal("New Spare Photo", typeof defaultValue.document_copy !== "string" ? defaultValue?.document_copy : [])} >View</Button>
+                        </Col>
+                      </Row>
                     </Form.Item>
                   </Col>
-                </Row>
 
-                {/* Tentative Date */}
-                <Row gutter={[15, 0]}>
+                  {/* Tentative Date */}
                   <Col md={{ span: 6 }} xs={{ span: 24 }}>
                     <Form.Item name='tentative_date' label='Tentative Date'>
                       <Input disabled={OHStatus} type='date' placeholder='Select' name='tentative_date' />
                     </Form.Item>
                   </Col>
-                </Row>
-              </>}
+                </>}
 
-              {/* Cost Involved */}
-              <Row gutter={[15, 0]}>
+                {/* Cost Involved */}
                 <Col md={{ span: 6 }} xs={{ span: 24 }}>
                   <Form.Item name='cost_involved' label='Cost Involved'>
-                    <Select disabled={OHStatus} placeholder='Select' options={OPTIONS.costInvolved} />
+                    <Select allowClear disabled={OHStatus} placeholder='Select' options={OPTIONS.costInvolved} />
                   </Form.Item>
                 </Col>
-              </Row>
 
-              {/* If Cost Involved is Yes */}
-              {costInvolved === OPTIONS.costInvolved[0].value && <>
-                {/* Mode of Payment */}
-                <Row gutter={[15, 0]}>
+                {/* If Cost Involved is Yes */}
+                {costInvolved === OPTIONS.costInvolved[0].value && <>
+                  {/* Mode of Payment */}
                   <Col md={{ span: 6 }} xs={{ span: 24 }}>
                     <Form.Item name='payment_mode' label='Mode of Payment'>
-                      <Select disabled={OHStatus} placeholder='Select' options={OPTIONS.paymentMode} />
-                    </Form.Item>
-                  </Col>
-                </Row>
-
-                {/* Quotation */}
-                {paymentMode && <Row gutter={[15, 0]}>
-                  <Col md={{ span: 6 }} xs={{ span: 24 }}>
-                    <Form.Item name='quotation' label='Quotation'>
-                      <Select disabled={OHStatus} placeholder='Select' options={OPTIONS.quotation} />
+                      <Select allowClear disabled={OHStatus} placeholder='Select' options={OPTIONS.paymentMode} />
                     </Form.Item>
                   </Col>
 
-                  {/* Spend Amount */}
-                  <Col md={{ span: 6 }} xs={{ span: 24 }}>
-                    <Form.Item name='spend_amount' label='Spend Amount' rules={[{ required: true }]}>
-                      <Input disabled={OHStatus} type='number' placeholder='Enter' name='spend_amount' />
-                    </Form.Item>
-                  </Col>
-                </Row>}
+                  {/* Quotation */}
+                  {paymentMode && <>
+                    <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                      <Form.Item name='quotation' label='Quotation'>
+                        <Select allowClear disabled={OHStatus} placeholder='Select' options={OPTIONS.quotation} />
+                      </Form.Item>
+                    </Col>
 
-                {/* If Mode of Payment is Pettycash */}
-                {paymentMode === OPTIONS.paymentMode[0].value && <>
-                  {/* If Quotation is Yes */}
-                  {quotation === OPTIONS.quotation[0].value && <>
-                    <Row gutter={[15, 0]}>
+                    {/* Estimated Amount */}
+                    <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                      <Form.Item name='spend_amount' label='Estimated Amount Rs' rules={[{ required: true, message: 'Please enter Estimated Amount rupees' }]}>
+                        <Input min={0} disabled={OHStatus} type='number' placeholder='Enter' name='spend_amount' />
+                      </Form.Item>
+                    </Col>
+                  </>}
+
+                  {/* If Mode of Payment is Pettycash */}
+                  {paymentMode === OPTIONS.paymentMode[0].value && <>
+                    {/* If Quotation is Yes */}
+                    {quotation === OPTIONS.quotation[0].value && <>
                       {/* Quotation Number */}
-                      <Col md={{ span: 6 }} xs={{ span: 24 }} rules={[{ required: true }]}>
+                      <Col md={{ span: 6 }} xs={{ span: 24 }} rules={[{ required: true, message: 'Please enter quotation number' }]}>
                         <Form.Item name='quotation_no' label='Quotation No'>
                           <Input disabled={OHStatus} placeholder='Enter' name='quotation_no' />
                         </Form.Item>
@@ -355,24 +361,20 @@ function TicketHandlingForm() {
                           </Image.PreviewGroup>
                         </Form.Item>
                       </Col>
-                    </Row>
+                    </>}
                   </>}
-                </>}
 
-                {/* If Mode of Payment is Online */}
-                {paymentMode === OPTIONS.paymentMode[1].value && <>
-                  {/* Advance */}
-                  <Row gutter={[15, 0]}>
+                  {/* If Mode of Payment is Online */}
+                  {paymentMode === OPTIONS.paymentMode[1].value && <>
+                    {/* Advance */}
                     <Col md={{ span: 6 }} xs={{ span: 24 }}>
                       <Form.Item name='advance' label='Advance'>
-                        <Select disabled={OHStatus} placeholder='Select' options={OPTIONS.advance} />
+                        <Select allowClear disabled={OHStatus} placeholder='Select' options={OPTIONS.advance} />
                       </Form.Item>
                     </Col>
-                  </Row>
 
-                  {/* If Advance is yes */}
-                  {advance === OPTIONS.advance[0].value && <>
-                    <Row gutter={[15, 0]}>
+                    {/* If Advance is yes */}
+                    {advance === OPTIONS.advance[0].value && <>
                       {/* Advance Percentage */}
                       <Col md={{ span: 6 }} xs={{ span: 24 }}>
                         <Form.Item name='advance_percentage' label='Advance Percentage'>
@@ -383,78 +385,75 @@ function TicketHandlingForm() {
                       {/* Advance Amount */}
                       <Col md={{ span: 6 }} xs={{ span: 24 }}>
                         <Form.Item name='advance_amount' label='Advance Amount'>
-                          <Input disabled placeholder='Enter' name='advance_amount' />
+                          <Input min={0} disabled placeholder='Enter' name='advance_amount' />
                         </Form.Item>
                       </Col>
-                    </Row>
+                    </>}
                   </>}
                 </>}
-              </>}
 
-              {/* PO Details */}
-              {OHStatus && <Row gutter={[15, 0]}>
-                {/* PO No */}
-                <Col md={{ span: 6 }} xs={{ span: 24 }}>
-                  <Form.Item name='po_no' label='PO No'>
-                    <Input placeholder='Enter' name='po_no' />
-                  </Form.Item>
-                </Col>
+                {/* PO Details */}
+                {OHStatus && <>
+                  {/* PO No */}
+                  <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                    <Form.Item name='po_no' label='PO No'>
+                      <Input placeholder='Enter' name='po_no' />
+                    </Form.Item>
+                  </Col>
 
-                {/* Vendor Name */}
-                <Col md={{ span: 6 }} xs={{ span: 24 }}>
-                  <Form.Item name='vendor_name_po' label='Vendor Name'>
-                    <Input placeholder='Enter' name='vendor_name_po' />
-                  </Form.Item>
-                </Col>
+                  {/* Vendor Name */}
+                  <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                    <Form.Item name='vendor_name_po' label='Vendor Name'>
+                      <Input placeholder='Enter' name='vendor_name_po' />
+                    </Form.Item>
+                  </Col>
 
-                {/* PO Value */}
-                <Col md={{ span: 6 }} xs={{ span: 24 }}>
-                  <Form.Item name='po_value' label='PO Value'>
-                    <Input placeholder='Enter' name='po_value' />
-                  </Form.Item>
-                </Col>
+                  {/* PO Value */}
+                  <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                    <Form.Item name='po_value' label='PO Value'>
+                      <Input min={0} type='number' placeholder='Enter' name='po_value' />
+                    </Form.Item>
+                  </Col>
 
-                {/* Advance Paid */}
-                <Col md={{ span: 6 }} xs={{ span: 24 }}>
-                  <Form.Item name='advance_paid' label='Advance Paid'>
-                    <Select placeholder='Select' options={OPTIONS.issueClosed} />
-                  </Form.Item>
-                </Col>
+                  {/* Advance Paid */}
+                  <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                    <Form.Item name='advance_paid' label='Advance Paid'>
+                      <Select allowClear placeholder='Select' options={OPTIONS.issueClosed} />
+                    </Form.Item>
+                  </Col>
 
-                {/* PO Copy */}
-                <Col md={{ span: 6 }} xs={{ span: 24 }}>
-                  <Form.Item name='po_copy' label='PO Copy'>
-                    <MultiUploadButton url={'ticket-imageupload'} onSuccess={(files) => {
-                      form.setFieldsValue({ 'po_copy': files?.map?.(file => JSON.parse(file?.response?.filename ?? "['']")?.[0] ?? "") ?? "" })
-                    }} />
-                    <Image.PreviewGroup>
-                      {form.getFieldValue('po_copy')?.map(_ => <Image
-                        width={200}
-                        src={`${defaultValue.pathfor_attachments}/${_}`}
-                      />)}
-                    </Image.PreviewGroup>
-                  </Form.Item>
-                </Col>
-              </Row>}
+                  {/* PO Copy */}
+                  <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                    <Form.Item name='po_copy' label='PO Copy'>
+                      <Row>
+                        <Col>
+                          <MultiUploadButton url={'ticket-imageupload'} onSuccess={(files) => {
+                            form.setFieldsValue({ 'po_copy': files?.map?.(file => JSON.parse(file?.response?.filename ?? "['']")?.[0] ?? "") ?? "" })
+                          }} />
+                        </Col>
+                        <Col>
+                          <Button type='link' color='primary' onClick={() => openModal("Document Copy", typeof defaultValue.po_copy !== "string" ? defaultValue?.po_copy : [])} >View</Button>
+                        </Col>
+                      </Row>
+                    </Form.Item>
+                  </Col>
+                </>}
 
-              {/* Issue Closed */}
-              {canIshowIssueClosed() && <Row gutter={[15, 0]}>
-                <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                {/* Issue Closed */}
+                {canIshowIssueClosed() && <Col md={{ span: 6 }} xs={{ span: 24 }}>
                   <Form.Item name='issue_closed' label='Issue Closed'>
-                    <Select placeholder='Select' options={OPTIONS.issueClosed} />
+                    <Select allowClear placeholder='Select' options={OPTIONS.issueClosed} />
                   </Form.Item>
-                </Col>
-              </Row>}
+                </Col>}
 
-              {/* Issue Resolved */}
-              {canIshowIssueResolved() && <Row gutter={[15, 0]}>
-                <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                {/* Issue Resolved */}
+                {canIshowIssueResolved() && <Col md={{ span: 6 }} xs={{ span: 24 }}>
                   <Form.Item name='issue_resolved' label='Issue Resolved'>
-                    <Select placeholder='Select' options={OPTIONS.issueResolved} />
+                    <Select allowClear placeholder='Select' options={OPTIONS.issueResolved} />
                   </Form.Item>
-                </Col>
-              </Row>}
+                </Col>}
 
+              </Row>
               <Row gutter={[15, 0]}>
                 <Col span={24}>
                   <Row gutter={[15, 15]} style={{ justifyContent: 'end' }}>
@@ -474,11 +473,19 @@ function TicketHandlingForm() {
                   </Row>
                 </Col>
               </Row>
-
             </Form>
           </Col>
         </Row>
       </Card >
+
+      <Modal title={state.title} open={state.isOpen} footer={null} onCancel={() => updateState({ ...state, isOpen: false })}>
+        <Image.PreviewGroup>
+          {state.images.map(_ => <Image
+            width={100}
+            src={`${defaultValue.pathfor_attachments}/${_}`}
+          />)}
+        </Image.PreviewGroup>
+      </Modal>
     </>
   );
 }

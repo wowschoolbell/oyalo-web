@@ -183,28 +183,28 @@ function App() {
       userLog === 1
         ? true
         : screen.findIndex((s) => s.name === "Dashboard") > -1
-        ? true
-        : false,
+          ? true
+          : false,
     master:
       userLog === 1
         ? true
         : screen.findIndex((s) => s.name === "Master") > -1
-        ? true
-        : false,
+          ? true
+          : false,
     submaster:
       userLog === 1
         ? true
         : screen.findIndex((s) => s.name === "Sub Master") > -1
-        ? true
-        : false,
+          ? true
+          : false,
     audit:
       userLog === 1
         ? true
         : screen.findIndex(
-            (s) => s.name === "Audit" || "Audit Approval" || "CAPA" || "Report"
-          ) > -1
-        ? true
-        : false,
+          (s) => s.name === "Audit" || "Audit Approval" || "CAPA" || "Report"
+        ) > -1
+          ? true
+          : false,
   };
 
   const sub = {
@@ -212,26 +212,26 @@ function App() {
       userLog === 1
         ? true
         : screen.findIndex((s) => s.name === "Audit") > -1
-        ? true
-        : false,
+          ? true
+          : false,
     approval:
       userLog === 1
         ? true
         : screen.findIndex((s) => s.name === "Audit Approval") > -1
-        ? true
-        : false,
+          ? true
+          : false,
     capa:
       userLog === 1
         ? true
         : screen.findIndex((s) => s.name === "CAPA") > -1
-        ? true
-        : false,
+          ? true
+          : false,
     report:
       userLog === 1
         ? true
         : screen.findIndex((s) => s.name === "Report") > -1
-        ? true
-        : false,
+          ? true
+          : false,
   };
 
   useEffect(() => {
@@ -987,30 +987,17 @@ function App() {
                   </span>
                 </Menu.Item>
               </Menu.SubMenu>
-              <Menu.SubMenu
-                className="side-nav"
-                key="sub8"
-                icon={<BsCashCoin size={17} />}
-                title={<span className="menu-title">PO Payment Approval</span>}>
-                <Menu.Item
-                  key="/poprocessappoh"
-                  icon={<BsCash size={17} />}
-                  onClick={() => setTopTitle("PO Process Approval - OH")}>
-                  <span>PO Process Approval - OH</span>
-                  <span className="count">
-                    <Badge size="default" count={11} showZero color="#3199dc" />
-                  </span>
-                </Menu.Item>
-                <Menu.Item
-                  key="/poprocessappah"
-                  icon={<BsCash size={17} />}
-                  onClick={() => setTopTitle("PO Process Approval - AH")}>
-                  <span>PO Process Approval - AH</span>
-                  <span className="count">
-                    <Badge size="default" count={11} showZero color="#3199dc" />
-                  </span>
-                </Menu.Item>
-              </Menu.SubMenu>
+
+              <Menu.Item
+                key="/poprocessappoh"
+                icon={<BsCash size={17} />}
+                onClick={() => setTopTitle("PO Process Approval - OH")}>
+                <span>PO Process Approval - OH</span>
+                <span className="count">
+                  <Badge size="default" count={11} showZero color="#3199dc" />
+                </span>
+              </Menu.Item>
+
               <Menu.SubMenu
                 className="side-nav"
                 key="sub9"

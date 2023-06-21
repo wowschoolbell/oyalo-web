@@ -185,7 +185,7 @@ const CreateTicketForm = (props) => {
               <Row gutter={[15, 0]}>
                 <Col md={{ span: 6 }} xs={{ span: 24 }}>
                   <Form.Item name='outlet_code' label='Outlet Name' rules={[{ required: !isEdit, message: 'Please select Outlet code' }]}>
-                    <Select disabled={isEdit} placeholder='select Outlet Name' showSearch filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
+                    <Select allowClear  disabled={isEdit} placeholder='select Outlet Name' showSearch filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
                       {map(
                         (outlet) => {
                           return (
@@ -211,7 +211,7 @@ const CreateTicketForm = (props) => {
                 </Col>
                 <Col md={{ span: 6 }} xs={{ span: 24 }}>
                   <Form.Item name='priority' label='Priority' rules={[{ required: !isEdit, message: 'Please select Priority' }]}>
-                    <Select disabled={isEdit} placeholder='Select' loading={gettingPriority} showSearch>
+                    <Select allowClear disabled={isEdit} placeholder='Select' loading={gettingPriority} showSearch>
                       filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                       {map(
                         (priority) => {
@@ -228,7 +228,7 @@ const CreateTicketForm = (props) => {
                 </Col>
                 <Col md={{ span: 6 }} xs={{ span: 24 }}>
                   <Form.Item name='service_for' label='Service For' rules={[{ required: !isEdit, message: 'Please select Service for' }]}>
-                    <Select
+                    <Select allowClear
                       disabled={isEdit}
                       placeholder='Select'
                       loading={gettingServiceFor}
@@ -250,7 +250,7 @@ const CreateTicketForm = (props) => {
                 {['POS'].includes(service) && (
                   <Col md={{ span: 6 }} xs={{ span: 24 }}>
                     <Form.Item name='types_of_issue' label='Types of Issue-s' rules={[{ required: !isEdit, message: 'Please select Types of Issue' }]}>
-                      <Select
+                      <Select allowClear
                         disabled={isEdit}
                         placeholder='Select'
                         //   loading={gettingState}
@@ -292,7 +292,7 @@ const CreateTicketForm = (props) => {
                   <>
                     <Col md={{ span: 6 }} xs={{ span: 24 }}>
                       <Form.Item name='asset_group' label='Asset Group'>
-                        <Select
+                        <Select allowClear
                           placeholder='Select'
                           disabled={isEdit}
                           //   loading={gettingState}
@@ -315,9 +315,10 @@ const CreateTicketForm = (props) => {
                     </Col>
                     <Col md={{ span: 6 }} xs={{ span: 24 }}>
                       <Form.Item name='asset' label='Asset'>
-                        <Select
+                        <Select allowClear
                           placeholder='Select'
                           //   loading={gettingState}
+                          disabled={isEdit && defaultValue.ticket_status !== 'Waiting @ Vendor Assignment'}
                           showSearch
                           filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
                           {map(
@@ -338,7 +339,7 @@ const CreateTicketForm = (props) => {
 
                     <Col md={{ span: 6 }} xs={{ span: 24 }}>
                       <Form.Item name='types_of_issue' label='Types of Issue-s' rules={[{ required: !isEdit, message: 'Please select Types of Issue' }]}>
-                        <Select
+                        <Select allowClear
                           placeholder='Select'
                           disabled={isEdit}
                           //   loading={gettingState}
@@ -396,7 +397,7 @@ const CreateTicketForm = (props) => {
                         name='service_type'
                         label='Type Of Services'
                         rules={[{ required: isEdit ? false : ['Equipment', 'IT'].includes(service), message: 'Please select Type Of Services' }]}>
-                        <Select
+                        <Select allowClear
                           placeholder='Select'
                           disabled={isEdit}
                           //   loading={gettingState}
@@ -423,7 +424,7 @@ const CreateTicketForm = (props) => {
 
                 <Col md={{ span: 6 }} xs={{ span: 24 }}>
                   <Form.Item name='assigned_to' label='Assigned To' rules={[{ required: !isEdit, message: 'Please select Service for' }]}>
-                    <Select
+                    <Select allowClear
                       placeholder='Select'
                       disabled={isEdit}
                       //   loading={gettingState}
@@ -464,7 +465,7 @@ const CreateTicketForm = (props) => {
                       form.setFieldsValue({ 'attachments': files?.map?.(file => JSON.parse(file?.response?.filename ?? "['']")?.[0] ?? "") ?? "" })
                     }} />}
                     {isEdit && <Image.PreviewGroup>
-                      {defaultValue.attachments?.map(attach => <Image
+                      {typeof defaultValue.attachments !== "string" && defaultValue.attachments?.map(attach => <Image
                           width={200}
                           src={`${defaultValue.pathfor_attachments}/${attach}`}
                         />
@@ -476,11 +477,11 @@ const CreateTicketForm = (props) => {
                 <Col span={24}>
                   <Row gutter={[15, 15]} style={{ justifyContent: 'end' }}>
                     <Col span={12} style={{ textAlign: 'right' }} className='d-flex align-items-center justify-content-end mt-3'>
-                      <Form.Item className='mx-2'>
+                      {!isEdit && <Form.Item className='mx-2'>
                         <Button loading={savingTickets} disabled={savingTickets} className='orangeFactory' type='primary' htmlType='submit'>
                           {isEdit ? "Update" : "Create"}
                         </Button>
-                      </Form.Item>
+                      </Form.Item>}
 
                       <Form.Item>
                         <Button disabled={savingTickets} onClick={handleClickBack}>
@@ -488,7 +489,7 @@ const CreateTicketForm = (props) => {
                         </Button>
                       </Form.Item>
 
-                      {isEdit && <Form.Item className='mx-2'>
+                      {isEdit && defaultValue.ticket_status === 'Waiting @ Vendor Assignment' && <Form.Item className='mx-2'>
                         <Button danger disabled={savingTickets} onClick={handleDeleteBtn}>
                           Delete
                         </Button>
