@@ -225,11 +225,11 @@ function TicketHandlingForm() {
                 </>}
 
                 {/* Workdone */}
-                <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                {defaultValue.service_for !== 'POS' && <Col md={{ span: 6 }} xs={{ span: 24 }}>
                   <Form.Item name='workdone' label='Workdone By'>
                     <Select allowClear disabled={OHStatus} placeholder='Select Workdone' options={OPTIONS.workdoneBy} />
                   </Form.Item>
-                </Col>
+                </Col>}
 
                 {/* If Workdone By is Service with Spare */}
                 {workdoneBy === OPTIONS.workdoneBy[0].value && <>
@@ -305,11 +305,11 @@ function TicketHandlingForm() {
                 </>}
 
                 {/* Cost Involved */}
-                <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                {defaultValue.service_for !== 'POS' && <Col md={{ span: 6 }} xs={{ span: 24 }}>
                   <Form.Item name='cost_involved' label='Cost Involved'>
                     <Select allowClear disabled={OHStatus} placeholder='Select' options={OPTIONS.costInvolved} />
                   </Form.Item>
-                </Col>
+                </Col>}
 
                 {/* If Cost Involved is Yes */}
                 {costInvolved === OPTIONS.costInvolved[0].value && <>
