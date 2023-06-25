@@ -185,7 +185,7 @@ const CreateTicketForm = (props) => {
               <Row gutter={[15, 0]}>
                 <Col md={{ span: 6 }} xs={{ span: 24 }}>
                   <Form.Item name='outlet_code' label='Outlet Name' rules={[{ required: !isEdit, message: 'Please select Outlet code' }]}>
-                    <Select allowClear  disabled={isEdit} placeholder='select Outlet Name' showSearch filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
+                    <Select allowClear disabled={isEdit} placeholder='select Outlet Name' showSearch filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
                       {map(
                         (outlet) => {
                           return (
@@ -466,9 +466,9 @@ const CreateTicketForm = (props) => {
                     }} />}
                     {isEdit && <Image.PreviewGroup>
                       {typeof defaultValue.attachments !== "string" && defaultValue.attachments?.map(attach => <Image
-                          width={200}
-                          src={`${defaultValue.pathfor_attachments}/${attach}`}
-                        />
+                        width={200}
+                        src={`${defaultValue.pathfor_attachments}/${attach}`}
+                      />
                       )}
                     </Image.PreviewGroup>}
                   </Form.Item>
@@ -477,11 +477,11 @@ const CreateTicketForm = (props) => {
                 <Col span={24}>
                   <Row gutter={[15, 15]} style={{ justifyContent: 'end' }}>
                     <Col span={12} style={{ textAlign: 'right' }} className='d-flex align-items-center justify-content-end mt-3'>
-                      {!isEdit && <Form.Item className='mx-2'>
-                        <Button loading={savingTickets} disabled={savingTickets} className='orangeFactory' type='primary' htmlType='submit'>
+                      <Form.Item className='mx-2'>
+                        <Button loading={savingTickets} disabled={savingTickets || (isEdit && defaultValue.ticket_status !== 'Waiting @ Vendor Assignment')} className='orangeFactory' type='primary' htmlType='submit'>
                           {isEdit ? "Update" : "Create"}
                         </Button>
-                      </Form.Item>}
+                      </Form.Item>
 
                       <Form.Item>
                         <Button disabled={savingTickets} onClick={handleClickBack}>

@@ -378,14 +378,14 @@ function TicketHandlingForm() {
                       {/* Advance Percentage */}
                       <Col md={{ span: 6 }} xs={{ span: 24 }}>
                         <Form.Item name='advance_percentage' label='Advance Percentage'>
-                          <Input disabled={OHStatus} placeholder='Enter' name='advance_percentage' />
+                          <Input min={0} type='number' disabled={OHStatus} placeholder='Enter' name='advance_percentage' />
                         </Form.Item>
                       </Col>
 
                       {/* Advance Amount */}
                       <Col md={{ span: 6 }} xs={{ span: 24 }}>
                         <Form.Item name='advance_amount' label='Advance Amount'>
-                          <Input min={0} disabled placeholder='Enter' name='advance_amount' />
+                          <Input min={0} type='number' disabled placeholder='Enter' name='advance_amount' />
                         </Form.Item>
                       </Col>
                     </>}
