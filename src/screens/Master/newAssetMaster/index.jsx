@@ -27,10 +27,27 @@ export default function NewAssetMaster() {
     });
   };
 
+ const onClickUpdate = () => {
+   navigate("/assetMaster/updateForm", {
+     state: {},
+   });
+ };
+
+
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getNewAssetMaster());
   }, [dispatch]);
 
-  return <CustomTable handleEditClick={handleEditClick} loading={gettingNewAssetMaster} dataSource={dataSource} column={column} onClickAdd={onClickAdd} title={'Asset Master'} />;
+  return (
+    <CustomTable
+      handleEditClick={handleEditClick}
+      loading={gettingNewAssetMaster}
+      dataSource={dataSource}
+      column={column}
+      onClickAdd={onClickAdd}
+      onClickUpdate={onClickUpdate}
+      title={"Asset Master"}
+    />
+  );
 }

@@ -160,6 +160,7 @@ import Pclcimapprovalah from "../Service/pclcimapprovalah";
 import Claimsubmission from "../Service/claimsubmission";
 import Mspcrequestreport from "../Service/Mspcrequestreport";
 import NewAssetMaster from "../Master/newAssetMaster";
+import NewAssetMasterUpdateForm from "../Master/newAssetMaster/NewAssetMasterUpdateForm";
 import NewAssetMasterForm from "../Master/newAssetMaster/NewAssetMasterForm";
 
 const { Sider } = Layout;
@@ -183,28 +184,28 @@ function App() {
       userLog === 1
         ? true
         : screen.findIndex((s) => s.name === "Dashboard") > -1
-          ? true
-          : false,
+        ? true
+        : false,
     master:
       userLog === 1
         ? true
         : screen.findIndex((s) => s.name === "Master") > -1
-          ? true
-          : false,
+        ? true
+        : false,
     submaster:
       userLog === 1
         ? true
         : screen.findIndex((s) => s.name === "Sub Master") > -1
-          ? true
-          : false,
+        ? true
+        : false,
     audit:
       userLog === 1
         ? true
         : screen.findIndex(
-          (s) => s.name === "Audit" || "Audit Approval" || "CAPA" || "Report"
-        ) > -1
-          ? true
-          : false,
+            (s) => s.name === "Audit" || "Audit Approval" || "CAPA" || "Report"
+          ) > -1
+        ? true
+        : false,
   };
 
   const sub = {
@@ -212,26 +213,26 @@ function App() {
       userLog === 1
         ? true
         : screen.findIndex((s) => s.name === "Audit") > -1
-          ? true
-          : false,
+        ? true
+        : false,
     approval:
       userLog === 1
         ? true
         : screen.findIndex((s) => s.name === "Audit Approval") > -1
-          ? true
-          : false,
+        ? true
+        : false,
     capa:
       userLog === 1
         ? true
         : screen.findIndex((s) => s.name === "CAPA") > -1
-          ? true
-          : false,
+        ? true
+        : false,
     report:
       userLog === 1
         ? true
         : screen.findIndex((s) => s.name === "Report") > -1
-          ? true
-          : false,
+        ? true
+        : false,
   };
 
   useEffect(() => {
@@ -1197,6 +1198,9 @@ function Content(props) {
             <Route
               path="/assetMaster/addForm"
               element={<NewAssetMasterForm />}></Route>
+            <Route
+              path="/assetMaster/updateForm"
+              element={<NewAssetMasterUpdateForm />}></Route>
           </>
         )}
 

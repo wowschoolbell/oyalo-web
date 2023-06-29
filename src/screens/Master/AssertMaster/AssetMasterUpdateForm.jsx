@@ -30,6 +30,7 @@ import {
   updateAssetMaster,
   getAssetGroupSpare,
   updateAssetMasterExist,
+  getNewAssetMaster,
 } from "../../../@app/service/serviceSlice";
 import dayjs from "dayjs";
 import ConfirmOnExit from "../../../components/confirmOnExit/ConfirmOnExit";
@@ -57,6 +58,7 @@ function AssetMasterUpdateForm() {
     savingAssetMaster,
     getAssetGroupResponse: { data: assetGroups },
     getAssetGroupSpareResponse: { data: assetSpares },
+    getNewAssetMasterResponse: { data: dataSource },
   } = useSelector((state) => {
     return state.service;
   });
@@ -76,6 +78,8 @@ function AssetMasterUpdateForm() {
     dispatch(getAssetGroup());
     dispatch(getOutletMaster());
     dispatch(getAssetGroupSpare());
+    dispatch(getAssetMaster());
+    dispatch(getNewAssetMaster());
   }, [dispatch]);
 
   const handleClickBack = () => {
@@ -233,8 +237,32 @@ function AssetMasterUpdateForm() {
                     label="Asset No in SAP"
                     rules={[
                       { required: true, message: "Please add Asset No in SAP" },
-                    ]}>
-                    <Input name="asset_no_sap" placeholder="Asset No in SAP" />
+                    ]}
+                    defaultValue={
+                      defaultValue.asset_no_sap_id
+                        ? defaultValue.asset_no_sap_id
+                        : ""
+                    }>
+                    <Select
+                      placeholder="select Asset No sap"
+                      showSearch
+                      filterOption={(input, option) =>
+                        option.children
+                          .toLowerCase()
+                          .indexOf(input.toLowerCase()) >= 0
+                      }>
+                      {map(
+                        (assetGroup) => {
+                          // console.log(assetGroup, "assetGroup");
+                          return (
+                            <Option key={assetGroup.id} value={assetGroup.id}>
+                              {assetGroup.asset_no_sap}
+                            </Option>
+                          );
+                        },
+                        dataSource ? dataSource : []
+                      )}
+                    </Select>
                   </Form.Item>
                 </Col>
                 <Col md={{ span: 4 }} xs={{ span: 16 }}>
@@ -246,11 +274,32 @@ function AssetMasterUpdateForm() {
                         required: true,
                         message: "Please add Asset Name in SAPe",
                       },
-                    ]}>
-                    <Input
-                      name="asset_name_sap"
-                      placeholder="Asset Name in SAP"
-                    />
+                    ]}
+                    defaultValue={
+                      defaultValue.asset_name_sap_id
+                        ? defaultValue.asset_name_sap_id
+                        : ""
+                    }>
+                    <Select
+                      placeholder="select Asset Name sap"
+                      showSearch
+                      filterOption={(input, option) =>
+                        option.children
+                          .toLowerCase()
+                          .indexOf(input.toLowerCase()) >= 0
+                      }>
+                      {map(
+                        (assetGroup) => {
+                          // console.log(assetGroup, "assetGroup");
+                          return (
+                            <Option key={assetGroup.id} value={assetGroup.id}>
+                              {assetGroup.asset_name_sap}
+                            </Option>
+                          );
+                        },
+                        dataSource ? dataSource : []
+                      )}
+                    </Select>
                   </Form.Item>
                 </Col>
                 <Col md={{ span: 4 }} xs={{ span: 16 }}>

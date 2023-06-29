@@ -37,7 +37,7 @@ import messageToast from "../../../components/messageToast/messageToast";
 
 const { Option } = Select;
 
-function NewAssetMasterForm() {
+function NewAssetMasterUpdateForm() {
   const {
     state: { data: defaultValue = {}, isEdit = false },
   } = useLocation();
@@ -103,10 +103,7 @@ function NewAssetMasterForm() {
         outlet_code: outletCode,
         asset_warranty_end_date,
         spares_list,
-        asset_group:
-          defaultValue?.asset_group == data?.asset_group
-            ? defaultValue?.asset_group_id
-            : data?.asset_group,
+        asset_group: data?.asset_group,
         ..._,
       })),
     };
@@ -152,16 +149,6 @@ function NewAssetMasterForm() {
               wrapperCol={{ span: 24 }}
               initialValues={{
                 ...defaultValue,
-                assets: [
-                  {
-                    id: defaultValue?.id,
-                    asset_no_sap: defaultValue?.asset_no_sap,
-                    asset_name_sap: defaultValue?.asset_name_sap,
-                    name: defaultValue?.asset,
-                    status: defaultValue?.status == 1 ? 1 : 0,
-                  },
-                ],
-                // asset_group: defaultValue?.asset_group_id,
                 asset_warranty_end_date:
                   defaultValue && dayjs(defaultValue?.asset_warranty_end_date),
                 spares_list: (defaultValue?.spares_list ?? []).map((list) => {
@@ -280,7 +267,7 @@ function NewAssetMasterForm() {
                 )}
 
                 <Col md={{ span: 24 }} xs={{ span: 24 }} lg={12}>
-                  <Form.Item name="assets" label="Add Asset">
+                  <Form.Item name="asset_no_sap" label="Add Asset">
                     <Form.List
                       name="assets"
                       rules={[
@@ -296,7 +283,6 @@ function NewAssetMasterForm() {
                       ]}>
                       {(fields, { add, remove }, { errors }) => (
                         <div>
-                          {/* {add()} */}
                           {fields.map((field, index) => (
                             <Space
                               key={index}
@@ -339,11 +325,6 @@ function NewAssetMasterForm() {
                                 {...field}
                                 name={[field.name, "asset_name_sap"]}
                                 validateTrigger={["onChange", "onBlur"]}
-                                defaultValue={
-                                  defaultValue?.asset_name_sap
-                                    ? defaultValue?.asset_name_sap
-                                    : ""
-                                }
                                 rules={[
                                   {
                                     required: true,
@@ -356,11 +337,6 @@ function NewAssetMasterForm() {
                                   style={{
                                     width: "100% ",
                                   }}
-                                  defaultValue={
-                                    defaultValue?.asset_name_sap
-                                      ? defaultValue?.asset_name_sap
-                                      : ""
-                                  }
                                   placeholder="Asset Name Sap"
                                   disabled={false}
                                 />
@@ -486,4 +462,4 @@ function NewAssetMasterForm() {
   );
 }
 
-export default NewAssetMasterForm;
+export default NewAssetMasterUpdateForm;
