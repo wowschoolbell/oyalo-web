@@ -111,7 +111,10 @@ function AssetMasterForm() {
               spares_list,
               asset_group: defaultValue?.asset_group_id,
               outlet_name: defaultValue?.outlet_id,
-              // asset_name_sap:defaultValue?.asset_name_sap==defaultValue?.asset_name_sap_id?defaultValue?.asset_name_sap_id:defaultValue?.asset_name_sap
+              asset_name_sap:
+                defaultValue?.asset_name_sap == defaultValue?.asset_name_sap_id
+                  ? defaultValue?.asset_name_sap_id
+                  : defaultValue?.asset_name_sap,
               id: defaultValue.id,
               status: transStatus({ status }),
             },
@@ -155,6 +158,9 @@ function AssetMasterForm() {
                 ...defaultValue,
                 asset_warranty_end_date:
                   defaultValue && dayjs(defaultValue?.asset_warranty_end_date),
+                asset_name_sap: defaultValue.asset_name_sap
+                  ? defaultValue.asset_name_sap
+                  : "",
                 spares_list: (defaultValue?.spares_list ?? []).map((list) => {
                   return {
                     ...list,

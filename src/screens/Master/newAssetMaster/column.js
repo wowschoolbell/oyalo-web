@@ -8,13 +8,13 @@ export const column = [
     hide: false,
     width: 300,
   },
-  {
-    key: "4",
-    headerName: "Asset Name Sap",
-    field: "asset_name_sap",
-    hide: false,
-    width: 300,
-  },
+  // {
+  //   key: "4",
+  //   headerName: "Asset Name Sap",
+  //   field: "asset_name_sap",
+  //   hide: false,
+  //   width: 300,
+  // },
   {
     key: "5",
     headerName: "Asset",
