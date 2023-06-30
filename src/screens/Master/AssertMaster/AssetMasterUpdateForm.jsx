@@ -231,7 +231,7 @@ function AssetMasterUpdateForm() {
                   </Form.Item>
                 </Col>
 
-                <Col md={{ span: 4 }} xs={{ span: 16 }}>
+                {/* <Col md={{ span: 4 }} xs={{ span: 16 }}>
                   <Form.Item
                     name="asset_no_sap"
                     label="Asset No in SAP"
@@ -264,7 +264,7 @@ function AssetMasterUpdateForm() {
                       )}
                     </Select>
                   </Form.Item>
-                </Col>
+                </Col> */}
                 <Col md={{ span: 4 }} xs={{ span: 16 }}>
                   <Form.Item
                     name="asset_name_sap"
@@ -289,13 +289,16 @@ function AssetMasterUpdateForm() {
                           .indexOf(input.toLowerCase()) >= 0
                       }>
                       {map(
-                        (assetGroup) => {
-                          // console.log(assetGroup, "assetGroup");
-                          return (
-                            <Option key={assetGroup.id} value={assetGroup.id}>
-                              {assetGroup.asset_name_sap}
-                            </Option>
-                          );
+                        (assetGroupData) => {
+                          if (assetGroup == assetGroupData.asset_group_id) {
+                            return (
+                              <Option
+                                key={assetGroupData.id}
+                                value={assetGroupData.id}>
+                                {assetGroupData.asset}
+                              </Option>
+                            );
+                          }
                         },
                         dataSource ? dataSource : []
                       )}

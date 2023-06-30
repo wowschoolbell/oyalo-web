@@ -99,7 +99,7 @@ const initialState = {
 
   updatingOHTicketStatus: false,
   updateOHTicketStatusResponse: {},
-  updateOHTicketStatusError: {}
+  updateOHTicketStatusError: {},
 };
 
 export const serviceSlice = createSlice({
@@ -662,7 +662,7 @@ export const serviceSlice = createSlice({
       state.updatingOHTicketStatus = false;
       state.updateOHTicketStatusError = action.payload;
     },
-  }
+  },
 });
 
 export default serviceSlice.reducer;
@@ -1207,6 +1207,19 @@ export const getNewAssetMaster = () => async (dispatch) => {
     });
 };
 
+export const getNewAssetMasterDownload = () => async (dispatch) => {
+  dispatch(serviceSlice.actions.getNewAssetMasterRequest());
+  return apis
+    .downloadCSVAssetMaster()
+    .then(({ data }) => {
+      // dispatch(serviceSlice.actions.getNewAssetMasterResponse(data));
+      return data;
+    })
+    .catch(() => {
+      //dispatch(serviceSlice.actions.getNewAssetMasterError());
+    });
+};
+
 export const updateNewAssetMaster =
   ({ data }) =>
   async (dispatch) => {
@@ -1340,45 +1353,64 @@ export const getTicketForHadling = (payload) => async (dispatch) => {
 
 export const updateTicketHandling =
   ({ data }) =>
-    async (dispatch) => {
-      dispatch(serviceSlice.actions.updateTicketHandlingRequest());
-      return apis
-        .updateTicketHandling({ data })
-        .then(async ({ data }) => {
-          await dispatch(serviceSlice.actions.updatedTicketHandlingResponse(data));
-          return data;
-        })
-        .catch(() => {
-          dispatch(serviceSlice.actions.updatedTicketHandlingError());
-        });
-    };
+  async (dispatch) => {
+    dispatch(serviceSlice.actions.updateTicketHandlingRequest());
+    return apis
+      .updateTicketHandling({ data })
+      .then(async ({ data }) => {
+        await dispatch(
+          serviceSlice.actions.updatedTicketHandlingResponse(data)
+        );
+        return data;
+      })
+      .catch(() => {
+        dispatch(serviceSlice.actions.updatedTicketHandlingError());
+      });
+  };
 
 export const updateOHTicketHandling =
   ({ data }) =>
-    async (dispatch) => {
-      dispatch(serviceSlice.actions.updateTicketHandlingRequest());
-      return apis
-        .updateOHTicketHandling({ data })
-        .then(async ({ data }) => {
-          await dispatch(serviceSlice.actions.updatedTicketHandlingResponse(data));
-          return data;
-        })
-        .catch(() => {
-          dispatch(serviceSlice.actions.updatedTicketHandlingError());
-        });
-    };
+  async (dispatch) => {
+    dispatch(serviceSlice.actions.updateTicketHandlingRequest());
+    return apis
+      .updateOHTicketHandling({ data })
+      .then(async ({ data }) => {
+        await dispatch(
+          serviceSlice.actions.updatedTicketHandlingResponse(data)
+        );
+        return data;
+      })
+      .catch(() => {
+        dispatch(serviceSlice.actions.updatedTicketHandlingError());
+      });
+  };
 
 export const updateOHTicketStatus =
   ({ data }) =>
-    async (dispatch) => {
-      dispatch(serviceSlice.actions.updateOHTicketStatusRequest());
-      return apis
-        .updateOHTicketHandlingStatus({ data })
-        .then(async ({ data }) => {
-          await dispatch(serviceSlice.actions.updateOHTicketStatusResponse(data));
-          return data;
-        })
-        .catch(() => {
-          dispatch(serviceSlice.actions.updateOHTicketStatusError());
-        });
-    };
+  async (dispatch) => {
+    dispatch(serviceSlice.actions.updateOHTicketStatusRequest());
+    return apis
+      .updateOHTicketHandlingStatus({ data })
+      .then(async ({ data }) => {
+        await dispatch(serviceSlice.actions.updateOHTicketStatusResponse(data));
+        return data;
+      })
+      .catch(() => {
+        dispatch(serviceSlice.actions.updateOHTicketStatusError());
+      });
+  };
+
+export const uploadCsvFile =
+  ({ data }) =>
+  async (dispatch) => {
+    //dispatch(serviceSlice.actions.saveNewAssetMasterRequest());
+    return apis
+      .uploadCSVAssetMaster(data)
+      .then(async ({ data }) => {
+        //await dispatch(serviceSlice.actions.saveNewAssetMasterResponse(data));
+        return data;
+      })
+      .catch(() => {
+        //dispatch(serviceSlice.actions.saveNewAssetMasterError());
+      });
+  };

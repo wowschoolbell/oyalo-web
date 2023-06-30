@@ -219,6 +219,9 @@ function AssetMasterForm() {
                       }>
                       {map(
                         (assetGroup) => {
+                          {
+                            //console.log(assetGroup, "assetGroup");
+                          }
                           return (
                             <Option key={assetGroup.id} value={assetGroup.id}>
                               {assetGroup.name}
@@ -231,14 +234,13 @@ function AssetMasterForm() {
                   </Form.Item>
                 </Col>
 
-                <Col md={{ span: 4 }} xs={{ span: 16 }}>
+                {/* <Col md={{ span: 4 }} xs={{ span: 16 }}>
                   <Form.Item
                     name="asset_no_sap"
                     label="Asset No in SAP"
                     rules={[
                       { required: true, message: "Please add Asset No in SAP" },
                     ]}>
-                    {/* <Input name='asset_no_sap' placeholder='Asset No in SAP' /> */}
                     <Select
                       placeholder="select Asset No sap"
                       showSearch
@@ -249,7 +251,7 @@ function AssetMasterForm() {
                       }>
                       {map(
                         (assetGroup) => {
-                          // console.log(assetGroup, "assetGroup");
+                        
                           return (
                             <Option key={assetGroup.id} value={assetGroup.id}>
                               {assetGroup.asset_no_sap}
@@ -260,7 +262,7 @@ function AssetMasterForm() {
                       )}
                     </Select>
                   </Form.Item>
-                </Col>
+                </Col> */}
                 <Col md={{ span: 4 }} xs={{ span: 16 }}>
                   <Form.Item
                     name="asset_name_sap"
@@ -280,13 +282,16 @@ function AssetMasterForm() {
                           .indexOf(input.toLowerCase()) >= 0
                       }>
                       {map(
-                        (assetGroup) => {
-                          // console.log(assetGroup, "assetGroup");
-                          return (
-                            <Option key={assetGroup.id} value={assetGroup.id}>
-                              {assetGroup.asset_name_sap}
-                            </Option>
-                          );
+                        (assetGroupData) => {
+                          if (assetGroup == assetGroupData.asset_group_id) {
+                            return (
+                              <Option
+                                key={assetGroupData.id}
+                                value={assetGroupData.id}>
+                                {assetGroupData.asset}
+                              </Option>
+                            );
+                          }
                         },
                         dataSource ? dataSource : []
                       )}

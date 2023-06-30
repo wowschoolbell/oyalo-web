@@ -163,6 +163,8 @@ import NewAssetMaster from "../Master/newAssetMaster";
 import NewAssetMasterUpdateForm from "../Master/newAssetMaster/NewAssetMasterUpdateForm";
 import NewAssetMasterForm from "../Master/newAssetMaster/NewAssetMasterForm";
 
+import NewAssetMasterUpdateFormCsv from "../Master/newAssetMaster/NewAssetMasterUpdateFormCsv";
+
 const { Sider } = Layout;
 
 function App() {
@@ -1201,6 +1203,9 @@ function Content(props) {
             <Route
               path="/assetMaster/updateForm"
               element={<NewAssetMasterUpdateForm />}></Route>
+            <Route
+              path="/assetMaster/csvUpdate"
+              element={<NewAssetMasterUpdateFormCsv />}></Route>
           </>
         )}
 

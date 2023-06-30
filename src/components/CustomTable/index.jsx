@@ -55,6 +55,8 @@ export default function CustomTable({
   column,
   onClickAdd,
   onClickUpdate,
+  handleDownload,
+  onClickUpdateCsv,
   title,
   loading = false,
   handleEditClick,
@@ -252,12 +254,22 @@ export default function CustomTable({
                 title !== "Asset Group Issue" &&
                 title !== "Asset Group Spare" ? (
                   <>
-                    <Tooltip placement="bottom" title={"Upload"}>
+                    <Tooltip
+                      placement="bottom"
+                      title={"Upload"}
+                      onClick={() => {
+                        onClickUpdateCsv();
+                      }}>
                       <div className="btn btn-primary me-2 px-md-3 px-sm-4">
                         <AiOutlineImport size={20} />
                       </div>
                     </Tooltip>
-                    <Tooltip placement="bottom" title={"Download"}>
+                    <Tooltip
+                      placement="bottom"
+                      title={"Download"}
+                      onClick={() => {
+                        handleDownload();
+                      }}>
                       <div className="btn btn-primary me-2 px-md-3 px-sm-4">
                         <AiOutlineDownload size={20} />
                       </div>

@@ -85,17 +85,27 @@ const addGlAccount = ({ data }) => client.post("add-GLAccount", data, {});
 const getGlAccount = () => client.get("get-GLAccount", { limit, offset }, {});
 const updateGlAccount = ({ data }) => client.put("update-GLAccount", data, {});
 
-const addTickets = ({ data }) => client.post('add-tickets', data, {});
-const getTickets = () => client.get('get-tickets', { limit, offset }, {});
-const updateTickets = ({ data }) => client.post('update-tickets', data, {});
-const closeTickets = ({ data }) => client.post('delete-tickets-dat?ticket_id=' + data.id, data, {});
+const addTickets = ({ data }) => client.post("add-tickets", data, {});
+const getTickets = () => client.get("get-tickets", { limit, offset }, {});
+const updateTickets = ({ data }) => client.post("update-tickets", data, {});
+const closeTickets = ({ data }) =>
+  client.post("delete-tickets-dat?ticket_id=" + data.id, data, {});
 
+const getTicketForHadling = ({ type }) =>
+  client.get("get-ticket-handling", { limit, offset, type }, {});
+const updateTicketHandling = ({ data }) =>
+  client.post("update-ticket-handling", data, {});
+const updateOHTicketHandling = ({ data }) =>
+  client.post("update-po-ticket-update", data, {});
 
-const getTicketForHadling = ({ type }) => client.get('get-ticket-handling', { limit, offset, type }, {});
-const updateTicketHandling = ({ data }) => client.post('update-ticket-handling', data, {});
-const updateOHTicketHandling = ({ data }) => client.post('update-po-ticket-update', data, {});
+const updateOHTicketHandlingStatus = ({ data }) =>
+  client.post("update-oh-ticket-update", data, {});
 
-const updateOHTicketHandlingStatus = ({ data }) => client.post('update-oh-ticket-update', data, {});
+const downloadCSVAssetMaster = () =>
+  client.get("download-new-asset-master", {}, {});
+
+const uploadCSVAssetMaster = (data) =>
+  client.post("upload-new-asset-master", { data }, {});
 
 const serviceApi = {
   addServiceFor,
@@ -146,6 +156,8 @@ const serviceApi = {
   updateTicketHandling,
   updateOHTicketHandling,
   updateOHTicketHandlingStatus,
-}
+  downloadCSVAssetMaster,
+  uploadCSVAssetMaster,
+};
 
 export default serviceApi;

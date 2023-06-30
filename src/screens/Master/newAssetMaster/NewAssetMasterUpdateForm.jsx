@@ -321,7 +321,7 @@ function NewAssetMasterUpdateForm() {
                                   disabled={false}
                                 />
                               </Form.Item>
-                              <Form.Item
+                              {/* <Form.Item
                                 {...field}
                                 name={[field.name, "asset_name_sap"]}
                                 validateTrigger={["onChange", "onBlur"]}
@@ -340,7 +340,7 @@ function NewAssetMasterUpdateForm() {
                                   placeholder="Asset Name Sap"
                                   disabled={false}
                                 />
-                              </Form.Item>
+                              </Form.Item> */}
 
                               <Form.Item
                                 {...field}
