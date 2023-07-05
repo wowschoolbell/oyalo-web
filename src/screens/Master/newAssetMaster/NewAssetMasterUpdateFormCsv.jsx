@@ -1,4 +1,7 @@
 /* eslint-disable no-unused-vars */
+import axios from "axios";
+import * as XLSX from "xlsx";
+
 import React, { useEffect, useState } from "react";
 import {
   MinusCircleOutlined,
@@ -36,6 +39,7 @@ import {
   updateAssetMaster,
   updateNewAssetMaster,
   uploadCsvFile,
+  saveUploadNewAssetMaster,
 } from "../../../@app/service/serviceSlice";
 import dayjs from "dayjs";
 import ConfirmOnExit from "../../../components/confirmOnExit/ConfirmOnExit";
@@ -48,18 +52,18 @@ function NewAssetMasterUpdateFormCsv() {
     state: { data: defaultValue = {}, isEdit = false },
   } = useLocation();
 
-  const fileReader = new FileReader();
-
   const [status, setStatus] = useState(defaultValue?.status ?? 1);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [array, setArray] = useState([]);
+  const [array, setArray] = useState({});
 
   const [form] = Form.useForm();
 
   const [showDialog, setShowDialog] = useState(false);
   const [selectedOutlet, setSelectedOutlet] = useState();
+
+  const [data, setData] = useState({});
 
   const {
     gettingAssetGroup,
@@ -81,28 +85,6 @@ function NewAssetMasterUpdateFormCsv() {
   }));
 
   useEffect(() => {
-    if (array) {
-      var formData = new FormData();
-      //append formdata
-      formData.append("myfiles", array[0]);
-
-      //dispatch(uploadCsvFile(formData));
-      //fetch request
-      fetch("https://mobile.wowschoolbell.in/api/upload-new-asset-master", {
-        method: "POST",
-        body: formData,
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-        },
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          //console.log(res)
-        });
-    }
-  }, [array]);
-
-  useEffect(() => {
     dispatch(getAssetGroup());
     dispatch(getOutletMaster());
   }, [dispatch]);
@@ -111,18 +93,88 @@ function NewAssetMasterUpdateFormCsv() {
     navigate("/assetMaster");
   };
   const dateFormat = ["DD/MM/YYYY", "DD/MM/YY"];
-  const onFinish = (data) => {
-    if (data?.asset_file) {
-      fileReader.onload = function (event) {
-        const text = data?.asset_file;
-        /// csvFileToArray(text);
-      };
+  const onFinish = () => {
+    try {
+      let i = 0;
+      let payload = [];
+      // let innerdata
+      // let payload = {
+      // assets: data?.map((_) => ({
+      //   company_code: data.company_code,
+      //   plant_code: data.plant_code,
+      //   outlet_code: outletCode,
+      //   asset_warranty_end_date,
+      //   spares_list,
+      //   asset_group: data?.asset_group,
+      //   ..._,
+      // })),
+      console.log(data, "payload");
+      data?.map((e) => {
+        let innerdata = {};
+        if (i != 0) {
+          if (e && e.length > 0) {
+            console.log(e[0], "e");
+            innerdata = {
+              company_name: e[1],
+              Plant_code: e[2],
+              Asset_Group: e[3],
+              Asset_No_in_SAP: e[4],
+              Asset_Name_in_SAP: e[5],
+              Status: e[6],
+            };
+            //console.log(innerdata, "innerdata");
+            payload.push(innerdata);
+          }
+        }
+        i++;
+      });
+      // console.log(payload, "payload");
 
-      fileReader.readAsText(data?.asset_file);
+      dispatch(saveUploadNewAssetMaster({ data: payload })).then(
+        ({ message, status, statusText }) => {
+          if (status === 200) {
+            navigate("/assetMaster");
+            messageToast({
+              message: message ?? statusText,
+              status,
+              title: "Asset group Master",
+            });
+          } else {
+            messageToast({
+              message: "something went wrong",
+              status: 400,
+              title: "Asset group Master Upload",
+            });
+          }
+        }
+      );
+      //let payload = {
+      // assets: data?.map((_) => ({
+      //   company_code: data.company_code,
+      //   plant_code: data.plant_code,
+      //   outlet_code: outletCode,
+      //   asset_warranty_end_date,
+      //   spares_list,
+      //   asset_group: data?.asset_group,
+      //   ..._,
+      // })),
+      //};
+    } catch (err) {
+      messageToast({
+        message: "something went wrong",
+        status: 400,
+        title: "Asset group Master Upload",
+      });
     }
-
-    setShowDialog(false);
-    console.log(data, ":data");
+    // if (data?.asset_file) {
+    //   fileReader.onload = function (event) {
+    //     const text = data?.asset_file;
+    //     /// csvFileToArray(text);
+    //   };
+    //   fileReader.readAsText(data?.asset_file);
+    // }
+    // setShowDialog(false);
+    // console.log(data, ":data");
     // const outletCode = defaultValue?.id
     //   ? defaultValue.outlet_code
     //   : (outletData ?? []).find(
@@ -137,7 +189,6 @@ function NewAssetMasterUpdateFormCsv() {
     //       spares_list.spare_warranty_end_date?.format("YYYY-MM-DD"),
     //   };
     // });
-
     // let payload = {
     //   assets: data.assets?.map((_) => ({
     //     company_code: data.company_code,
@@ -149,7 +200,6 @@ function NewAssetMasterUpdateFormCsv() {
     //     ..._,
     //   })),
     // };
-
     // dispatch(
     //   defaultValue?.id
     //     ? updateNewAssetMaster({
@@ -192,7 +242,7 @@ function NewAssetMasterUpdateFormCsv() {
   //   setArray(array);
   // };
 
-  const headerKeys = Object.keys(Object.assign({}, ...array));
+  ///const headerKeys = Object.keys(Object.assign({}, ...array));
 
   return (
     <>
@@ -217,15 +267,38 @@ function NewAssetMasterUpdateFormCsv() {
                     multiple=""
                     showUploadList={{ showPreviewIcon: false }}
                     //action="https://mobile.wowschoolbell.in/api/upload-new-asset-master"
-                    onChange={(filesData) => {
+                    onChange={async (filesData) => {
                       let fileList = [];
+                      var file = filesData?.file?.originFileObj;
 
-                      //foreach files in filelist from antd upload
-                      filesData.fileList.forEach((file) => {
-                        fileList.push(file.originFileObj); //pushing File object
+                      const data = await file.arrayBuffer();
+                      const workbook = XLSX.read(data);
+                      const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                      const jsonData = XLSX.utils.sheet_to_json(worksheet, {
+                        header: 1,
                       });
-                      console.log(fileList, "fileList");
-                      setArray(fileList);
+                      setData(jsonData);
+                      // reader.onload = function (e) {
+                      //   var data = filesData?.file?.originFileObj;
+                      //   let readedData = XLSX.read(data, { type: "binary" });
+                      //   const wsname = readedData.SheetNames[0];
+                      //   const ws = readedData.Sheets[wsname];
+
+                      //   /* Convert array to json*/
+                      //   const dataParse = XLSX.utils.sheet_to_json(ws, {
+                      //     header: 1,
+                      //   });
+
+                      //   console.log("dataParse");
+                      //   //setFileUploaded(dataParse);
+                      // };
+                      //reader.readAsBinaryString(filesData?.file?.originFileObj);
+                      //foreach files in filelist from antd upload
+                      // filesData.fileList.forEach((file) => {
+                      //   fileList.push(file.originFileObj); //pushing File object
+                      //});
+                      //console.log(fileList, "fileList");
+                      //setArray(filesData);
 
                       //set value to formik
                       //setFieldValue("design_images", fileList);

@@ -44,6 +44,8 @@ function NewAssetMasterForm() {
 
   const [status, setStatus] = useState(defaultValue?.status ?? 1);
 
+  // console.log(defaultValue, "defaultValue");
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [form] = Form.useForm();
@@ -158,7 +160,11 @@ function NewAssetMasterForm() {
                     asset_no_sap: defaultValue?.asset_no_sap,
                     asset_name_sap: defaultValue?.asset_name_sap,
                     name: defaultValue?.asset,
-                    status: defaultValue?.status == 1 ? 1 : 0,
+                    status: defaultValue?.status
+                      ? defaultValue?.status == "Active"
+                        ? 1
+                        : 0
+                      : 1,
                   },
                 ],
                 // asset_group: defaultValue?.asset_group_id,

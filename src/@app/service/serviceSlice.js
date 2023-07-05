@@ -1414,3 +1414,19 @@ export const uploadCsvFile =
         //dispatch(serviceSlice.actions.saveNewAssetMasterError());
       });
   };
+
+export const saveUploadNewAssetMaster =
+  ({ data }) =>
+  async (dispatch) => {
+    console.log(data, "data");
+    dispatch(serviceSlice.actions.saveNewAssetMasterRequest());
+    return apis
+      .uploadCSVAssetMaster(data)
+      .then(async ({ data }) => {
+        await dispatch(serviceSlice.actions.saveNewAssetMasterResponse(data));
+        return data;
+      })
+      .catch(() => {
+        dispatch(serviceSlice.actions.saveNewAssetMasterError());
+      });
+  };

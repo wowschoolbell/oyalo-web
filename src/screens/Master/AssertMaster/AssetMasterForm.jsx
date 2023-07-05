@@ -129,9 +129,19 @@ function AssetMasterForm() {
             },
           })
     ).then(({ message, status, statusText }) => {
+      console.log(status, "status");
       if (status === 200) {
         form.resetFields();
         navigate("/outletAssetGroupMapping");
+        messageToast({
+          message: message ?? statusText,
+          status,
+          title: "Outlet Asset Group Mapping",
+        });
+      }
+      if (status === 400) {
+        // form.resetFields();
+        //navigate("/outletAssetGroupMapping");
         messageToast({
           message: message ?? statusText,
           status,

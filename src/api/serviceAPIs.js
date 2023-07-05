@@ -105,7 +105,7 @@ const downloadCSVAssetMaster = () =>
   client.get("download-new-asset-master", {}, {});
 
 const uploadCSVAssetMaster = (data) =>
-  client.post("upload-new-asset-master", { data }, {});
+  client.post("upload-new-asset-master", data, {});
 
 const serviceApi = {
   addServiceFor,
