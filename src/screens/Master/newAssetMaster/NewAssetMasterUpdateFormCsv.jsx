@@ -262,7 +262,7 @@ function NewAssetMasterUpdateFormCsv() {
               <Row gutter={[25, 0]}>
                 <Col md={{ span: 4 }} xs={{ span: 16 }}>
                   <Upload
-                    accept=".xlsx"
+                    // accept=".xlsx, .xls"
                     name="logo"
                     multiple=""
                     showUploadList={{ showPreviewIcon: false }}
