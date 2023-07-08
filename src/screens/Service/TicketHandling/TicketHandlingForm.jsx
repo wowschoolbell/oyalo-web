@@ -86,7 +86,7 @@ function TicketHandlingForm() {
   };
 
   const canIshowIssueResolved = () => {
-    if (costInvolved === OPTIONS.costInvolved[1].value) {
+    if (costInvolved === OPTIONS.costInvolved[1].value || defaultValue.service_for === 'POS') {
       return true;
     }
     return false;
@@ -148,15 +148,15 @@ function TicketHandlingForm() {
       <Card>
         <Descriptions title="Ticket Info" bordered size='small' >
           <Descriptions.Item label={"Ticket No"}>{defaultValue.ticket_no}</Descriptions.Item>
-          <Descriptions.Item label={"Ticket Description"}>{defaultValue.problem_description}</Descriptions.Item>
+          <Descriptions.Item label={"Ticket Description"}>{defaultValue?.problem_description ?? "-"}</Descriptions.Item>
           <Descriptions.Item label={"Service For"}>{defaultValue.service_for}</Descriptions.Item>
-          <Descriptions.Item label={"Asset Group"}>{defaultValue.asset_group}</Descriptions.Item>
-          <Descriptions.Item label={"Asset"}>{defaultValue.asset}</Descriptions.Item>
-          <Descriptions.Item label={"ORL Name"}>{defaultValue.orl_name}</Descriptions.Item>
+          <Descriptions.Item label={"Asset Group"}>{defaultValue?.asset_group ?? "-"}</Descriptions.Item>
+          <Descriptions.Item label={"Asset"}>{defaultValue?.asset ?? "-"}</Descriptions.Item>
+          <Descriptions.Item label={"ORL Name"}>{defaultValue?.orl_name ?? "-"}</Descriptions.Item>
           <Descriptions.Item label={"ORL Number"}>{defaultValue.contact_no}</Descriptions.Item>
           <Descriptions.Item label={"Assigned To"}>{defaultValue.assigned_to}</Descriptions.Item>
-          <Descriptions.Item label={"Contact No"}>{defaultValue.contact_no}</Descriptions.Item>
-          <Descriptions.Item label={"Attachement"}>{<Button type='link' color='primary' onClick={() => openModal("Ticket Attachement", typeof defaultValue.attachments !== "string" ? defaultValue?.attachments : [])} >View</Button>}</Descriptions.Item>
+          <Descriptions.Item label={"Contact No"}>{defaultValue.phone_no}</Descriptions.Item>
+          <Descriptions.Item label={"Attachement"}>{defaultValue.attachments === "[]" ? '-' : <Button type='link' color='primary' onClick={() => openModal("Ticket Attachement", typeof defaultValue.attachments !== "string" ? defaultValue?.attachments : [])} >View</Button>}</Descriptions.Item>
         </Descriptions>
       </Card>
 
@@ -416,11 +416,11 @@ function TicketHandlingForm() {
                   </Col>
 
                   {/* Advance Paid */}
-                  <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                  {defaultValue.advance === OPTIONS.advance[0].value && <Col md={{ span: 6 }} xs={{ span: 24 }}>
                     <Form.Item name='advance_paid' label='Advance Paid'>
                       <Select allowClear placeholder='Select' options={OPTIONS.issueClosed} />
                     </Form.Item>
-                  </Col>
+                  </Col>}
 
                   {/* PO Copy */}
                   <Col md={{ span: 6 }} xs={{ span: 24 }}>
@@ -440,7 +440,7 @@ function TicketHandlingForm() {
                 </>}
 
                 {/* Issue Closed */}
-                {canIshowIssueClosed() && <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                {canIshowIssueClosed() && false && <Col md={{ span: 6 }} xs={{ span: 24 }}>
                   <Form.Item name='issue_closed' label='Issue Closed'>
                     <Select allowClear placeholder='Select' options={OPTIONS.issueClosed} />
                   </Form.Item>
@@ -482,7 +482,7 @@ function TicketHandlingForm() {
         <Image.PreviewGroup>
           {state.images.map(_ => <Image
             width={100}
-            src={`${defaultValue.pathfor_attachments}/${_}`}
+            src={`${defaultValue.pathfor_attachments.replace(/\\/g, "")}/${_}`}
           />)}
         </Image.PreviewGroup>
       </Modal>
