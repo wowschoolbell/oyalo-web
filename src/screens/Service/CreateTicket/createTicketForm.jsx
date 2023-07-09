@@ -18,6 +18,7 @@ import { getAssetGroup, getAssetGroupIssue, getAssetMaster, getPriority, getServ
 import { MultiUploadButton } from '../../../components/multiUploadButton/MultiUploadButton';
 import typesOfIssue from './typesOfIssue.constant';
 import { ExclamationCircleFilled } from '@ant-design/icons';
+import { OPTIONS } from '../TicketHandling/TicketHandlingForm';
 const { TextArea } = Input;
 
 const { confirm } = Modal;
@@ -66,6 +67,15 @@ const CreateTicketForm = (props) => {
   if (isEdit) {
     serviceFor = parseInt(defaultValue.service_for_id);
     assetGroup = parseInt(defaultValue.asset_group_id);
+    if (defaultValue.ticket_status === 'Issue Resolved ORL') {
+      defaultValue.issue_resolved = OPTIONS.issueResolved[0];
+    } else if (defaultValue.ticket_status === 'Issue Not Resolved ORL') {
+      defaultValue.issue_resolved = OPTIONS.issueResolved[0];
+    }
+
+    if (defaultValue.ticket_status === 'Ticket Closed ORL') {
+      defaultValue.issue_resolved = OPTIONS.issueClosed[0];
+    }
   }
 
   const service = isEdit ? defaultValue.service_for : (getServiceForData ?? []).find((ServiceFor) => ServiceFor?.id === serviceFor)?.name;
@@ -130,7 +140,7 @@ const CreateTicketForm = (props) => {
 
   const onFinish = (data) => {
     const outletCode = defaultValue?.id ? defaultValue.outlet_code : (outletData ?? []).find((outletData) => outletData?.id === selectedOutlet)?.outlet_code;
-    dispatch(isEdit ? updateTickets({ data: { asset: data.asset, id: defaultValue?.id } }) : saveTickets({ data: { ...data, attachments: JSON.stringify(data?.attachments ?? "[]"), outlet_code: outletCode } })).then(
+    dispatch(isEdit ? updateTickets({ data: { asset: data.asset, ticket_status: defaultValue.ticket_status, issue_resolved: data.issue_resolved, ticket_closed: data.ticket_closed, id: defaultValue?.id } }) : saveTickets({ data: { ...data, attachments: JSON.stringify(data?.attachments ?? "[]"), outlet_code: outletCode } })).then(
       ({ message, status, statusText }) => {
         messageToast({ message: message ?? statusText, status, title: isEdit ? 'Ticket Updated' : 'Ticket creation' });
         if (status === 200) {
@@ -459,6 +469,21 @@ const CreateTicketForm = (props) => {
                   </Form.Item>
                 </Col>
 
+
+                {/* Issue Resolved */}
+                {defaultValue?.ticket_status === 'Issue Resolved MS' && <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                  <Form.Item name='issue_resolved' label='Issue Resolved'>
+                    <Select allowClear placeholder='Select' options={OPTIONS.issueResolved} />
+                  </Form.Item>
+                </Col>}
+
+                {/* Issue Closed */}
+                {defaultValue?.ticket_status === 'Issue Resolved MS' && <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                  <Form.Item name='ticket_closed' label='Issue Closed'>
+                    <Select allowClear placeholder='Select' options={OPTIONS.issueClosed} />
+                  </Form.Item>
+                </Col>}
+
                 <Col md={{ span: 24 }} xs={{ span: 24 }}>
                   <Form.Item name='attachments' label='Attachment'>
                     {!isEdit && <MultiUploadButton url={'ticket-imageupload'} onSuccess={(files) => {
@@ -478,7 +503,7 @@ const CreateTicketForm = (props) => {
                   <Row gutter={[15, 15]} style={{ justifyContent: 'end' }}>
                     <Col span={12} style={{ textAlign: 'right' }} className='d-flex align-items-center justify-content-end mt-3'>
                       <Form.Item className='mx-2'>
-                        <Button loading={savingTickets} disabled={savingTickets || (isEdit && defaultValue.ticket_status !== 'Waiting @ Vendor Assignment')} className='orangeFactory' type='primary' htmlType='submit'>
+                        <Button loading={savingTickets} disabled={savingTickets || (isEdit && !['Waiting @ Vendor Assignment', 'Issue Resolved MS', 'Issue Not Resolved ORL', 'Issue Resolved ORL'].includes(defaultValue?.ticket_status))} className='orangeFactory' type='primary' htmlType='submit'>
                           {isEdit ? "Update" : "Create"}
                         </Button>
                       </Form.Item>

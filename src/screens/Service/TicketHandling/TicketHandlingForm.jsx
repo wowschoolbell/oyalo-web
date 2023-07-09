@@ -9,7 +9,7 @@ import { getAssetGroupSpare, updateOHTicketHandling, updateTicketHandling } from
 import { MultiUploadButton } from '../../../components/multiUploadButton/MultiUploadButton';
 import messageToast from '../../../components/messageToast/messageToast';
 
-const OPTIONS = {
+export const OPTIONS = {
   vendorType: [{ value: "Internal", label: "Internal" }, { value: "External", label: "External" }],
   workdoneBy: [{ value: "Service with spare", label: "Service with spare" }, { value: "Service without spare", label: "Service without spare" }],
   costInvolved: [{ value: "Yes", label: "Yes" }, { value: "No", label: "No" }],

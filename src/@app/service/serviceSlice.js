@@ -1312,15 +1312,28 @@ export const updateTickets =
   ({ data }) =>
   async (dispatch) => {
     dispatch(serviceSlice.actions.updateTicketsRequest());
-    return apis
-      .updateTickets({ data })
-      .then(async ({ data }) => {
-        await dispatch(serviceSlice.actions.updateTicketsResponse(data));
-        return data;
-      })
-      .catch(() => {
-        dispatch(serviceSlice.actions.updateTicketsError());
-      });
+
+    if(data.ticket_status === 'Issue Resolved MS'){
+      return apis
+        .updateORLTicketStatus({ data })
+        .then(async ({ data }) => {
+          await dispatch(serviceSlice.actions.updateTicketsResponse(data));
+          return data;
+        })
+        .catch(() => {
+          dispatch(serviceSlice.actions.updateTicketsError());
+        });
+    }else{
+      return apis
+        .updateTickets({ data })
+        .then(async ({ data }) => {
+          await dispatch(serviceSlice.actions.updateTicketsResponse(data));
+          return data;
+        })
+        .catch(() => {
+          dispatch(serviceSlice.actions.updateTicketsError());
+        });
+      }
   };
 
 export const closeTickets =
