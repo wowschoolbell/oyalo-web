@@ -448,7 +448,7 @@ function TicketHandlingForm() {
 
                 {/* Issue Resolved */}
                 {canIshowIssueResolved() && <Col md={{ span: 6 }} xs={{ span: 24 }}>
-                  <Form.Item name='issue_resolved' label='Issue Resolved'>
+                  <Form.Item name='issues_solved' label='Issue Resolved'>
                     <Select allowClear placeholder='Select' options={OPTIONS.issueResolved} />
                   </Form.Item>
                 </Col>}
