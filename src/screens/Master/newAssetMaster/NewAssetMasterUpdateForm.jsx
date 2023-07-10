@@ -129,7 +129,11 @@ function NewAssetMasterUpdateForm() {
           title: "Asset group Master",
         });
       } else {
-        messageToast({ message: message, status, title: "Asset Group Master" });
+        messageToast({
+          message: message ?? statusText,
+          status,
+          title: "Asset Group Master",
+        });
       }
     });
   };

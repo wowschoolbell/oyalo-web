@@ -101,6 +101,7 @@ function AssetMasterForm() {
           spares_list.spare_warranty_end_date?.format("YYYY-MM-DD"),
       };
     });
+
     dispatch(
       defaultValue?.id
         ? updateAssetMaster({
@@ -109,12 +110,13 @@ function AssetMasterForm() {
               outlet_code: outletCode,
               asset_warranty_end_date,
               spares_list,
-              asset_group: defaultValue?.asset_group_id,
+              asset_group: data.asset_group
+                ? data?.asset_group
+                : defaultValue?.asset_group_id,
               outlet_name: defaultValue?.outlet_id,
-              asset_name_sap:
-                defaultValue?.asset_name_sap == defaultValue?.asset_name_sap_id
-                  ? defaultValue?.asset_name_sap_id
-                  : defaultValue?.asset_name_sap,
+              asset_name_sap: data.asset_name_sap
+                ? data.asset_name_sap
+                : defaultValue?.asset_name_sap,
               id: defaultValue.id,
               status: transStatus({ status }),
             },

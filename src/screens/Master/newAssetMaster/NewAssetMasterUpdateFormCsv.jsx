@@ -141,7 +141,10 @@ function NewAssetMasterUpdateFormCsv() {
             });
           } else {
             messageToast({
-              message: "something went wrong",
+              message:
+                message || statusText
+                  ? message ?? statusText
+                  : "something went wrong",
               status: 400,
               title: "Asset group Master Upload",
             });
