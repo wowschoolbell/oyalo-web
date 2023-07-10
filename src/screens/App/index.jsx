@@ -94,6 +94,7 @@ import AssetGroupSpare from "../Master/AssetGroupSpare";
 import AssetGroupSpareForm from "../Master/AssetGroupSpare/AssetGroupSpareForm";
 import VendorMaster from "../Master/VendorMaster";
 import VendorMasterForm from "../Master/VendorMaster/VendorMasterForm";
+import VendroUpdateFormCsv from "../Master/VendorMaster/VendroUpdateFormCsv";
 import AssetMaster from "../Master/AssertMaster";
 import AssetMasterForm from "../Master/AssertMaster/AssetMasterForm";
 import AssetMasterUpdateForm from "../Master/AssertMaster/AssetMasterUpdateForm";
@@ -1187,6 +1188,9 @@ function Content(props) {
             <Route
               path="/VendorMaster/addForm"
               element={<VendorMasterForm />}></Route>
+            <Route
+              path="/VendorMaster/uploadcsv"
+              element={<VendroUpdateFormCsv />}></Route>
             <Route
               path="/outletAssetGroupMapping"
               element={<AssetMaster />}></Route>

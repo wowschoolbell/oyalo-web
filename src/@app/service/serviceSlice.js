@@ -1443,3 +1443,21 @@ export const saveUploadNewAssetMaster =
         dispatch(serviceSlice.actions.saveNewAssetMasterError());
       });
   };
+
+export const saveUploadVendorMaster =
+  ({ data }) =>
+  async (dispatch) => {
+    console.log(data, "data");
+    //dispatch(serviceSlice.actions.saveNewAssetMasterRequest());
+    return apis
+      .uploadCSVVendorMaster(data)
+      .then(async ({ data }) => {
+        //await dispatch(serviceSlice.actions.saveNewAssetMasterResponse(data));
+        return data;
+      })
+      .catch((err) => {
+        return err;
+
+        //dispatch(serviceSlice.actions.saveNewAssetMasterError());
+      });
+  };

@@ -40,6 +40,7 @@ import {
   updateNewAssetMaster,
   uploadCsvFile,
   saveUploadNewAssetMaster,
+  saveUploadVendorMaster,
 } from "../../../@app/service/serviceSlice";
 import dayjs from "dayjs";
 import ConfirmOnExit from "../../../components/confirmOnExit/ConfirmOnExit";
@@ -47,7 +48,7 @@ import messageToast from "../../../components/messageToast/messageToast";
 
 const { Option } = Select;
 
-function NewAssetMasterUpdateFormCsv() {
+function VendroUpdateFormCsv() {
   const {
     state: { data: defaultValue = {}, isEdit = false },
   } = useLocation();
@@ -90,7 +91,7 @@ function NewAssetMasterUpdateFormCsv() {
   }, [dispatch]);
 
   const handleClickBack = () => {
-    navigate("/assetMaster");
+    navigate("/VendorMaster");
   };
   const dateFormat = ["DD/MM/YYYY", "DD/MM/YY"];
   const onFinish = () => {
@@ -115,12 +116,36 @@ function NewAssetMasterUpdateFormCsv() {
           if (e && e.length > 0) {
             console.log(e[0], "e");
             innerdata = {
-              company_name: e[1],
-              Plant_code: e[2],
-              Asset_Group: e[3],
-              Asset_No_in_SAP: e[4],
-              Asset_Name_in_SAP: e[5],
-              Status: e[6],
+              vendor_type: e[1],
+              service_for: e[2],
+              vendor_for: e[3],
+              vendor_code: e[4],
+              name: e[5],
+              address: e[6],
+
+              country: e[7],
+              pincode: e[8],
+              city: e[9],
+              state: e[10],
+              gst_number: e[11],
+              company_code: e[12],
+
+              payment_terms: e[13],
+              pan_number: e[14],
+              pan_name: e[15],
+              type_of_service: e[16],
+              rate_of_tds: e[17],
+              msme_number: e[18],
+              phone_number: e[19],
+
+              mail_id: e[20],
+              bank_address: e[21],
+              bank_ifsc_code: e[22],
+              bank_account_number: e[23],
+              rec_account: e[24],
+              sort_key: e[25],
+              purchase_org: e[26],
+              status: e[27],
             };
             //console.log(innerdata, "innerdata");
             payload.push(innerdata);
@@ -130,20 +155,20 @@ function NewAssetMasterUpdateFormCsv() {
       });
       // console.log(payload, "payload");
 
-      dispatch(saveUploadNewAssetMaster({ data: payload })).then(
+      dispatch(saveUploadVendorMaster({ data: payload })).then(
         ({ message, status, statusText }) => {
           if (status === 200) {
             navigate("/assetMaster");
             messageToast({
               message: message ?? statusText,
               status,
-              title: "Asset group Master",
+              title: "Vendor Master",
             });
           } else {
             messageToast({
               message: "something went wrong",
               status: 400,
-              title: "Asset group Master Upload",
+              title: "Vendor Master Upload",
             });
           }
         }
@@ -371,4 +396,4 @@ function NewAssetMasterUpdateFormCsv() {
   );
 }
 
-export default NewAssetMasterUpdateFormCsv;
+export default VendroUpdateFormCsv;

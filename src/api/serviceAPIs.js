@@ -108,6 +108,9 @@ const downloadCSVAssetMaster = () =>
 const uploadCSVAssetMaster = (data) =>
   client.post("upload-new-asset-master", data, {});
 
+const uploadCSVVendorMaster = (data) =>
+  client.post("update-vendor-master-csv", data, {});
+
 const serviceApi = {
   addServiceFor,
   getServiceFor,
@@ -160,6 +163,7 @@ const serviceApi = {
   updateOHTicketHandlingStatus,
   downloadCSVAssetMaster,
   uploadCSVAssetMaster,
+  uploadCSVVendorMaster,
 };
 
 export default serviceApi;
