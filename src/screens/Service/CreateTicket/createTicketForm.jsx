@@ -140,7 +140,7 @@ const CreateTicketForm = (props) => {
 
   const onFinish = (data) => {
     const outletCode = defaultValue?.id ? defaultValue.outlet_code : (outletData ?? []).find((outletData) => outletData?.id === selectedOutlet)?.outlet_code;
-    dispatch(isEdit ? updateTickets({ data: { asset: data.asset, ticket_status: defaultValue.ticket_status, issue_resolved: data.issue_resolved, ticket_closed: data.ticket_closed, id: defaultValue?.id } }) : saveTickets({ data: { ...data, attachments: JSON.stringify(data?.attachments ?? "[]"), outlet_code: outletCode } })).then(
+    dispatch(isEdit ? updateTickets({ data: { asset: data.asset, ticket_status: defaultValue.ticket_status, issue_resolved: data.issue_resolved, ticket_closed: data.ticket_closed, id: defaultValue?.id,ID: defaultValue?.id } }) : saveTickets({ data: { ...data, attachments: JSON.stringify(data?.attachments ?? "[]"), outlet_code: outletCode } })).then(
       ({ message, status, statusText }) => {
         messageToast({ message: message ?? statusText, status, title: isEdit ? 'Ticket Updated' : 'Ticket creation' });
         if (status === 200) {
