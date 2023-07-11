@@ -224,7 +224,7 @@ export default function CustomTable({
             <div className="col-lg-8 mt-2 col-md-9 col-sm-12 text-md-end text-lg-end text-center  mt-sm-2">
               <div className="btn-group pb-2">
                 {/* eslint-disable-next-line */}
-                {title == "Asset Master" ? (
+                {title == "Outltet_Asset_Master" ? (
                   <>
                     <Tooltip placement="bottom" title={"update"}>
                       <Button

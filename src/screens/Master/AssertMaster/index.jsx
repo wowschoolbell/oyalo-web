@@ -65,7 +65,7 @@ export default function AssetMaster() {
       column={column}
       onClickAdd={onClickAdd}
       onClickUpdate={onClickUpdate}
-      title={"Asset Master"}
+      title={"Outltet_Asset_Master"}
     />
   );
 }

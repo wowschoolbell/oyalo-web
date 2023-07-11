@@ -288,6 +288,7 @@ function VendroUpdateFormCsv() {
                 <Col md={{ span: 4 }} xs={{ span: 16 }}>
                   <Upload
                     // accept=".xlsx, .xls"
+                    beforeUpload={() => false}
                     name="logo"
                     multiple=""
                     showUploadList={{ showPreviewIcon: false }}
@@ -306,6 +307,7 @@ function VendroUpdateFormCsv() {
                           header: 1,
                         });
                         setData(jsonData);
+                        return false;
                       } catch (err) {
                         console.log(err, "err");
                       }

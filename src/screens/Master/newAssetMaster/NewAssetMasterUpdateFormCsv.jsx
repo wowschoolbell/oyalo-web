@@ -265,6 +265,7 @@ function NewAssetMasterUpdateFormCsv() {
               <Row gutter={[25, 0]}>
                 <Col md={{ span: 4 }} xs={{ span: 16 }}>
                   <Upload
+                    beforeUpload={() => false}
                     // accept=".xlsx, .xls"
                     name="logo"
                     multiple=""
@@ -284,6 +285,7 @@ function NewAssetMasterUpdateFormCsv() {
                           header: 1,
                         });
                         setData(jsonData);
+                        return false;
                       } catch (err) {
                         console.log(err, "err");
                       }
