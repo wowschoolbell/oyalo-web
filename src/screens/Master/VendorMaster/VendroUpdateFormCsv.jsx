@@ -109,8 +109,8 @@ function VendroUpdateFormCsv() {
       //   asset_group: data?.asset_group,
       //   ..._,
       // })),
-      console.log(data, "payload");
-      data?.map((e) => {
+      //console.log(data, "payload");
+      array?.map((e) => {
         let innerdata = {};
         if (i != 0) {
           if (e && e.length > 0) {
@@ -166,7 +166,7 @@ function VendroUpdateFormCsv() {
             });
           } else {
             messageToast({
-              message: "something went wrong",
+              message: message ?? statusText,
               status: 400,
               title: "Vendor Master Upload",
             });
@@ -185,6 +185,7 @@ function VendroUpdateFormCsv() {
       // })),
       //};
     } catch (err) {
+      console.log(err, "err");
       messageToast({
         message: "something went wrong",
         status: 400,
@@ -297,16 +298,16 @@ function VendroUpdateFormCsv() {
                       let fileList = [];
 
                       try {
-                        var file = filesData?.file?.originFileObj;
-
-                        const data = await file.arrayBuffer();
-                        const workbook = XLSX.read(data);
+                        var file = filesData?.file;
+                        debugger;
+                        const newdata = await file.arrayBuffer();
+                        const workbook = XLSX.read(newdata);
                         const worksheet =
                           workbook.Sheets[workbook.SheetNames[0]];
                         const jsonData = XLSX.utils.sheet_to_json(worksheet, {
                           header: 1,
                         });
-                        setData(jsonData);
+                        setArray(jsonData);
                         return false;
                       } catch (err) {
                         console.log(err, "err");
