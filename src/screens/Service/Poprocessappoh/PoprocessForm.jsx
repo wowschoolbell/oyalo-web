@@ -39,7 +39,7 @@ function PoprocessappohForm() {
           <Descriptions.Item label={"Ticket Description"}>{ticketInfo?.problem_description ?? "-"}</Descriptions.Item>
           <Descriptions.Item label={"Service For"}>{ticketInfo?.service_for ?? "-"}</Descriptions.Item>
           <Descriptions.Item label={"Asset Group"}>{ticketInfo?.asset_group ?? "-"}</Descriptions.Item>
-          <Descriptions.Item label={"Asset"}>{ticketInfo?.asset ?? "-"}</Descriptions.Item>
+          <Descriptions.Item label={"Asset"}>{ticketInfo?.asset_details ?? "-"}</Descriptions.Item>
           <Descriptions.Item label={"ORL Name"}>{ticketInfo?.orl_name ?? "-"}</Descriptions.Item>
           <Descriptions.Item label={"ORL Number"}>{ticketInfo?.contact_no ?? "-"}</Descriptions.Item>
           <Descriptions.Item label={"Assigned To"}>{ticketInfo?.assigned_to ?? "-"}</Descriptions.Item>

@@ -88,7 +88,7 @@ const updateGlAccount = ({ data }) => client.put("update-GLAccount", data, {});
 const addTickets = ({ data }) => client.post("add-tickets", data, {});
 const getTickets = () => client.get("get-tickets", { limit, offset }, {});
 const updateTickets = ({ data }) => client.post("update-tickets", data, {});
-const updateORLTicketStatus = ({ data }) => client.post("update_ticket_handling_issue", data, {});
+const updateORLTicketStatus = ({ data }) => client.post("update-ticket-handling-issue", data, {});
 const closeTickets = ({ data }) =>
   client.post("delete-tickets-dat?ticket_id=" + data.id, data, {});
 

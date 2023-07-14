@@ -13,7 +13,7 @@ export const OPTIONS = {
   vendorType: [{ value: "Internal", label: "Internal" }, { value: "External", label: "External" }],
   workdoneBy: [{ value: "Service with spare", label: "Service with spare" }, { value: "Service without spare", label: "Service without spare" }],
   costInvolved: [{ value: "Yes", label: "Yes" }, { value: "No", label: "No" }],
-  issueResolved: [{ value: "Yes", label: "Yes" }, { value: "No", label: "No" }],
+  issueResolved: [{ value: "Yes", label: "Yes" }],
   paymentMode: [{ value: "Pettycash", label: "Pettycash" }, { value: "Online", label: "Online" }],
   quotation: [{ value: "Yes", label: "Yes" }, { value: "No", label: "No" }],
   advance: [{ value: "Yes", label: "Yes" }, { value: "No", label: "No" }],
@@ -46,10 +46,10 @@ function TicketHandlingForm() {
     updateState({ ...state, title, isOpen: true, images })
   };
 
-  const OHStatus = ['OH Approved', 'OH Rejected', 'OHApproved', 'PO processed', 'Waiting @ PO'].includes(defaultValue.ticket_status);
+  const OHStatus = ['Waiting @ Vendor Advance', 'OH Rejected', 'PO processed', 'Waiting @ PO No','Waiting @ Vendor Advance'].includes(defaultValue.payment_status) && defaultValue.ticket_status === "WIP";
 
   const onFinish = (data) => {
-    if (OHStatus) {
+    if (OHStatus && defaultValue.payment_status !== 'PO processed') {
       dispatch(updateOHTicketHandling({
         data: {
           ...data,
@@ -86,7 +86,7 @@ function TicketHandlingForm() {
   };
 
   const canIshowIssueResolved = () => {
-    if (costInvolved === OPTIONS.costInvolved[1].value || defaultValue.service_for === 'POS') {
+    if (costInvolved === OPTIONS.costInvolved[1].value || defaultValue.service_for === 'POS' || defaultValue.payment_status === 'PO processed') {
       return true;
     }
     return false;
@@ -151,7 +151,7 @@ function TicketHandlingForm() {
           <Descriptions.Item label={"Ticket Description"}>{defaultValue?.problem_description ?? "-"}</Descriptions.Item>
           <Descriptions.Item label={"Service For"}>{defaultValue.service_for}</Descriptions.Item>
           <Descriptions.Item label={"Asset Group"}>{defaultValue?.asset_group ?? "-"}</Descriptions.Item>
-          <Descriptions.Item label={"Asset"}>{defaultValue?.asset ?? "-"}</Descriptions.Item>
+          <Descriptions.Item label={"Asset"}>{defaultValue?.asset_details ?? "-"}</Descriptions.Item>
           <Descriptions.Item label={"ORL Name"}>{defaultValue?.orl_name ?? "-"}</Descriptions.Item>
           <Descriptions.Item label={"ORL Number"}>{defaultValue.contact_no}</Descriptions.Item>
           <Descriptions.Item label={"Assigned To"}>{defaultValue.assigned_to}</Descriptions.Item>

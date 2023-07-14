@@ -67,14 +67,13 @@ const CreateTicketForm = (props) => {
   if (isEdit) {
     serviceFor = parseInt(defaultValue.service_for_id);
     assetGroup = parseInt(defaultValue.asset_group_id);
-    if (defaultValue.ticket_status === 'Issue Resolved ORL') {
-      defaultValue.issue_resolved = OPTIONS.issueResolved[0];
-    } else if (defaultValue.ticket_status === 'Issue Not Resolved ORL') {
-      defaultValue.issue_resolved = OPTIONS.issueResolved[0];
+    
+    if (defaultValue.ticket_status === 'Issue Not Resolved ORL') {
+      defaultValue.ticket_closed = OPTIONS.issueClosed[1];
     }
 
     if (defaultValue.ticket_status === 'Ticket Closed ORL') {
-      defaultValue.issue_resolved = OPTIONS.issueClosed[0];
+      defaultValue.ticket_closed = OPTIONS.issueClosed[0];
     }
   }
 
@@ -471,14 +470,14 @@ const CreateTicketForm = (props) => {
 
 
                 {/* Issue Resolved */}
-                {defaultValue?.ticket_status === 'Issue Resolved MS' && <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                {false && defaultValue?.ticket_status === 'Issue Resolved MS' && <Col md={{ span: 6 }} xs={{ span: 24 }}>
                   <Form.Item name='issue_resolved' label='Issue Resolved'>
                     <Select allowClear placeholder='Select' options={OPTIONS.issueResolved} />
                   </Form.Item>
                 </Col>}
 
                 {/* Issue Closed */}
-                {defaultValue?.ticket_status === 'Issue Resolved MS' && <Col md={{ span: 6 }} xs={{ span: 24 }}>
+                {['Issue Resolved MS', 'Issue Not Resolved ORL'].includes(defaultValue?.ticket_status ?? "") && <Col md={{ span: 6 }} xs={{ span: 24 }}>
                   <Form.Item name='ticket_closed' label='Issue Closed'>
                     <Select allowClear placeholder='Select' options={OPTIONS.issueClosed} />
                   </Form.Item>

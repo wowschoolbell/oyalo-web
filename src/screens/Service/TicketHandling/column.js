@@ -10,7 +10,7 @@ export let column = (handleUpdate = () => false) => ([
   { key: '7', headerName: 'Ticket Description', field: 'problem_description', hide: false, width: 180 },
   { key: '8', headerName: 'Asset Group', field: 'asset_group', hide: false, width: 180 },
   { key: '9', headerName: 'Ticket Status', field: 'ticket_status', hide: false, width: 220 },
-  { key: '10', headerName: 'Payment status', field: 'Payment_status', hide: false, width: 130 },
+  { key: '10', headerName: 'Payment status', field: 'payment_status', hide: false, width: 180 },
   { key: '11', headerName: 'Ticket Date', field: 'created_at', hide: false, width: 180, valueGetter: (params) => format(parseISO(params.row.created_at), 'dd-MM-yyyy hh:mm aa') },
   { key: '12', headerName: 'Aging', field: 'aging_days', hide: false, width: 130 },
   {
